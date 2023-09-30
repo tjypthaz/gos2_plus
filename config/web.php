@@ -11,7 +11,24 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'as access' => [
+        'class' => '\hscstudio\mimin\components\AccessControl',
+        'allowActions' => [
+            // add wildcard allowed action here!
+            'site/*',
+            'debug/*',
+            'mimin/*', // only in dev mode
+        ],
+    ],
+    'modules' => [
+        'mimin' => [
+            'class' => '\hscstudio\mimin\Module',
+        ],
+    ],
     'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager', // only support DbManager
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '-0isBabrtVV0H3cqQYcLDRc_gHIaV20P',
@@ -43,14 +60,14 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+
     ],
     'params' => $params,
 ];

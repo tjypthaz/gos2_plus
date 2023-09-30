@@ -9,6 +9,7 @@ use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
+use hscstudio\mimin\components\Mimin;
 
 AppAsset::register($this);
 ?>
@@ -34,27 +35,42 @@ AppAsset::register($this);
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
         ],
     ]);
+
+    $menuItems = [
+        ['label' => 'Home', 'url' => ['/site/index']],
+    ];
+
+    if (\Yii::$app->user->isGuest){
+        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+    }
+    else{
+        $menuItems[] = ['label' => 'Manage User',
+            'items' => [
+                ['label' => 'Route', 'url' => ['/mimin/route']],
+                ['label' => 'Role', 'url' => ['/mimin/role']],
+                ['label' => 'User', 'url' => ['/mimin/user']],
+            ]
+        ];
+        $menuItems[] = [
+            'label' => 'Logout (' . \Yii::$app->user->identity->username . ')',
+            'url' => ['/site/logout'],
+            'linkOptions' => ['data-method' => 'post']
+        ];
+    }
+
+    $menuItems = Mimin::filterMenu($menuItems);
+    // in other case maybe You want ensure same of route so You can add parameter strict true
+    // $menuItems = Mimin::filterMenu($menuItems,true);
+
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        'options' => ['class' => 'navbar-nav navbar-right'],
+        'items' => $menuItems,
     ]);
     NavBar::end();
+    /*echo "<pre>";
+    print_r($menuItems);
+    echo "</pre>";*/
     ?>
 </header>
 
