@@ -61,6 +61,7 @@ AppAsset::register($this);
     }
 
     $menuItems = Mimin::filterMenu($menuItems);
+    $menuItems[] = ['label' => 'APM', 'url' => ['/apm/register']];
     // in other case maybe You want ensure same of route so You can add parameter strict true
     // $menuItems = Mimin::filterMenu($menuItems,true);
 

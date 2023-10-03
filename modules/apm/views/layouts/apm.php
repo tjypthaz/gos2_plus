@@ -32,35 +32,18 @@ AppAsset::register($this);
         //'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+            'class' => 'navbar navbar-expand-md navbar-dark bg-success fixed-top',
         ],
     ]);
 
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        [
+                'label' => 'Anjungan Pendaftaran Mandiri RSUD R.A.A TJOKRONEGORO PURWOREJO',
+            'url' => ['/apm/register/index']
+        ],
     ];
 
-    if (\Yii::$app->user->isGuest){
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-    }
-    else{
-        $menuItems[] = ['label' => 'Manage User',
-            'items' => [
-                ['label' => 'Route', 'url' => ['/mimin/route']],
-                ['label' => 'Role', 'url' => ['/mimin/role']],
-                ['label' => 'User', 'url' => ['/mimin/user']],
-            ]
-        ];
-        $menuItems[] = ['label' => 'Test', 'url' => ['/site/testdb2']];
-        $menuItems[] = [
-            'label' => 'Logout (' . \Yii::$app->user->identity->username . ')',
-            'url' => ['/site/logout'],
-            'linkOptions' => ['data-method' => 'post']
-        ];
-    }
-
-    $menuItems = Mimin::filterMenu($menuItems);
+    //$menuItems = Mimin::filterMenu($menuItems);
     // in other case maybe You want ensure same of route so You can add parameter strict true
     // $menuItems = Mimin::filterMenu($menuItems,true);
 

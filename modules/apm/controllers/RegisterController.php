@@ -7,7 +7,7 @@ use yii\web\Controller;
 /**
  * Default controller for the `apm` module
  */
-class RegisApmController extends Controller
+class RegisterController extends Controller
 {
     /**
      * Renders the index view for the module

@@ -20,6 +20,7 @@ $config = [
             'site/*',
             'debug/*',
             'mimin/*', // only in dev mode
+            'apm/*',
         ],
     ],
     'modules' => [
@@ -28,6 +29,7 @@ $config = [
         ],
         'apm' => [
             'class' => 'app\modules\apm\Module',
+            'layout' => 'apm'
         ],
     ],
     'components' => [
