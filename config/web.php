@@ -26,6 +26,9 @@ $config = [
         'mimin' => [
             'class' => '\hscstudio\mimin\Module',
         ],
+        'apm' => [
+            'class' => 'app\modules\apm\Module',
+        ],
     ],
     'components' => [
         'authManager' => [
