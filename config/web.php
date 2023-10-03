@@ -2,6 +2,7 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$db_lis = require __DIR__ . '/db_lis.php';
 
 $config = [
     'id' => 'gos2_plus',
@@ -61,6 +62,7 @@ $config = [
             ],
         ],
         'db' => $db,
+        'db_lis' => $db_lis,
 
         'urlManager' => [
             'enablePrettyUrl' => true,

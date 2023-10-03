@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\VendorLis;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -143,5 +144,18 @@ class SiteController extends Controller
         return $this->render('signup', [
             'model' => $model,
         ]);
+    }
+
+    public function actionTestdb2()
+    {
+        $data = VendorLis::find()->all();
+        //$data = Yii::$app->db_lis->createCommand("select * from vendor_lis")->queryAll();
+        echo "<pre>";
+        foreach ($data as $item){
+            print_r($item->NAMA);
+        }
+        //print_r($data);
+        exit;
+        //return $this->render('about');
     }
 }

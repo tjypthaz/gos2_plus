@@ -29,7 +29,7 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        //'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
@@ -52,6 +52,7 @@ AppAsset::register($this);
                 ['label' => 'User', 'url' => ['/mimin/user']],
             ]
         ];
+        $menuItems[] = ['label' => 'Test', 'url' => ['/site/testdb2']];
         $menuItems[] = [
             'label' => 'Logout (' . \Yii::$app->user->identity->username . ')',
             'url' => ['/site/logout'],
