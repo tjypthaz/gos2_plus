@@ -21,6 +21,7 @@ $config = [
             'debug/*',
             'mimin/*', // only in dev mode
             'apm/*',
+            'rsudapi/*',
         ],
     ],
     'modules' => [
@@ -30,6 +31,9 @@ $config = [
         'apm' => [
             'class' => 'app\modules\apm\Module',
             'layout' => 'apm'
+        ],
+        'rsudapi' => [
+            'class' => 'app\modules\rsudapi\Module',
         ],
     ],
     'components' => [
