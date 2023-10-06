@@ -27,39 +27,15 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <header>
-    <?php
-    NavBar::begin([
-        //'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-success fixed-top',
-        ],
-    ]);
-
-    $menuItems = [
-        [
-                'label' => 'Anjungan Pendaftaran Mandiri RSUD R.A.A TJOKRONEGORO PURWOREJO',
-            'url' => ['/apm/register/index']
-        ],
-    ];
-
-    //$menuItems = Mimin::filterMenu($menuItems);
-    // in other case maybe You want ensure same of route so You can add parameter strict true
-    // $menuItems = Mimin::filterMenu($menuItems,true);
-
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
-    /*echo "<pre>";
-    print_r($menuItems);
-    echo "</pre>";*/
-    ?>
+    <div class="navbar navbar-success bg-success shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <h2 class="font-weight-bold text-white">Anjungan Pendaftaran Mandiri</h2>
+            <?= Html::a('Batal Daftar','index',['class' => 'btn btn-lg btn-danger'])?>
+        </div>
+    </div>
 </header>
-
 <main role="main" class="flex-shrink-0">
-    <div class="container">
+    <div class="container pt-2">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
