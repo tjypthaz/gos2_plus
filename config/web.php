@@ -3,6 +3,7 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $db_lis = require __DIR__ . '/db_lis.php';
+$db_lis_bridging = require __DIR__ . '/db_lis_bridging.php';
 
 $config = [
     'id' => 'gos2_plus',
@@ -34,6 +35,9 @@ $config = [
         ],
         'rsudapi' => [
             'class' => 'app\modules\rsudapi\Module',
+        ],
+        'lis' => [
+            'class' => 'app\modules\lis\Module',
         ],
     ],
     'components' => [
@@ -72,7 +76,7 @@ $config = [
         ],
         'db' => $db,
         'db_lis' => $db_lis,
-
+        'db_lis_bridging' => $db_lis_bridging,
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,

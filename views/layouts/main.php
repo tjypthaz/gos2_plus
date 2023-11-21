@@ -52,7 +52,12 @@ AppAsset::register($this);
                 ['label' => 'User', 'url' => ['/mimin/user']],
             ]
         ];
-        $menuItems[] = ['label' => 'Test', 'url' => ['/site/testdb2']];
+        $menuItems[] = ['label' => 'LIS',
+            'items' => [
+                ['label' => 'Bridging', 'url' => ['/lis/registration']],
+                ['label' => 'Mapping', 'url' => ['/lis/mapping']],
+            ]
+        ];
         $menuItems[] = [
             'label' => 'Logout (' . \Yii::$app->user->identity->username . ')',
             'url' => ['/site/logout'],
