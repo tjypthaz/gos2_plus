@@ -10,7 +10,7 @@ use yii\widgets\Pjax;
 /** @var app\modules\lis\models\search\Registration $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Registrations';
+$this->title = 'Bridging';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="registration-index">

@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /** @var app\modules\lis\models\Registration $model */
 
 $this->title = "Detail : ".$model->order_number;
-$this->params['breadcrumbs'][] = ['label' => 'Registrations', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Bridging', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
