@@ -3,6 +3,7 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $db_lis = require __DIR__ . '/db_lis.php';
+$db_jaspel = require __DIR__ . '/db_jaspel.php';
 $db_lis_bridging = require __DIR__ . '/db_lis_bridging.php';
 
 $config = [
@@ -38,6 +39,9 @@ $config = [
         ],
         'lis' => [
             'class' => 'app\modules\lis\Module',
+        ],
+        'jaspel' => [
+            'class' => 'app\modules\jaspel\Module',
         ],
     ],
     'components' => [
@@ -76,6 +80,7 @@ $config = [
         ],
         'db' => $db,
         'db_lis' => $db_lis,
+        'db_jaspel' => $db_jaspel,
         'db_lis_bridging' => $db_lis_bridging,
         'urlManager' => [
             'enablePrettyUrl' => true,

@@ -2,7 +2,7 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=194.169.45.187;dbname=lis_bridging',
+    'dsn' => 'mysql:host=194.169.45.187;dbname=jaspel_cokro',
     'username' => 'gosplus',
     'password' => 'R5_t70kro',
     'charset' => 'utf8',

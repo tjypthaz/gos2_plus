@@ -2,9 +2,9 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=194.169.46.6;dbname=lis',
-    'username' => 'admin',
-    'password' => 'S!MRSGos2',
+    'dsn' => 'mysql:host=194.169.45.187;dbname=lis',
+    'username' => 'gosplus',
+    'password' => 'R5_t70kro',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)
