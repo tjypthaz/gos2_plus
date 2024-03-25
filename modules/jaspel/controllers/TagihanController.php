@@ -62,7 +62,7 @@ class TagihanController extends Controller
             LEFT JOIN (SELECT * FROM `pembayaran`.`tagihan_pendaftaran` WHERE `UTAMA` = 1 AND `STATUS` = 1) i ON i.PENDAFTARAN = a.`NOMOR`
             LEFT JOIN `pembayaran`.`tagihan` j ON  j.`ID` = i.TAGIHAN 
             LEFT JOIN `inacbg`.`hasil_grouping` k ON k.`TAGIHAN_ID` = i.TAGIHAN
-            LEFT JOIN `jaspel_cokro`.`jaspel` l ON l.`idReg` = a.`NOMOR`
+            LEFT JOIN `jaspel_cokro`.`jaspel` l ON l.`idReg` = a.`NOMOR` and l.publish = 1
             WHERE a.`STATUS` = 2 AND b.`STATUS` = 2 AND j.`ID` IS NOT NULL
             ".$filter."
             ORDER BY a.`NOMOR` ASC";
@@ -122,7 +122,7 @@ class TagihanController extends Controller
             LEFT JOIN (SELECT * FROM `pembayaran`.`tagihan_pendaftaran` WHERE `UTAMA` = 1 AND `STATUS` = 1) i ON i.PENDAFTARAN = a.`NOMOR`
             LEFT JOIN `pembayaran`.`tagihan` j ON  j.`ID` = i.TAGIHAN 
             LEFT JOIN `inacbg`.`hasil_grouping` k ON k.`TAGIHAN_ID` = i.TAGIHAN
-            LEFT JOIN `jaspel_cokro`.`jaspel` l ON l.`idReg` = a.`NOMOR`
+            LEFT JOIN `jaspel_cokro`.`jaspel` l ON l.`idReg` = a.`NOMOR` and l.publish = 1
             WHERE a.`STATUS` = 2 AND b.`STATUS` = 2 AND j.`ID` IS NOT NULL
             ".$filter."
             ORDER BY a.`NOMOR` ASC";
@@ -249,20 +249,109 @@ class TagihanController extends Controller
             WHERE a.`STATUS` = 1 ORDER BY b.`NAMA` ASC")
             ->queryAll();
         $listDokter = ArrayHelper::map($listDokter,'ID','NAMA');
-        /*echo "<pre>";
-        print_r($listDokter);
-        exit;*/
 
         $listJenisPara = Yii::$app->db_jaspel
             ->createCommand("SELECT a.`ID`,a.`DESKRIPSI`
             FROM master.`referensi` a
-            WHERE a.`JENIS` = 32 AND a.`STATUS` = 1")
+            WHERE a.`JENIS` = 32 AND a.`STATUS` = 1 and a.id not in (1,2)")
             ->queryAll();
         $listJenisPara = ArrayHelper::map($listJenisPara,'ID','DESKRIPSI');
 
         return $this->render('jaspel_temp',[
             'dataHeader' => $dataHeader,
             'dataTemp' => $dataTemp,
+            'listDokter' => $listDokter,
+            'listJenisPara' => $listJenisPara,
+        ]);
+    }
+
+    public function actionPilihPara($id,$jenis)
+    {
+        $model = JaspelTemp::findOne($id);
+        $model->idPara = $jenis;
+        if($model->save()){
+            return "ok";
+        }
+        return "nok";
+    }
+
+    public function actionPilihDokterO($id,$idDokter)
+    {
+        $model = JaspelTemp::findOne($id);
+        $model->idDokterO = $idDokter;
+        if($model->save()){
+            return "ok";
+        }
+        return "nok";
+    }
+
+    public function actionPilihDokterL($id,$idDokter)
+    {
+        $model = JaspelTemp::findOne($id);
+        $model->idDokterL = $idDokter;
+        if($model->save()){
+            return "ok";
+        }
+        return "nok";
+    }
+
+    public function actionHapusJaspeltemp($id,$idReg)
+    {
+        $model = Jaspel::findOne($id);
+        $model->publish = 2;
+        if($model->save()){
+            Yii::$app->session->setFlash('success','Hapus Perhitungan Berhasil');
+            return $this->redirect(['detail-tagihan','idReg' => $idReg]);
+        }
+        Yii::$app->session->setFlash('error','Hapus Perhitungan Gagal');
+        return $this->redirect(['jaspel-temp','id' => $id]);
+    }
+
+    public function actionFinalJaspeltemp($id)
+    {
+        // cek masih ada yang harus di input / tidak
+        $sql = "SELECT SUM((IF(a.`jpDokterO` > 0,IF(a.`idDokterO` > 0,0,1),0) + IF(a.`jpDokterL` > 0,IF(a.`idDokterL` > 0,0,1),0) + IF(a.`jpPara` > 0,IF(a.`idPara` > 0,0,1),0))) input
+            FROM jaspel_cokro.jaspel_temp a
+            WHERE idjaspel = ".$id;
+        $isFinish = Yii::$app->db_jaspel
+            ->createCommand($sql)
+            ->queryScalar();
+        if($isFinish > 0){
+            Yii::$app->session->setFlash('error','Perhitungan Final Gagal, Penerima Jaspel masih Kosong');
+            return $this->redirect(['jaspel-temp','id' => $id]);
+        }
+
+        Yii::$app->db_jaspel
+            ->createCommand("call finalJaspel(".$id.")")
+            ->execute();
+        Yii::$app->session->setFlash('success','Simpan Perhitungan Final Berhasil');
+        return $this->redirect(['jaspel-final','id' => $id]);
+    }
+
+    public function actionJaspelFinal($id)
+    {
+        $dataHeader = Jaspel::findOne($id);
+        $dataFinal = JaspelFinal::find()->where(['idJaspel' => $id])->all();
+        $listDokter = Yii::$app->db_jaspel
+            ->createCommand("SELECT a.`ID`,b.`NAMA`
+            FROM master.`dokter` a
+            LEFT JOIN master.`pegawai` b ON b.`NIP` = a.`NIP`
+            WHERE a.`STATUS` = 1 ORDER BY b.`NAMA` ASC")
+            ->queryAll();
+        $listDokter = ArrayHelper::map($listDokter,'ID','NAMA');
+
+        $listJenisPara = Yii::$app->db_jaspel
+            ->createCommand("SELECT a.`ID`,a.`DESKRIPSI`
+            FROM master.`referensi` a
+            WHERE a.`JENIS` = 32 AND a.`STATUS` = 1 and a.id not in (1,2)")
+            ->queryAll();
+        $listJenisPara = ArrayHelper::map($listJenisPara,'ID','DESKRIPSI');
+        /*echo "<pre>";
+        print_r($listJenisPara);
+        exit;*/
+        return $this->render('jaspel_final',[
+            'dataHeader' => $dataHeader,
+            'dataFinal' => $dataFinal,
             'listDokter' => $listDokter,
             'listJenisPara' => $listJenisPara,
         ]);

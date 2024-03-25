@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\jaspel\models\Jaspel;
 use kartik\select2\Select2;
 use yii\bootstrap4\Dropdown;
 use yii\helpers\ArrayHelper;
@@ -11,7 +12,7 @@ use yii\grid\GridView;
 $this->title = 'Detail Tagihan';
 $this->params['breadcrumbs'][] = ['label' => 'Data Tagihan RS', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$this->params['breadcrumbs'][] = "Periode Jaspel : ".Yii::$app->session->get('bulan')." ".Yii::$app->session->get('tahun');
+$this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app->session->get('bulan'))." ".Yii::$app->session->get('tahun');
 ?>
 <div class="jaspel-index">
 

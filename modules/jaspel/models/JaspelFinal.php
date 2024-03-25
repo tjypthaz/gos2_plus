@@ -9,6 +9,18 @@ use Yii;
  *
  * @property int $id
  * @property int $idJaspel
+ * @property string $idRuangan
+ * @property string $ruangan
+ * @property string $tindakan
+ * @property int|null $idDokterO
+ * @property int|null $idDokterL
+ * @property int|null $idPara
+ * @property float|null $jpDokterO
+ * @property float|null $jpDokterL
+ * @property float|null $jpPara
+ * @property float|null $jpStruktural
+ * @property float|null $jpBlud
+ * @property float|null $jpPegawai
  */
 class JaspelFinal extends \yii\db\ActiveRecord
 {
@@ -34,8 +46,12 @@ class JaspelFinal extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['idJaspel'], 'required'],
-            [['idJaspel'], 'integer'],
+            [['idJaspel', 'idRuangan', 'ruangan', 'tindakan'], 'required'],
+            [['idJaspel', 'idDokterO', 'idDokterL', 'idPara'], 'integer'],
+            [['jpDokterO', 'jpDokterL', 'jpPara', 'jpStruktural', 'jpBlud', 'jpPegawai'], 'number'],
+            [['idRuangan'], 'string', 'max' => 9],
+            [['ruangan'], 'string', 'max' => 35],
+            [['tindakan'], 'string', 'max' => 50],
         ];
     }
 
@@ -47,6 +63,18 @@ class JaspelFinal extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'idJaspel' => 'Id Jaspel',
+            'idRuangan' => 'Id Ruangan',
+            'ruangan' => 'Ruangan',
+            'tindakan' => 'Tindakan',
+            'idDokterO' => 'Id Dokter O',
+            'idDokterL' => 'Id Dokter L',
+            'idPara' => 'Id Para',
+            'jpDokterO' => 'Jp Dokter O',
+            'jpDokterL' => 'Jp Dokter L',
+            'jpPara' => 'Jp Para',
+            'jpStruktural' => 'Jp Struktural',
+            'jpBlud' => 'Jp Blud',
+            'jpPegawai' => 'Jp Pegawai',
         ];
     }
 }

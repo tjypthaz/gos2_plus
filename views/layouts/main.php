@@ -58,6 +58,12 @@ AppAsset::register($this);
                 ['label' => 'Mapping', 'url' => ['/lis/mapping']],
             ]
         ];
+        $menuItems[] = ['label' => 'Jaspel',
+            'items' => [
+                ['label' => 'List Tagihan', 'url' => ['/jaspel/tagihan']],
+                ['label' => 'Set Periode', 'url' => ['/jaspel/tagihan/periode']],
+            ]
+        ];
         $menuItems[] = [
             'label' => 'Logout (' . \Yii::$app->user->identity->username . ')',
             'url' => ['/site/logout'],
