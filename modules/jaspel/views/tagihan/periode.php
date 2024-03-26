@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\jaspel\models\Jaspel;
 use kartik\select2\Select2;
 use yii\bootstrap4\Dropdown;
 use yii\helpers\ArrayHelper;
@@ -19,10 +20,18 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Yii::$app->session->get('bu
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php $form = ActiveForm::begin(); ?>
-
-    <?= $form->field($model, 'bulan')->textInput() ?>
-
-    <?= $form->field($model, 'tahun')->textInput() ?>
+    <div class="row">
+        <div class="col">
+            <?= $form->field($model, 'bulan')->dropDownList(Jaspel::getBulan(),[
+                'prompt' => 'Pilih Bulan'
+            ]) ?>
+        </div>
+        <div class="col">
+            <?= $form->field($model, 'tahun')->dropDownList(Jaspel::getTahun(),[
+                'prompt' => 'Pilih Tahun'
+            ]) ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
