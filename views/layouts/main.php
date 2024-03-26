@@ -62,6 +62,8 @@ AppAsset::register($this);
             'items' => [
                 ['label' => 'List Tagihan', 'url' => ['/jaspel/tagihan']],
                 ['label' => 'Set Periode', 'url' => ['/jaspel/tagihan/periode']],
+                ['label' => 'Laporan Rekap Jaspel', 'url' => ['/jaspel/laporan']],
+                ['label' => 'Laporan Detail Jaspel', 'url' => ['/jaspel/laporan/detail']],
             ]
         ];
         $menuItems[] = [

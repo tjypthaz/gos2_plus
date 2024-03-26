@@ -43,6 +43,7 @@ $config = [
         'jaspel' => [
             'class' => 'app\modules\jaspel\Module',
         ],
+        'gridview' => ['class' => 'kartik\grid\Module'],
     ],
     'components' => [
         'authManager' => [

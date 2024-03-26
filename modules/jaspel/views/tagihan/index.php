@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                 ?>
                 <div class="form-group">
                     <label for="">Cara Bayar</label>
-                    <?= \yii\bootstrap4\Html::dropDownList('caraBayar',Yii::$app->request->get('caraBayar'),$listCarabayar,[
+                    <?= Html::dropDownList('caraBayar',Yii::$app->request->get('caraBayar'),$listCarabayar,[
                             'class' => 'form-control',
                         'prompt' => 'Pilih Cara Bayar'
                     ])
