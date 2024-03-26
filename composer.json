@@ -20,7 +20,6 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "hscstudio/yii2-mimin": "~1.1.5",
         "yiisoft/yii2-bootstrap": "^2.0",
-        "kartik-v/yii2-export": "*",
         "codemix/yii2-excelexport": "^2.7"
     },
     "require-dev": {

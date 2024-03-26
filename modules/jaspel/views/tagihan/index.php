@@ -38,21 +38,47 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".$bulan." ".Yii::$app->sessi
                     ])
                     ?>
                 </div>
-
+                <div class="form-group">
+                    <label for="">Id Register</label>
+                    <input type="text" name="idReg" value="<?=Yii::$app->request->get('idReg')?>" class="form-control">
+                </div>
             </div>
             <div class="col">
                 <div class="form-group">
                     <label for="">Tanggal Akhir</label>
                     <input type="date" name="tglAk" value="<?=Yii::$app->request->get('tglAk')?>" class="form-control">
                 </div>
-            </div>
-            <div class="col">
                 <div class="form-group">
                     <label for="">Nomor RM</label>
                     <input type="text" name="noRm" value="<?=Yii::$app->request->get('noRm')?>" class="form-control">
                 </div>
-                <button type="submit" class="btn btn-primary">Cari</button>
+                <div class="form-group">
+                    <label for="">Nomor SEP</label>
+                    <input type="text" name="noSep" value="<?=Yii::$app->request->get('noSep')?>" class="form-control">
+                </div>
             </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="">Periode Jaspel Bulan</label>
+                    <?=Html::dropDownList('bulan',Yii::$app->request->get('bulan'),Jaspel::getBulan(),[
+                            'prompt' => 'Pilih Bulan',
+                        'class' => 'form-control'
+                    ])?>
+                </div>
+                <div class="form-group">
+                    <label for="">Periode Jaspel Tahun</label>
+                    <?=Html::dropDownList('tahun',Yii::$app->request->get('tahun'),Jaspel::getTahun(),[
+                        'prompt' => 'Pilih Tahun',
+                        'class' => 'form-control'
+                    ])?>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="unFinal" id="customCheck1"
+                           <?=Yii::$app->request->get('unFinal')? "checked":""?>>
+                    <label class="custom-control-label" for="customCheck1">Cari Jaspel Yang Belum Final</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Cari</button>
         </form>
     </div>
 
@@ -60,6 +86,18 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".$bulan." ".Yii::$app->sessi
         'dataProvider' => $dataProvider,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            [
+                'attribute' => 'idReg',
+                'value' => function ($index){
+                    return Html::a($index['idReg'],Url::to(['detail-tagihan',
+                        'idReg' => $index['idReg']
+                    ]),[
+                        'target' => '_blank',
+                        'class' => 'btn btn-outline-success btn-sm',
+                    ]);
+                },
+                'format' => 'raw'
+            ],
             'noRm',
             'namaPasien',
             'tgl',
@@ -84,11 +122,10 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".$bulan." ".Yii::$app->sessi
                 },
             ],
             'periode',
-            [
+            /*[
                 'attribute' => 'idReg',
                 'label' => 'Action',
                 'value' => function ($index){
-
                     return Html::a('Detail',Url::to(['detail-tagihan',
                             'idReg' => $index['idReg']
                             ]),[
@@ -97,7 +134,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".$bulan." ".Yii::$app->sessi
                             ]);
                 },
                 'format' => 'raw'
-            ],
+            ],*/
         ],
         'pager' => [
             'class' => 'yii\bootstrap4\LinkPager'

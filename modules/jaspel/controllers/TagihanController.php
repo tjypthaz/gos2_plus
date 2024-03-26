@@ -45,11 +45,36 @@ class TagihanController extends Controller
             $filterCb = " and f.`JENIS` = '".$caraBayar."'";
         }
 
-        $filter = $filterTgl.$filterRm.$filterCb;
+        $filterIr = "";
+        $idReg = Yii::$app->request->get('idReg');
+        if($idReg != ""){
+            $filterIr = " and a.`NOMOR` = '".$idReg."'";
+        }
+
+        $filterNs = "";
+        $noSep = Yii::$app->request->get('noSep');
+        if($noSep != ""){
+            $filterNs = " and f.`NOMOR` = '".$noSep."'";
+        }
+
+        $filterPer = "";
+        $bulan = Yii::$app->request->get('bulan');
+        $tahun = Yii::$app->request->get('tahun');
+        if($bulan != "" && $tahun != ""){
+            $filterPer = " and l.`bulan` = ".$bulan." and l.`tahun` = ".$tahun;
+        }
+
+        $filterUf = "";
+        $unFinal = Yii::$app->request->get('unFinal');
+        if($unFinal != ""){
+            $filterUf = " AND `jaspel_cokro`.getUnFinal(l.id) < 1";
+        }
+
+        $filter = $filterTgl.$filterRm.$filterCb.$filterIr.$filterNs.$filterPer.$filterUf;
         $sql = "SELECT a.`NOMOR` idReg,a.`NORM` noRm,g.`NAMA` namaPasien,DATE(a.`TANGGAL`) tgl,a.`PAKET` paket
             ,b.`RUANGAN` idRuangan,b.`DOKTER` idDokter,c.`DESKRIPSI` tujuan,e.`NAMA` dpjp
             ,f.`JENIS` idBayar,h.DESKRIPSI caraBayar,f.`NOMOR` noSep
-            ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs,ROUND(k.`TARIFCBG`,0) klaim
+            ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs,ROUND((k.`TARIFCBG`+m.TOTAL),0) klaim
             ,CONCAT(l.`bulan`,'-',l.`tahun`) periode
             FROM `pendaftaran`.`pendaftaran` a
             LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
@@ -63,10 +88,12 @@ class TagihanController extends Controller
             LEFT JOIN `pembayaran`.`tagihan` j ON  j.`ID` = i.TAGIHAN 
             LEFT JOIN `inacbg`.`hasil_grouping` k ON k.`TAGIHAN_ID` = i.TAGIHAN
             LEFT JOIN `jaspel_cokro`.`jaspel` l ON l.`idReg` = a.`NOMOR` and l.publish = 1
+            LEFT JOIN `pembayaran`.`pembayaran_tagihan` m ON  m.`TAGIHAN` = i.TAGIHAN AND m.`STATUS` = 2
             WHERE a.`STATUS` = 2 AND b.`STATUS` = 2 AND j.`ID` IS NOT NULL
             ".$filter."
             ORDER BY a.`NOMOR` ASC";
-
+        //echo $sql;
+        //exit;
         $data = [];
         if($filter != ""){
             $data = Yii::$app->db_jaspel
@@ -109,7 +136,7 @@ class TagihanController extends Controller
         $sql = "SELECT a.`NOMOR` idReg,a.`NORM` noRm,g.`NAMA` namaPasien,DATE(a.`TANGGAL`) tgl,a.`PAKET` paket
             ,b.`RUANGAN` idRuangan,b.`DOKTER` idDokter,c.`DESKRIPSI` tujuan,e.`NAMA` dpjp
             ,f.`JENIS` idBayar,h.DESKRIPSI caraBayar,f.`NOMOR` noSep
-            ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs,ROUND(k.`TARIFCBG`,0) klaim
+            ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs,ROUND((k.`TARIFCBG`+m.TOTAL), 0) klaim
             ,CONCAT(l.`bulan`,'-',l.`tahun`) periode, jaspel_cokro.`getJpTarif`(j.`ID`) totalJaspel,l.`id`
             FROM `pendaftaran`.`pendaftaran` a
             LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
@@ -123,6 +150,7 @@ class TagihanController extends Controller
             LEFT JOIN `pembayaran`.`tagihan` j ON  j.`ID` = i.TAGIHAN 
             LEFT JOIN `inacbg`.`hasil_grouping` k ON k.`TAGIHAN_ID` = i.TAGIHAN
             LEFT JOIN `jaspel_cokro`.`jaspel` l ON l.`idReg` = a.`NOMOR` and l.publish = 1
+            LEFT JOIN `pembayaran`.`pembayaran_tagihan` m ON  m.`TAGIHAN` = i.TAGIHAN AND m.`STATUS` = 2
             WHERE a.`STATUS` = 2 AND b.`STATUS` = 2 AND j.`ID` IS NOT NULL
             ".$filter."
             ORDER BY a.`NOMOR` ASC";
@@ -156,6 +184,8 @@ class TagihanController extends Controller
         $model = new DynamicModel(compact('bulan', 'tahun'));
         $model->addRule(['bulan', 'tahun'], 'integer')
             ->addRule(['bulan', 'tahun'], 'required');
+        $model->bulan = Yii::$app->session->get('bulan');
+        $model->tahun = Yii::$app->session->get('tahun');
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
             if($model->validate()){

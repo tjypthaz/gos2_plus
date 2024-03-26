@@ -2,6 +2,7 @@
 
 return [
     'class' => 'yii\db\Connection',
+    //'dsn' => 'mysql:host=194.169.46.193;dbname=gos2_plus',
     'dsn' => 'mysql:host=localhost;dbname=gos2_plus',
     'username' => 'root',
     'password' => '',
