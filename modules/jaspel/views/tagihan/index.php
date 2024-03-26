@@ -11,7 +11,8 @@ use yii\grid\GridView;
 
 $this->title = 'Data Tagihan RS';
 $this->params['breadcrumbs'][] = $this->title;
-$this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app->session->get('bulan'))." ".Yii::$app->session->get('tahun');
+$bulan = Yii::$app->session->get('bulan') ? Jaspel::getBulan(Yii::$app->session->get('bulan')) : '';
+$this->params['breadcrumbs'][] = "Periode Jaspel : ".$bulan." ".Yii::$app->session->get('tahun');
 ?>
 <div class="jaspel-index">
 
