@@ -63,6 +63,64 @@ class LaporanController extends \yii\web\Controller
         ]);
     }
 
+    public function actionDetail($bulan=null,$tahun=null,$idDokter=null,$idCaraBayar=null,$idRuangan=null)
+    {
+        $data = [];
+        if($bulan && $tahun && $idDokter && $idCaraBayar && $idRuangan){
+            $data = Yii::$app->db_jaspel->createCommand(
+                "SELECT CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,a.`tgl` tglDaftar,a.`noRm`,a.`namaPasien`
+            ,b.`ruangan`,a.`caraBayar`,b.`namaDokterO`,b.`namaDokterL`,b.`tindakan`,b.`jpDokterO`,b.`jpDokterL`
+            FROM `jaspel_cokro`.`jaspel` a
+            LEFT JOIN `jaspel_cokro`.`jaspel_final` b ON b.`idJaspel` = a.`id`
+            WHERE a.`publish` = 1 AND b.`id` IS NOT NULL
+            AND a.`bulan` = ".$bulan." AND a.`tahun` = ".$tahun."
+            AND a.`idCaraBayar` = ".$idCaraBayar."
+            AND (b.`idDokterO` = ".$idDokter." OR b.`idDokterL` = ".$idDokter.")
+            AND b.`idRuangan` = '".$idRuangan."'"
+            )->queryAll();
+
+        }
+        $excelData = htmlspecialchars(Json::encode($data));
+
+        $provider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['ruangan','namaDokterO','namaDokterL','tindakan'],
+            ],
+        ]);
+
+        $listDokter = Yii::$app->db_jaspel
+            ->createCommand("SELECT a.`ID`,b.`NAMA`
+            FROM master.`dokter` a
+            LEFT JOIN master.`pegawai` b ON b.`NIP` = a.`NIP`
+            WHERE a.`STATUS` = 1 ORDER BY b.`NAMA` ASC")
+            ->queryAll();
+        $listDokter = ArrayHelper::map($listDokter,'ID','NAMA');
+
+        $listRuangan = Yii::$app->db_jaspel
+            ->createCommand("SELECT a.`ID`,a.`DESKRIPSI`
+            FROM master.`ruangan` a
+            WHERE a.`STATUS` = 1 AND a.`JENIS_KUNJUNGAN` IN (1,7,3,2) AND a.`JENIS` = 5")
+            ->queryAll();
+        $listRuangan = ArrayHelper::map($listRuangan,'ID','DESKRIPSI');
+
+        $listCarabayar = Yii::$app->db_jaspel
+            ->createCommand("SELECT * FROM `master`.`referensi` WHERE JENIS=10 AND `STATUS` = 1")
+            ->queryAll();
+        $listCarabayar = ArrayHelper::map($listCarabayar,'ID','DESKRIPSI');
+
+        return $this->render('detail',[
+            'dataProvider' => $provider,
+            'listDokter' => $listDokter,
+            'listRuangan' => $listRuangan,
+            'listCarabayar' => $listCarabayar,
+            'excelData' => $excelData,
+        ]);
+    }
+
     public function actionToexcel()
     {
         $excelData = Json::decode(Yii::$app->request->post('excelData'));

@@ -240,6 +240,17 @@ class TagihanController extends Controller
                 LEFT JOIN `master`.`ruangan` f ON f.`ID` = e.`RUANGAN`
                 WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`STATUS` = 1 AND a.`JENIS` = 3
                 UNION ALL
+                SELECT ".$model->id.",e.`RUANGAN`,d.`ID` idTindakanMedis,c.`ITEM`,jaspel_cokro.`getDokterO`(d.`ID`)
+                 ,(b.`DOKTER_OPERATOR`+b.`DOKTER_ANASTESI`) jpDokterO,'0' idDokterL, b.`DOKTER_LAINNYA` jpDokterL, jaspel_cokro.`getPara`(d.`ID`)
+                 ,(b.`PENATA_ANASTESI`+b.`PARAMEDIS`) jpPara,b.`NON_MEDIS` jpPegawai
+                FROM `pembayaran`.`rincian_tagihan_paket` a                
+                LEFT JOIN `master`.`distribusi_tarif_paket_detil` b ON a.`TARIF_ID` = b.`ID`
+                LEFT JOIN master.paket_detil c ON a.PAKET_DETIL=c.ID
+                LEFT JOIN `layanan`.`tindakan_medis` d ON d.`ID` = a.`REF_ID`
+                LEFT JOIN `pendaftaran`.`kunjungan` e ON e.`NOMOR` = d.`KUNJUNGAN`
+                LEFT JOIN `master`.`ruangan` f ON f.`ID` = e.`RUANGAN`
+                WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`STATUS` = 1
+                UNION ALL
                 SELECT ".$model->id.",'1030102' RUANGAN,a.`REF_ID`,'Obat' TINDAKAN,'0' idDokterO ,'0' jpDokterO,'0' idDokterL,'0' jpDokterL
                 ,'4' idPara,IFNULL(ROUND((SUM((a.`JUMLAH`*a.`TARIF`)) * 0.08) * 0.6,0),0) jpPara
                 ,IFNULL(ROUND((SUM((a.`JUMLAH`*a.`TARIF`)) * 0.08) * 0.4,0),0) jpPegawai
