@@ -4,6 +4,7 @@
 use app\modules\jaspel\models\Jaspel;
 use yii\bootstrap4\Html;
 use yii\grid\GridView;
+use yii\helpers\Json;
 use yii\helpers\Url;
 
 $this->title = 'Laporan Rekap Jaspel';
@@ -30,12 +31,31 @@ $this->title = 'Laporan Rekap Jaspel';
 </form>
 <?php
 if($excelData != '[]'){
+    $header = [
+        'Periode',
+        'Unit',
+        'Cara Bayar',
+        'Dokter Operator',
+        'Dokter Lainnya',
+        'Jenis Paramedis',
+        'Jp Dokter Operator',
+        'Jp Dokter Lainnya',
+        'Jp Paramedis',
+        'Jp Struktural',
+        'Jp Blud',
+        'Jp Pegawai',
+    ];
+    $header = htmlspecialchars(Json::encode($header));
     ?>
         <div class="col text-right">
             <form action="<?= Url::toRoute(['toexcel'])?>" method="post">
                 <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+                <input type="hidden" name="namaFile" value="Rekap Jaspel">
                 <textarea name="excelData" style="display: none;">
                 <?=$excelData?>
+                </textarea>
+                <textarea name="header" style="display: none;">
+                <?=$header?>
                 </textarea>
                 <input type="submit" class="btn btn-outline-warning" value="Export EXCEL"  />
             </form>

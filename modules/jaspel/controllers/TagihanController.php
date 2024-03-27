@@ -218,7 +218,7 @@ class TagihanController extends Controller
             $model->tagihanRs = Yii::$app->request->post('tarifrs');
             $model->jpRs = Yii::$app->request->post('jaspel');
             if(Yii::$app->request->post('is_prop') == '1'){
-                $model->klaim = Yii::$app->request->post('klaim');
+                $model->klaim = preg_replace('/[^0-9]/', '', Yii::$app->request->post('klaim'));
                 $model->jpFix = (Yii::$app->request->post('jp_prop') / 100) * $model->klaim;
             }
             else{

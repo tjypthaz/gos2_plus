@@ -66,28 +66,17 @@ class LaporanController extends \yii\web\Controller
     public function actionToexcel()
     {
         $excelData = Json::decode(Yii::$app->request->post('excelData'));
+        $namaFile = Yii::$app->request->post('namaFile');
+        $header = Json::decode(Yii::$app->request->post('header'));
 
         $file = Yii::createObject([
             'class' => 'codemix\excelexport\ExcelFile',
             'sheets' => [
-                'Rekap Jaspel' => [   // Name of the excel sheet
+                $namaFile => [   // Name of the excel sheet
                     'data' => $excelData,
 
                     // Set to `false` to suppress the title row
-                    'titles' => [
-                        'Periode',
-                        'Unit',
-                        'Cara Bayar',
-                        'Dokter Operator',
-                        'Dokter Lainnya',
-                        'Jenis Paramedis',
-                        'Jp Dokter Operator',
-                        'Jp Dokter Lainnya',
-                        'Jp Paramedis',
-                        'Jp Struktural',
-                        'Jp Blud',
-                        'Jp Pegawai',
-                    ],
+                    'titles' => $header,
 
                     'formats' => [
                         // Either column name or 0-based column index can be used
@@ -106,7 +95,7 @@ class LaporanController extends \yii\web\Controller
         ]);
         // Save on disk
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="download"');
+        header('Content-Disposition: attachment;filename="'.$namaFile.'"');
         header('Cache-Control: max-age=0');
         $file->saveAs('php://output');
         exit;
