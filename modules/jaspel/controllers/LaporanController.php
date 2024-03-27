@@ -68,7 +68,7 @@ class LaporanController extends \yii\web\Controller
         $data = [];
         if($bulan && $tahun && $idDokter && $idCaraBayar && $idRuangan){
             $data = Yii::$app->db_jaspel->createCommand(
-                "SELECT CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,a.`tgl` tglDaftar,a.`noRm`,a.`namaPasien`
+                "SELECT a.id,CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,a.`tgl` tglDaftar,a.`noRm`,a.`namaPasien`
             ,b.`ruangan`,a.`caraBayar`,b.`namaDokterO`,b.`namaDokterL`,b.`tindakan`,b.`jpDokterO`,b.`jpDokterL`
             FROM `jaspel_cokro`.`jaspel` a
             LEFT JOIN `jaspel_cokro`.`jaspel_final` b ON b.`idJaspel` = a.`id`

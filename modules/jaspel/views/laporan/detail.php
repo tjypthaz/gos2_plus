@@ -59,6 +59,7 @@ $this->title = 'Laporan Detail Jaspel';
 <?php
 if($excelData != '[]'){
     $header = [
+        'Id Jaspel',
         'Periode',
         'Tgl Daftar',
         'No RM',
@@ -91,6 +92,7 @@ if($excelData != '[]'){
 }
 $gridColumns = [
     ['class' => 'yii\grid\SerialColumn'],
+    'id',
     'periode',
     'tglDaftar',
     'noRm',
