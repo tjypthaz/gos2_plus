@@ -103,7 +103,7 @@ class LaporanController extends \yii\web\Controller
         $listRuangan = Yii::$app->db_jaspel
             ->createCommand("SELECT a.`ID`,a.`DESKRIPSI`
             FROM master.`ruangan` a
-            WHERE a.`STATUS` = 1 AND a.`JENIS_KUNJUNGAN` IN (1,7,3,2) AND a.`JENIS` = 5")
+            WHERE a.`STATUS` = 1 AND a.`JENIS` = 5")
             ->queryAll();
         $listRuangan = ArrayHelper::map($listRuangan,'ID','DESKRIPSI');
 
