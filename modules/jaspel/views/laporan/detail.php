@@ -116,6 +116,14 @@ $gridColumns = [
         },
         'format' => 'html'
     ],
+    [
+        'attribute' => 'jenisPara',
+        'label' => 'Paramedis',
+        'value' => function ($index){
+            return $index['jenisPara']."<br>".number_format($index['jpPara'],0,',','.');
+        },
+        'format' => 'html'
+    ],
     'tindakan',
 ];
 ?>

@@ -5,6 +5,7 @@ use kartik\select2\Select2;
 use yii\bootstrap4\Dropdown;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\grid\GridView;
 /** @var yii\web\View $this */
@@ -81,6 +82,44 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".$bulan." ".Yii::$app->sessi
             <button type="submit" class="btn btn-primary">Cari</button>
         </form>
     </div>
+
+    <?php
+    if($excelData != '[]'){
+    $header = [
+        'Id Reg',
+        'No RM',
+        'Nama pasien',
+        'Tgl Daftar',
+        'Id Ruangan',
+        'Id Dokter',
+        'Ruangan',
+        'Dokter',
+        'Id Cara Bayar',
+        'Cara Bayar',
+        'No SEP',
+        'Id Tagihan',
+        'Tagihan RS',
+        'Klaim',
+        'Periode'
+    ];
+    $header = htmlspecialchars(Json::encode($header));
+    ?>
+    <div class="col text-right">
+        <form action="<?= Url::toRoute(['laporan/toexcel'])?>" method="post">
+            <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+            <input type="hidden" name="namaFile" value="Rekap Klaim">
+            <textarea name="excelData" style="display: none;">
+                <?=$excelData?>
+                </textarea>
+            <textarea name="header" style="display: none;">
+                <?=$header?>
+                </textarea>
+            <input type="submit" class="btn btn-outline-warning" value="Export EXCEL"  />
+        </form>
+    </div>
+    <?php
+    }
+    ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

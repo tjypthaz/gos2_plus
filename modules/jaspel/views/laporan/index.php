@@ -67,7 +67,6 @@ $gridColumns = [
     ['class' => 'yii\grid\SerialColumn'],
     'periode',
     'ruangan',
-    'caraBayar',
     [
         'attribute' => 'namaDokterO',
         'label' => 'Dokter O',
@@ -93,6 +92,7 @@ $gridColumns = [
         },
         'format' => 'html'
     ],
+    'caraBayar',
 ];
 ?>
 

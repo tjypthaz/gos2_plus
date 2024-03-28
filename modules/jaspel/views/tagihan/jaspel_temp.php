@@ -228,7 +228,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                 <b>Data Perhitungan Jaspel Sementara</b>
             </div>
             <div class="col text-right">
-                <a href="<?=Url::toRoute(['/jaspel/tagihan/final-jaspeltemp','id' => $dataHeader['id'],'idReg' => $dataHeader['idReg']])?>" onclick="return confirm('Tenane Final ??')" class="btn btn-success btn-sm mb-1">Final Perhitungan</a>
+                <a href="<?=Url::toRoute(['/jaspel/tagihan/final-jaspeltemp','id' => $dataHeader['id'],'idReg' => $dataHeader['idReg']])?>" class="btn btn-success btn-sm mb-1">Final Perhitungan</a>
             </div>
         </div>
 

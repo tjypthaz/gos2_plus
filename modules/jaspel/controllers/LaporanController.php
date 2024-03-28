@@ -14,7 +14,9 @@ class LaporanController extends \yii\web\Controller
         $data = [];
         if($bulan && $tahun){
             $data = Yii::$app->db_jaspel->createCommand(
-                "SELECT CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,b.`ruangan`,a.`caraBayar`
+                "
+            select * from (
+            SELECT CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,b.`ruangan`,a.`caraBayar`
             -- ,b.`idDokterO`,b.`idDokterL`,b.`idPara`
             ,b.`namaDokterO`,b.`namaDokterL`,b.`jenisPara`
             ,SUM(b.`jpDokterO`) jpDokterO,SUM(b.`jpDokterL`) jpDokterL,SUM(b.`jpPara`) jpPara
@@ -24,7 +26,11 @@ class LaporanController extends \yii\web\Controller
             WHERE a.`publish` = 1 AND b.`id` IS NOT NULL
             AND a.`bulan` = ".$bulan."
             AND a.`tahun` = ".$tahun."
-            GROUP BY a.`idCaraBayar`,b.`idRuangan`,b.`idDokterO`,b.`idDokterL`,b.`idPara`"
+            GROUP BY a.`idCaraBayar`,b.`idRuangan`,b.`idDokterO`,b.`idDokterL`,b.`idPara`    
+            ) a order by namaDokterO
+            
+            
+            "
             )->queryAll();
         }
         $excelData = htmlspecialchars(Json::encode($data));
@@ -69,7 +75,7 @@ class LaporanController extends \yii\web\Controller
         if($bulan && $tahun && $idDokter && $idCaraBayar && $idRuangan){
             $data = Yii::$app->db_jaspel->createCommand(
                 "SELECT a.id,CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,a.`tgl` tglDaftar,a.`noRm`,a.`namaPasien`
-            ,b.`ruangan`,a.`caraBayar`,b.`namaDokterO`,b.`namaDokterL`,b.`tindakan`,b.`jpDokterO`,b.`jpDokterL`
+            ,b.`ruangan`,a.`caraBayar`,b.`namaDokterO`,b.`namaDokterL`,b.`jenisPara`,b.`tindakan`,b.`jpDokterO`,b.`jpDokterL`,b.`jpPara`
             FROM `jaspel_cokro`.`jaspel` a
             LEFT JOIN `jaspel_cokro`.`jaspel_final` b ON b.`idJaspel` = a.`id`
             WHERE a.`publish` = 1 AND b.`id` IS NOT NULL
@@ -88,7 +94,7 @@ class LaporanController extends \yii\web\Controller
                 'pageSize' => 20,
             ],
             'sort' => [
-                'attributes' => ['ruangan','namaDokterO','namaDokterL','tindakan'],
+                'attributes' => ['ruangan','namaDokterO','namaDokterL','jenisPara','tindakan'],
             ],
         ]);
 

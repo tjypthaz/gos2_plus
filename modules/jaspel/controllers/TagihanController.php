@@ -9,6 +9,7 @@ use Yii;
 use yii\base\DynamicModel;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\web\Controller;
 
 /**
@@ -71,10 +72,10 @@ class TagihanController extends Controller
         }
 
         $filter = $filterTgl.$filterRm.$filterCb.$filterIr.$filterNs.$filterPer.$filterUf;
-        $sql = "SELECT a.`NOMOR` idReg,a.`NORM` noRm,g.`NAMA` namaPasien,DATE(a.`TANGGAL`) tgl,a.`PAKET` paket
+        $sql = "SELECT a.`NOMOR` idReg,a.`NORM` noRm,g.`NAMA` namaPasien,DATE(a.`TANGGAL`) tgl
             ,b.`RUANGAN` idRuangan,b.`DOKTER` idDokter,c.`DESKRIPSI` tujuan,e.`NAMA` dpjp
             ,f.`JENIS` idBayar,h.DESKRIPSI caraBayar,f.`NOMOR` noSep
-            ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs,ROUND((k.`TARIFCBG`+m.TOTAL),0) klaim
+            ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs,if(l.klaim > 0,l.klaim,ROUND((k.`TARIFCBG`+m.TOTAL),0)) klaim
             ,CONCAT(l.`bulan`,'-',l.`tahun`) periode
             FROM `pendaftaran`.`pendaftaran` a
             LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
@@ -100,13 +101,15 @@ class TagihanController extends Controller
                 ->createCommand($sql)
                 ->queryAll();
         }
+        $excelData = htmlspecialchars(Json::encode($data));
+
         $provider = new ArrayDataProvider([
             'allModels' => $data,
             'pagination' => [
                 'pageSize' => 20,
             ],
             'sort' => [
-                'attributes' => ['tgl'],
+                'attributes' => ['noRm','tgl','klaim'],
             ],
         ]);
 
@@ -116,7 +119,8 @@ class TagihanController extends Controller
         exit;*/
 
         return $this->render('index',[
-            'dataProvider' => $provider
+            'dataProvider' => $provider,
+            'excelData' => $excelData
         ]);
     }
 
