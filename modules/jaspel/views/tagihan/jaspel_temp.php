@@ -287,6 +287,14 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                                     </tr>
                                     <?php
                                 }
+                                if(intval($item['jpAkomodasi']) > 0){
+                                    ?>
+                                    <tr>
+                                        <td>Akomodasi</td>
+                                        <td><?=number_format(intval($item['jpAkomodasi']),0,',','.')?> -> <?=number_format(intval($item['jpAkomodasiFix']),0,',','.')?></td>
+                                    </tr>
+                                    <?php
+                                }
                                 ?>
                                 <tr>
                                     <td>Pegawai</td>

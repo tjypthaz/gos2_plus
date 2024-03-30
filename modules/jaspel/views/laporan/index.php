@@ -41,6 +41,7 @@ if($excelData != '[]'){
         'Jp Dokter Operator',
         'Jp Dokter Lainnya',
         'Jp Paramedis',
+        'Jp Akomodasi',
         'Jp Struktural',
         'Jp Blud',
         'Jp Pegawai',
@@ -65,8 +66,33 @@ if($excelData != '[]'){
 }
 $gridColumns = [
     ['class' => 'yii\grid\SerialColumn'],
-    'periode',
-    'ruangan',
+    //idDokter=44&idRuangan=102030101&idCaraBayar=2&bulan=2&tahun=2024&idPara=3
+    [
+        'attribute' => 'periode',
+        'value' => function ($index){
+            return Html::a($index['periode'],Url::to(['detail',
+                'idDokter' => $index['idDokterO'],
+                'idRuangan' => $index['idRuangan'],
+                'idCaraBayar' => $index['idCaraBayar'],
+                'bulan' => $index['bulan'],
+                'tahun' => $index['tahun'],
+                'idPara' => $index['idPara'],
+            ]),[
+                'target' => '_blank',
+                'class' => 'btn btn-outline-success btn-sm',
+            ]);
+        },
+        'format' => 'raw'
+    ],
+    //'periode',
+    //'ruangan',
+    [
+        'attribute' => 'ruangan',
+        'value' => function ($index){
+            return $index['ruangan']."<br>".number_format($index['jpAkomodasi'],0,',','.');
+        },
+        'format' => 'html'
+    ],
     [
         'attribute' => 'namaDokterO',
         'label' => 'Dokter O',

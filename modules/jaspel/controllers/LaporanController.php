@@ -17,10 +17,11 @@ class LaporanController extends \yii\web\Controller
                 "
             select * from (
             SELECT CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,b.`ruangan`,a.`caraBayar`
-            -- ,b.`idDokterO`,b.`idDokterL`,b.`idPara`
             ,b.`namaDokterO`,b.`namaDokterL`,b.`jenisPara`
             ,SUM(b.`jpDokterO`) jpDokterO,SUM(b.`jpDokterL`) jpDokterL,SUM(b.`jpPara`) jpPara
-            ,SUM(b.`jpStruktural`) jpStruktural,SUM(b.`jpBlud`) jpBlud,SUM(b.`jpPegawai`) jpPegawai
+            ,SUM(b.`jpAkomodasi`) jpAkomodasi,SUM(b.`jpStruktural`) jpStruktural,SUM(b.`jpBlud`) jpBlud
+            ,SUM(b.`jpPegawai`) jpPegawai
+            ,b.`idDokterO`,b.`idDokterL`,b.`idPara`,b.`idRuangan`,a.`idCaraBayar`,a.`bulan`,a.`tahun`
             FROM `jaspel_cokro`.`jaspel` a
             LEFT JOIN `jaspel_cokro`.`jaspel_final` b ON b.`idJaspel` = a.`id`
             WHERE a.`publish` = 1 AND b.`id` IS NOT NULL
@@ -28,8 +29,6 @@ class LaporanController extends \yii\web\Controller
             AND a.`tahun` = ".$tahun."
             GROUP BY a.`idCaraBayar`,b.`idRuangan`,b.`idDokterO`,b.`idDokterL`,b.`idPara`    
             ) a order by namaDokterO
-            
-            
             "
             )->queryAll();
         }
@@ -69,19 +68,23 @@ class LaporanController extends \yii\web\Controller
         ]);
     }
 
-    public function actionDetail($bulan=null,$tahun=null,$idDokter=null,$idCaraBayar=null,$idRuangan=null)
+    public function actionDetail($bulan=null,$tahun=null,$idDokter=null,$idCaraBayar=null,$idRuangan=null,$idPara=null)
     {
         $data = [];
+        $idPara = $idPara ? " AND b.`idPara` = ".$idPara : " AND (b.`idPara` = 0 or b.`idPara` is null)";
+        $idDokter = $idDokter ? " AND (b.`idDokterO` = ".$idDokter." OR b.`idDokterL` = ".$idDokter.")" : " AND b.`idDokterO` = 0";
         if($bulan && $tahun && $idDokter && $idCaraBayar && $idRuangan){
             $data = Yii::$app->db_jaspel->createCommand(
-                "SELECT a.id,CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,a.`tgl` tglDaftar,a.`noRm`,a.`namaPasien`
+                "SELECT b.id,CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,a.`tgl` tglDaftar,a.`noRm`,a.`namaPasien`
             ,b.`ruangan`,a.`caraBayar`,b.`namaDokterO`,b.`namaDokterL`,b.`jenisPara`,b.`tindakan`,b.`jpDokterO`,b.`jpDokterL`,b.`jpPara`
+            ,b.`jpAkomodasi`
             FROM `jaspel_cokro`.`jaspel` a
             LEFT JOIN `jaspel_cokro`.`jaspel_final` b ON b.`idJaspel` = a.`id`
             WHERE a.`publish` = 1 AND b.`id` IS NOT NULL
             AND a.`bulan` = ".$bulan." AND a.`tahun` = ".$tahun."
             AND a.`idCaraBayar` = ".$idCaraBayar."
-            AND (b.`idDokterO` = ".$idDokter." OR b.`idDokterL` = ".$idDokter.")
+            ".$idDokter."
+            ".$idPara."
             AND b.`idRuangan` = '".$idRuangan."'"
             )->queryAll();
 
@@ -106,6 +109,13 @@ class LaporanController extends \yii\web\Controller
             ->queryAll();
         $listDokter = ArrayHelper::map($listDokter,'ID','NAMA');
 
+        $listJenisPara = Yii::$app->db_jaspel
+            ->createCommand("SELECT a.`ID`,a.`DESKRIPSI`
+            FROM master.`referensi` a
+            WHERE a.`JENIS` = 32 AND a.`STATUS` = 1 and a.id not in (1,2)")
+            ->queryAll();
+        $listJenisPara = ArrayHelper::map($listJenisPara,'ID','DESKRIPSI');
+
         $listRuangan = Yii::$app->db_jaspel
             ->createCommand("SELECT a.`ID`,a.`DESKRIPSI`
             FROM master.`ruangan` a
@@ -124,6 +134,7 @@ class LaporanController extends \yii\web\Controller
             'listRuangan' => $listRuangan,
             'listCarabayar' => $listCarabayar,
             'excelData' => $excelData,
+            'listJenisPara' => $listJenisPara,
         ]);
     }
 

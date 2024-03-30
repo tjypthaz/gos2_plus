@@ -109,7 +109,7 @@ class TagihanController extends Controller
                 'pageSize' => 20,
             ],
             'sort' => [
-                'attributes' => ['noRm','tgl','klaim'],
+                'attributes' => ['noRm','tgl','klaim','periode'],
             ],
         ]);
 
@@ -233,10 +233,12 @@ class TagihanController extends Controller
             if($model->save()){
                 $model->id;
                 $sql = "INSERT INTO`jaspel_cokro`.`jaspel_temp` 
-                (`idJaspel`,`idRuangan`,`idTindakanMedis`,`idTindakan`,`idDokterO`,`jpDokterO`,`idDokterL`,`jpDokterL`,`idPara`,`jpPara`,`jpPegawai`)
-                SELECT ".$model->id.",e.`RUANGAN`,d.`ID` idTindakanMedis,b.`TINDAKAN`,`getDokterO`(d.`ID`)
-                ,(b.`DOKTER_OPERATOR`+b.`DOKTER_ANASTESI`) jpDokterO,'0' idDokterL, b.`DOKTER_LAINNYA` jpDokterL, `getPara`(d.`ID`)
-                ,(b.`PENATA_ANASTESI`+b.`PARAMEDIS`) jpPara,b.`NON_MEDIS` jpPegawai
+                (`idJaspel`,`idRuangan`,`idTindakanMedis`,`idTindakan`,`idDokterO`,`jpDokterO`,`idDokterL`,`jpDokterL`
+                ,`idPara`,`jpPara`,`jpAkomodasi`,`jpPegawai`)
+                SELECT ".$model->id.",e.`RUANGAN`,d.`ID` idTindakanMedis,b.`TINDAKAN`,`jaspel_cokro`.`getDokterO`(d.`ID`)
+                ,(b.`DOKTER_OPERATOR`+b.`DOKTER_ANASTESI`) jpDokterO,'0' idDokterL, b.`DOKTER_LAINNYA` jpDokterL
+                , if(`jaspel_cokro`.`getPara`(d.`ID`) > 0,`jaspel_cokro`.`getPara`(d.`ID`),`jaspel_cokro`.`getParaNext`(d.`ID`))
+                ,(b.`PENATA_ANASTESI`+b.`PARAMEDIS`) jpPara,'0' jpAkomodasi,b.`NON_MEDIS` jpPegawai
                 FROM `pembayaran`.`rincian_tagihan` a
                 LEFT JOIN `master`.`tarif_tindakan` b ON a.`TARIF_ID` = b.`ID`
                 LEFT JOIN `layanan`.`tindakan_medis` d ON d.`ID` = a.`REF_ID`
@@ -245,8 +247,9 @@ class TagihanController extends Controller
                 WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`STATUS` = 1 AND a.`JENIS` = 3
                 UNION ALL
                 SELECT ".$model->id.",e.`RUANGAN`,d.`ID` idTindakanMedis,c.`ITEM`,jaspel_cokro.`getDokterO`(d.`ID`)
-                 ,(b.`DOKTER_OPERATOR`+b.`DOKTER_ANASTESI`) jpDokterO,'0' idDokterL, b.`DOKTER_LAINNYA` jpDokterL, jaspel_cokro.`getPara`(d.`ID`)
-                 ,(b.`PENATA_ANASTESI`+b.`PARAMEDIS`) jpPara,b.`NON_MEDIS` jpPegawai
+                 ,(b.`DOKTER_OPERATOR`+b.`DOKTER_ANASTESI`) jpDokterO,'0' idDokterL, b.`DOKTER_LAINNYA` jpDokterL
+                 , if(`jaspel_cokro`.`getPara`(d.`ID`) > 0,`jaspel_cokro`.`getPara`(d.`ID`),`jaspel_cokro`.`getParaNext`(d.`ID`))
+                 ,(b.`PENATA_ANASTESI`+b.`PARAMEDIS`) jpPara,'0' jpAkomodasi,b.`NON_MEDIS` jpPegawai
                 FROM `pembayaran`.`rincian_tagihan_paket` a                
                 LEFT JOIN `master`.`distribusi_tarif_paket_detil` b ON a.`TARIF_ID` = b.`ID`
                 LEFT JOIN master.paket_detil c ON a.PAKET_DETIL=c.ID
@@ -257,9 +260,18 @@ class TagihanController extends Controller
                 UNION ALL
                 SELECT ".$model->id.",'1030102' RUANGAN,a.`REF_ID`,'Obat' TINDAKAN,'0' idDokterO ,'0' jpDokterO,'0' idDokterL,'0' jpDokterL
                 ,'4' idPara,IFNULL(ROUND((SUM((a.`JUMLAH`*a.`TARIF`)) * 0.08) * 0.6,0),0) jpPara
-                ,IFNULL(ROUND((SUM((a.`JUMLAH`*a.`TARIF`)) * 0.08) * 0.4,0),0) jpPegawai
+                ,'0' jpAkomodasi,IFNULL(ROUND((SUM((a.`JUMLAH`*a.`TARIF`)) * 0.08) * 0.4,0),0) jpPegawai
                 FROM `pembayaran`.`rincian_tagihan` a
-                WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`JENIS` = 4 AND a.`STATUS` = 1";
+                WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`JENIS` = 4 AND a.`STATUS` = 1
+                UNION ALL
+                SELECT ".$model->id.",c.`RUANGAN`,a.`REF_ID`,'Akomodasi' TINDAKAN,'0' idDokterO ,'0' jpDokterO,'0' idDokterL,'0' jpDokterL ,'0' idPara,'0' jpPara
+                ,ROUND((SUM(a.`JUMLAH`*b.`JASA_PELAYANAN`)*0.6),0) jpAkomodasi,ROUND((SUM(a.`JUMLAH`*b.`JASA_PELAYANAN`)*0.4)) jpPegawai
+                FROM `pembayaran`.`rincian_tagihan` a
+                LEFT JOIN master.`tarif_ruang_rawat` b ON a.TARIF_ID = b.ID
+                LEFT JOIN `pendaftaran`.`kunjungan` c ON c.`NOMOR` = a.`REF_ID`
+                WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`JENIS` = 2 AND a.`STATUS` = 1
+                GROUP BY a.`REF_ID`";
+                //echo $sql;exit;
                 Yii::$app->db_jaspel
                     ->createCommand($sql)
                     ->execute();

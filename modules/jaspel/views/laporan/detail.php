@@ -7,7 +7,7 @@ use yii\grid\GridView;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
-$this->title = 'Laporan Detail Jaspel';
+$this->title = 'Laporan Detail Jaspel Final';
 ?>
 <h1><?=$this->title?></h1>
 
@@ -35,7 +35,7 @@ $this->title = 'Laporan Detail Jaspel';
             ?>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-2">
         <div class="col">
             <?= Html::dropDownList('bulan',Yii::$app->request->get('bulan'), Jaspel::getBulan(),[
                 'class' => 'form-control',
@@ -51,15 +51,20 @@ $this->title = 'Laporan Detail Jaspel';
             ?>
         </div>
         <div class="col">
-            <button type="submit" class="btn btn-outline-success">Tampilkan Data</button>
+            <?= Html::dropDownList('idPara',Yii::$app->request->get('idPara'), $listJenisPara,[
+                'class' => 'form-control',
+                'prompt' => 'Pilih Paramedis'
+            ])
+            ?>
+
         </div>
     </div>
-
+    <button type="submit" class="btn btn-outline-success">Tampilkan Data</button>
 </form>
 <?php
 if($excelData != '[]'){
     $header = [
-        'Id Jaspel',
+        'Id Final',
         'Periode',
         'Tgl Daftar',
         'No RM',
@@ -92,12 +97,31 @@ if($excelData != '[]'){
 }
 $gridColumns = [
     ['class' => 'yii\grid\SerialColumn'],
-    'id',
+    [
+        'attribute' => 'id',
+        'value' => function ($index){
+            return Html::a($index['id'],Url::to(['/jaspel/jaspel-final/update',
+                'id' => $index['id'],
+            ]),[
+                'target' => '_blank',
+                'class' => 'btn btn-outline-success btn-sm',
+            ]);
+        },
+        'format' => 'raw'
+    ],
+    //'id',
     'periode',
     'tglDaftar',
     'noRm',
     'namaPasien',
-    'ruangan',
+    [
+        'attribute' => 'ruangan',
+        'value' => function ($index){
+            return $index['ruangan']."<br>".number_format($index['jpAkomodasi'],0,',','.');
+        },
+        'format' => 'html'
+    ],
+    //'ruangan',
     'caraBayar',
     [
         'attribute' => 'namaDokterO',
