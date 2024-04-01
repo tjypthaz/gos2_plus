@@ -66,6 +66,13 @@ AppAsset::register($this);
                 ['label' => 'Laporan Detail Jaspel', 'url' => ['/jaspel/laporan/detail']],
             ]
         ];
+
+        $menuItems[] = ['label' => 'Pembayaran',
+            'items' => [
+                ['label' => 'Jenis Ambulan', 'url' => ['/pembayaran/jenis-ambulan']],
+                ['label' => 'Tagihan Ambulan', 'url' => ['/pembayaran/tagihan-ambulan']],
+            ]
+        ];
         $menuItems[] = [
             'label' => 'Logout (' . \Yii::$app->user->identity->username . ')',
             'url' => ['/site/logout'],

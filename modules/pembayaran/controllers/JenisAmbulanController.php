@@ -4,6 +4,7 @@ namespace app\modules\pembayaran\controllers;
 
 use app\modules\pembayaran\models\JenisAmbulan;
 use app\modules\pembayaran\models\search\JenisAmbulan as JenisAmbulanSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -111,7 +112,14 @@ class JenisAmbulanController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->publish = '2';
+        if($model->save()){
+            Yii::$app->session->setFlash('success','Berhasil Hapus');
+        }
+        else{
+            Yii::$app->session->setFlash('error',$model->getErrorSummary(true));
+        }
 
         return $this->redirect(['index']);
     }

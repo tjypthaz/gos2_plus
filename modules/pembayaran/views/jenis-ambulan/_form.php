@@ -20,16 +20,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'hargaPerKM')->textInput() ?>
 
-    <?= $form->field($model, 'publish')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'createDate')->textInput() ?>
-
-    <?= $form->field($model, 'createBy')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'updateDate')->textInput() ?>
-
-    <?= $form->field($model, 'updateBy')->textInput(['maxlength' => true]) ?>
-
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

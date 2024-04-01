@@ -29,11 +29,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            //'id',
             'deskripsi',
             'jsProp',
             'jpProp',
             'hargaPerKM',
+            [
+                    'attribute' => 'publish',
+                'value' => function($model){
+                    return JenisAmbulan::getPublish($model->publish);
+                }
+            ],
             //'publish',
             //'createDate',
             //'createBy',
