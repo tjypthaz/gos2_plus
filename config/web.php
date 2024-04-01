@@ -4,6 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $db_lis = require __DIR__ . '/db_lis.php';
 $db_jaspel = require __DIR__ . '/db_jaspel.php';
+$db_pembayaran = require __DIR__ . '/db_pembayaran.php';
 $db_lis_bridging = require __DIR__ . '/db_lis_bridging.php';
 
 $config = [
@@ -43,7 +44,9 @@ $config = [
         'jaspel' => [
             'class' => 'app\modules\jaspel\Module',
         ],
-        'gridview' => ['class' => 'kartik\grid\Module'],
+        'pembayaran' => [
+            'class' => 'app\modules\pembayaran\Module',
+        ],
     ],
     'components' => [
         'authManager' => [
@@ -82,6 +85,7 @@ $config = [
         'db' => $db,
         'db_lis' => $db_lis,
         'db_jaspel' => $db_jaspel,
+        'db_pembayaran' => $db_pembayaran,
         'db_lis_bridging' => $db_lis_bridging,
         'urlManager' => [
             'enablePrettyUrl' => true,
