@@ -241,6 +241,10 @@ class TagihanAmbulanController extends Controller
 
     public function actionPrint($id){
         $data = TagihanAmbulan::findOne($id);
+        if($data->status != '2'){
+            Yii::$app->session->setFlash('error', 'Dilunasi Dulu Bosku');
+            return $this->redirect(['index']);
+        }
         Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
         $pdf = new Pdf([
             'mode' => Pdf::MODE_CORE, // leaner size using standard fonts
