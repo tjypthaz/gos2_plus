@@ -64,6 +64,7 @@ AppAsset::register($this);
                 ['label' => 'Setting Periode', 'url' => ['/jaspel/tagihan/periode']],
                 ['label' => 'Laporan Rekap Jaspel', 'url' => ['/jaspel/laporan']],
                 ['label' => 'Laporan Detail Jaspel', 'url' => ['/jaspel/laporan/detail']],
+                ['label' => 'Laporan Jaspel Ambulan', 'url' => ['/jaspel/laporan/ambulan']],
             ]
         ];
 

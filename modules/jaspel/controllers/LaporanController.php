@@ -176,4 +176,47 @@ class LaporanController extends \yii\web\Controller
         exit;
     }
 
+    public function actionAmbulan($tglAw=null,$tglAk=null)
+    {
+        $data = [];
+        $filterTgl = "";
+        $tglAw = Yii::$app->request->get('tglAw');
+        if($tglAw != ""){
+            $filterTgl = " AND a.`tanggal` BETWEEN '".$tglAw."' AND '".$tglAw."'";
+        }
+
+        $tglAk = Yii::$app->request->get('tglAk');
+        if($tglAw != "" && $tglAk != ""){
+            $filterTgl = " AND a.`tanggal` BETWEEN '".$tglAw."' AND '".$tglAk."'";
+        }
+
+        $filter = $filterTgl;
+        if($tglAw){
+            $data = Yii::$app->db_jaspel->createCommand(
+                "SELECT '".$tglAw."' tglAwal,'".$tglAk."' tglAkhir,'Ambulan' pelayanan
+                ,ROUND(SUM(a.`jasaPelayanan`*0.6),2) jpl,ROUND(SUM(a.`jasaPelayanan`*0.08),2) jptls
+                ,ROUND(SUM(a.`jasaPelayanan`*0.05),2) jptlb,ROUND(SUM(a.`jasaPelayanan`*0.27),2) jptlp
+                FROM `pembayaran_cokro`.`tagihan_ambulan` a
+                WHERE a.`status` = '2' AND a.`publish` = '1'
+                ".$filter." "
+            )->queryAll();
+        }
+        $excelData = htmlspecialchars(Json::encode($data));
+
+        $provider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => [],
+            ],
+        ]);
+
+        return $this->render('ambulan',[
+            'dataProvider' => $provider,
+            'excelData' => $excelData
+        ]);
+    }
+
 }
