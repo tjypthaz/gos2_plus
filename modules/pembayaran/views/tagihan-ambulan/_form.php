@@ -14,7 +14,9 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col">
-            <?= $form->field($model, 'idTagihan')->textInput() ?>
+            <?= $form->field($model, 'idTagihan')->textInput([
+                    'disabled' => 'disabled'
+            ]) ?>
         </div>
         <div class="col">
             <?= $form->field($model, 'idJenisAmbulan')->dropDownList(\app\modules\pembayaran\models\TagihanAmbulan::getJenisAmbulan(),[
@@ -24,15 +26,22 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="row">
         <div class="col">
-            <?= $form->field($model, 'noRm')->textInput() ?>
+            <?= $form->field($model, 'noRm')->textInput([
+                'disabled' => 'disabled'
+            ]) ?>
         </div>
         <div class="col">
-            <?= $form->field($model, 'tanggal')->textInput() ?>
+            <?= $form->field($model, 'tanggal')->textInput([
+                    'type' => 'date'
+            ]) ?>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <?= $form->field($model, 'namaPasien')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'namaPasien')->textInput([
+                    'maxlength' => true,
+                'disabled' => 'disabled'
+            ]) ?>
         </div>
         <div class="col">
             <?= $form->field($model, 'kilometer')->textInput() ?>

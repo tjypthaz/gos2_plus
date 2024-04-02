@@ -9,6 +9,7 @@ $db_lis_bridging = require __DIR__ . '/db_lis_bridging.php';
 
 $config = [
     'id' => 'gos2_plus',
+    'timeZone' => 'Asia/Jakarta',
     'name' => 'SimGos2 Plus',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],

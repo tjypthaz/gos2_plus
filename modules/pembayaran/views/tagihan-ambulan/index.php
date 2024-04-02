@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Tagihan Ambulan', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Tagihan Ambulan', ['list-tagihan'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -29,16 +29,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'idJenisAmbulan',
-            'idTagihan',
+            //'id',
+            'idJenisAmbulan0.deskripsi',
+            //'idTagihan',
             'tanggal',
             'noRm',
-            //'namaPasien',
+            'namaPasien',
             //'kilometer',
             //'jasaSarana',
             //'jasaPelayanan',
-            //'tarif',
+            'tarif',
+            [
+                    'attribute' => 'status',
+                'value' => function ($model){
+                    return TagihanAmbulan::getStatus($model->status);
+                }
+            ],
             //'status',
             //'publish',
             //'createDate',
@@ -47,7 +53,20 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updateBy',
             [
                 'class' => ActionColumn::className(),
+                'template' => "{view}&nbsp;{update}&nbsp;{delete}&nbsp;{print}",
+                'buttons' => [
+                    'print' => function ($url, $model) {
+                        return Html::a('Cetak Kwitansi', $url, [
+                            'title' => Yii::t('app', 'lead-print'),
+                            'class' => 'btn btn-success btn-sm',
+                            'target' => '_blank'
+                        ]);
+                    },
+                ],
                 'urlCreator' => function ($action, TagihanAmbulan $model, $key, $index, $column) {
+                    if ($action === 'print') {
+                        return Url::toRoute(['print', 'id' => $model->id]);
+                    }
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

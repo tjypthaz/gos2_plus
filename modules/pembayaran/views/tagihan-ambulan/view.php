@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\pembayaran\models\TagihanAmbulan;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -17,6 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Lunasi Tagihan', ['lunas', 'id' => $model->id], [
+            'class' => 'btn btn-warning',
+            'data' => [
+                'confirm' => 'Pastikan Pasien Sudah Membayar !!?',
+                'method' => 'post',
+            ],
+        ]) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -30,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'idJenisAmbulan',
+            'idJenisAmbulan0.deskripsi',
             'idTagihan',
             'tanggal',
             'noRm',
@@ -39,8 +47,20 @@ $this->params['breadcrumbs'][] = $this->title;
             'jasaSarana',
             'jasaPelayanan',
             'tarif',
-            'status',
-            'publish',
+            [
+                'attribute' => 'status',
+                'value' => function ($model){
+                    return TagihanAmbulan::getStatus($model->status);
+                }
+            ],
+            [
+                'attribute' => 'publish',
+                'value' => function ($model){
+                    return TagihanAmbulan::getPublish($model->publish);
+                }
+            ],
+            //'status',
+            //'publish',
             'createDate',
             'createBy',
             'updateDate',
