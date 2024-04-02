@@ -191,7 +191,7 @@ class TagihanAmbulanController extends Controller
             LEFT JOIN `pembayaran`.`tagihan` j ON  j.`ID` = i.TAGIHAN 
             WHERE a.`STATUS` = 2 AND b.`STATUS` = 2 AND j.`ID` IS NOT NULL AND c.`JENIS_KUNJUNGAN` IN (2,3)
             ".$filter."
-            ORDER BY a.`NOMOR` ASC";
+            ORDER BY a.`NOMOR` DESC";
         //echo $sql;
         //exit;
         $data = [];
