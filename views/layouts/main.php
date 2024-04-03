@@ -71,7 +71,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Pembayaran',
             'items' => [
                 ['label' => 'Jenis Ambulan', 'url' => ['/pembayaran/jenis-ambulan']],
-                ['label' => 'Tagihan Ambulan', 'url' => ['/pembayaran/tagihan-ambulan']],
+                ['label' => 'Tagihan Ambulan', 'url' => ['/pembayaran/tagihan-ambulan/index']],
             ]
         ];
         $menuItems[] = [

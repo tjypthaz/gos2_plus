@@ -54,7 +54,7 @@ function terbilang($x) {
 <table style="width: 100%">
     <tr>
         <td style="width: 70%"></td>
-        <td>Purworejo, <?=date('d - m - Y')?></td>
+        <td>Purworejo, <?=date('d - m - Y',strtotime($data->tanggal))?></td>
     </tr>
     <tr>
         <td></td>

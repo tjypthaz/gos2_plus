@@ -59,7 +59,7 @@ class PetugasAmbulan extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'idTagihanAmbulan' => 'Id Tagihan Ambulan',
-            'idPegawai' => 'Id Pegawai',
+            'idPegawai' => 'Pegawai',
             'publish' => 'Publish',
             'createDate' => 'Create Date',
             'createBy' => 'Create By',
