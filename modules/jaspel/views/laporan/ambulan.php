@@ -25,13 +25,9 @@ $this->title = 'Laporan Rekap Jaspel Ambulan';
 <?php
 if($excelData != '[]'){
     $header = [
-        'Tanggal Awal',
-        'Tanggal Akhir',
-        'Pelayanan',
-        'Jasa Pelayanan Langsung',
-        'Jasa Pelayanan Tidak Langsung Struktural',
-        'Jasa Pelayanan Tidak Langsung Blud',
-        'Jasa Pelayanan Tidak Langsung Pegawai',
+        'Nama Pegawai',
+        'JPL',
+        'JPTL',
     ];
     $header = htmlspecialchars(Json::encode($header));
     ?>
@@ -53,13 +49,9 @@ if($excelData != '[]'){
 }
 $gridColumns = [
     ['class' => 'yii\grid\SerialColumn'],
-    'tglAwal',
-    'tglAkhir',
-    'pelayanan',
+    'namaPegawai',
     'jpl',
-    'jptls',
-    'jptlb',
-    'jptlp',
+    'jptl',
 ];
 ?>
 
