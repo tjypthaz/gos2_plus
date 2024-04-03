@@ -193,12 +193,15 @@ class LaporanController extends \yii\web\Controller
         $filter = $filterTgl;
         if($tglAw){
             $data = Yii::$app->db_jaspel->createCommand(
-                "SELECT '".$tglAw."' tglAwal,'".$tglAk."' tglAkhir,'Ambulan' pelayanan
-                ,ROUND(SUM(a.`jasaPelayanan`*0.6),2) jpl,ROUND(SUM(a.`jasaPelayanan`*0.08),2) jptls
-                ,ROUND(SUM(a.`jasaPelayanan`*0.05),2) jptlb,ROUND(SUM(a.`jasaPelayanan`*0.27),2) jptlp
-                FROM `pembayaran_cokro`.`tagihan_ambulan` a
-                WHERE a.`status` = '2' AND a.`publish` = '1'
-                ".$filter." "
+                "SELECT a.idPegawai,b.`NAMA` namaPegawai,SUM((a.jpl/a.pembagi)) jpl,SUM((a.jptl/a.pembagi)) jptl
+                FROM (
+                    SELECT a.`namaPasien`,(a.`jasaPelayanan`*0.6) jpl,(a.`jasaPelayanan`*0.4) jptl,b.`idPegawai`, `pembayaran_cokro`.getJumPetugas(a.`id`) pembagi
+                    FROM `pembayaran_cokro`.`tagihan_ambulan` a
+                    LEFT JOIN `pembayaran_cokro`.`petugas_ambulan` b ON b.`idTagihanAmbulan` = a.`id`
+                    WHERE a.`status` = 2 AND a.`publish` = 1 AND b.`publish` = 1 ".$filter."
+                )a
+                LEFT JOIN `master`.`pegawai` b ON b.`ID` = a.idPegawai
+                GROUP BY a.idPegawai"
             )->queryAll();
         }
         $excelData = htmlspecialchars(Json::encode($data));
