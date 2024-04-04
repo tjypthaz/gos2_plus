@@ -80,7 +80,7 @@ class TagihanAmbulanController extends Controller
         ")->queryScalar();
         if($kunci){
             Yii::$app->session->setFlash('error','Tagihan di SIMGOS sudah dikunci, Hub Kasir untuk membuka');
-            return $this->redirect(['index']);
+            return $this->redirect(['list-tagihan','noRm' => $noRm]);
         }
         $model = new TagihanAmbulan();
         $model->idTagihan = $idTagihan;
@@ -188,10 +188,10 @@ class TagihanAmbulanController extends Controller
         }
 
         $filter = $filterTgl.$filterRm;
-        $sql = "SELECT a.`NOMOR` idReg,a.`NORM` noRm,g.`NAMA` namaPasien,DATE(a.`TANGGAL`) tgl
+        $sql = "SELECT a.`NOMOR` idReg,a.`NORM` noRm,g.`NAMA` namaPasien,DATE(a.`TANGGAL`) tglDaftar
             ,b.`RUANGAN` idRuangan,c.`DESKRIPSI` tujuan
             ,f.`JENIS` idBayar,h.DESKRIPSI caraBayar,f.`NOMOR` noSep
-            ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs
+            ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs,j.kunci
             FROM `pendaftaran`.`pendaftaran` a
             LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
             LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
@@ -219,7 +219,7 @@ class TagihanAmbulanController extends Controller
                 'pageSize' => 20,
             ],
             'sort' => [
-                'attributes' => ['noRm','tgl','klaim','periode'],
+                'attributes' => ['noRm','namaPasien','tglDaftar','periode'],
             ],
         ]);
 

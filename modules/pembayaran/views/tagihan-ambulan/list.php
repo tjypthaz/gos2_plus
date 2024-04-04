@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'noRm',
             'namaPasien',
-            'tgl',
+            'tglDaftar',
             [
                 'attribute' => 'tujuan',
                 'value' => function ($index){
@@ -68,9 +68,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'caraBayar',
             [
-                'attribute' => 'tagihanRs',
+                'attribute' => 'kunci',
                 'value' => function ($index){
-                    return number_format($index['tagihanRs'],0,',','.');
+                    return $index['kunci'] ? "Ya" : "Tidak";
                 },
             ],
         ],

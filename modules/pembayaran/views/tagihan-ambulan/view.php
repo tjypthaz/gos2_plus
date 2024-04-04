@@ -45,8 +45,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'noRm',
             'namaPasien',
             'kilometer',
-            'jasaSarana',
-            'jasaPelayanan',
+            //'jasaSarana',
+            //'jasaPelayanan',
             'tarif',
             [
                 'attribute' => 'status',
