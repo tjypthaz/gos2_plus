@@ -29,12 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            //'id',
             'idTagihan',
             'noRm',
             'totalTagihan',
             'bayar',
-            //'status',
+            'status',
             //'publish',
             //'createBy',
             //'createDate',

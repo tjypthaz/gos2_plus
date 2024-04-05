@@ -43,7 +43,7 @@ class H2h extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['idTagihan', 'noRm', 'totalTagihan'], 'required'],
+            [['idTagihan', 'noRm'], 'required'],
             [['noRm'], 'integer'],
             [['totalTagihan', 'bayar'], 'number'],
             [['createDate', 'updateDate'], 'safe'],

@@ -70,8 +70,13 @@ AppAsset::register($this);
 
         $menuItems[] = ['label' => 'Pembayaran',
             'items' => [
+                '<div class="dropdown-header">Ambulan</div>',
                 ['label' => 'Jenis Ambulan', 'url' => ['/pembayaran/jenis-ambulan']],
                 ['label' => 'Tagihan Ambulan', 'url' => ['/pembayaran/tagihan-ambulan/index']],
+                '<div class="dropdown-divider"></div>',
+                '<div class="dropdown-header">H2H</div>',
+                ['label' => 'Data H2H', 'url' => ['/pembayaran/h2h/index']],
+                ['label' => 'Laporan H2H', 'url' => ['/pembayaran/h2h/laporan']],
             ]
         ];
         $menuItems[] = [
