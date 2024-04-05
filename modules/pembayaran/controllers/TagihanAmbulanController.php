@@ -80,7 +80,7 @@ class TagihanAmbulanController extends Controller
         ")->queryScalar();
         if($kunci){
             Yii::$app->session->setFlash('error','Tagihan di SIMGOS sudah dikunci, Hub Kasir untuk membuka');
-            //return $this->redirect(['list-tagihan','noRm' => $noRm]);
+            return $this->redirect(['list-tagihan','noRm' => $noRm]);
         }
         $model = new TagihanAmbulan();
         $model->idTagihan = $idTagihan;
