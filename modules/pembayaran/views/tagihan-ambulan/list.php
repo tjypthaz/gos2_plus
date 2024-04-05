@@ -61,6 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'tglDaftar',
             [
                 'attribute' => 'tujuan',
+                'label' => 'Asal',
                 'value' => function ($index){
                     return $index['tujuan']."<br>".$index['noSep'];
                 },
