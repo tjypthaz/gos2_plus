@@ -47,13 +47,10 @@ class H2hController extends Controller
         a.`idTagihan`,a.`totalTagihan`,a.`bayar`,a.`status`
         FROM `pembayaran_cokro`.`h2h` a
         LEFT JOIN `master`.`pasien` b ON b.`NORM` = a.`noRm`
-        WHERE a.`idTagihan` = '".$idTagihan."' and a.publish = '1'
+        WHERE a.`idTagihan` = '".$idTagihan."' and a.publish = '1' and a.status = '1'
         ")->queryOne();
         if($data){
-            if($data['status'] == '1'){
-                return self::kembalian(200,$data,'data ditemukan');
-            }
-            return self::kembalian(400,$data,'status tagihan tidak valid, '.$data['status']);
+            return self::kembalian(200,$data,'data ditemukan');
         }
         else{
             return self::kembalian(404,$data,'Id Tagihan tidak ditemukan');
@@ -72,22 +69,19 @@ class H2hController extends Controller
         }
 
         $model = H2h::find()->select('id,idTagihan,noRm,totalTagihan,bayar,status')
-            ->where(['idTagihan' => $idTagihan, 'publish' => '1'])->one();
+            ->where(['idTagihan' => $idTagihan, 'publish' => '1', 'status' => '1'])->one();
         if($model){
-            if($model->status == '1'){
-                if($model->totalTagihan == $bayar){
-                    $model->status = '2';
-                    $model->bayar = $bayar;
-                    if($model->save()){
-                        return self::kembalian(200,$model,'pembayaran berhasil');
-                    }
-                    return self::kembalian(500,$model,'pembayaran gagal');
+            if($model->totalTagihan == $bayar){
+                $model->status = '2';
+                $model->bayar = $bayar;
+                if($model->save()){
+                    return self::kembalian(200,$model,'pembayaran berhasil');
                 }
-                else{
-                    return self::kembalian(400,$model,'jumlah yang dibayar tidak valid');
-                }
+                return self::kembalian(500,$model,'pembayaran gagal');
             }
-            return self::kembalian(400,$model,'status tagihan tidak valid, '.$model->status);
+            else{
+                return self::kembalian(400,$model,'jumlah yang dibayar tidak valid');
+            }
         }
         else{
             return self::kembalian(404,$data,'Id Tagihan tidak ditemukan');
@@ -105,7 +99,7 @@ class H2hController extends Controller
         }
 
         $model = H2h::find()->select('id,idTagihan,noRm,totalTagihan,bayar,status')
-            ->where(['idTagihan' => $idTagihan, 'publish' => '1'])->one();
+            ->where(['idTagihan' => $idTagihan, 'publish' => '1', 'status' => '2'])->one();
         if($model){
             $model->status = '1';
             $model->bayar = 0;
