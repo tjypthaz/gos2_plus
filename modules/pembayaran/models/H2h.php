@@ -21,6 +21,10 @@ use Yii;
  */
 class H2h extends \yii\db\ActiveRecord
 {
+    public $umum;
+    public $naikKelas;
+    public $ambulan;
+    public $ipj;
     /**
      * {@inheritdoc}
      */
@@ -45,7 +49,7 @@ class H2h extends \yii\db\ActiveRecord
         return [
             [['idTagihan', 'noRm'], 'required'],
             [['noRm'], 'integer'],
-            [['totalTagihan', 'bayar'], 'number'],
+            [['totalTagihan', 'bayar', 'umum', 'naikKelas', 'ambulan', 'ipj'], 'number'],
             [['createDate', 'updateDate'], 'safe'],
             [['idTagihan'], 'string', 'max' => 10],
             [['status', 'publish'], 'string', 'max' => 1],
@@ -71,6 +75,17 @@ class H2h extends \yii\db\ActiveRecord
             'updateBy' => 'Update By',
             'updateDate' => 'Update Date',
         ];
+    }
+
+    public static function getStatus($id=null){
+        $list = [
+            1 => 'Blm Lunas',
+            2 => 'Lunas',
+        ];
+        if($id == null){
+            return $list;
+        }
+        return $list[$id];
     }
 
     public function beforeSave($insert)

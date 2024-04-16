@@ -12,25 +12,64 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'idTagihan')->textInput(['maxlength' => true]) ?>
+    <?php
+    $datapasien = Yii::$app->db_pembayaran->createCommand("
+        SELECT a.`NAMA`,a.`ALAMAT`,IF(a.`JENIS_KELAMIN`=1,'L','P') JENIS_KELAMIN,DATE(a.`TANGGAL_LAHIR`) TANGGAL_LAHIR
+        ,(DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),a.TANGGAL_LAHIR)), '%Y')+0) AS umur
+        FROM `master`.`pasien` a
+        WHERE a.`NORM` = ".$model->noRm."
+        ")->queryOne();
+    ?>
+    <div class="row">
+        <div class="col">
+            <?= $form->field($model, 'idTagihan')->textInput(['disabled' => 'disabled']) ?>
+        </div>
+        <div class="col">
+            <?= $form->field($model, 'noRm')->textInput(['disabled' => 'disabled']) ?>
+        </div>
+        <div class="col">
+            <label class="control-label">Tgl Lahir</label>
+            <label class="form-control" readonly=""><?=$datapasien['TANGGAL_LAHIR']?></label>
+        </div>
+        <div class="col">
+            <label class="control-label">Umur</label>
+            <label class="form-control" readonly=""><?=$datapasien['umur']." tahun"?></label>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'noRm')->textInput() ?>
+    <div class="row">
+        <div class="col">
+            <label class="control-label">Nama Pasien</label>
+            <label class="form-control" readonly=""><?=$datapasien['NAMA']." (".$datapasien['JENIS_KELAMIN'].")"?></label>
+        </div>
+        <div class="col">
+            <label class="control-label">Alamat</label>
+            <label class="form-control" readonly=""><?=$datapasien['ALAMAT']?></label>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'totalTagihan')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col">
+            <?= $form->field($model, 'umum')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col">
+            <?= $form->field($model, 'naikKelas')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col">
+            <?= $form->field($model, 'ambulan')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col">
+            <?= $form->field($model, 'ipj')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'bayar')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'publish')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'createBy')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'createDate')->textInput() ?>
 
-    <?= $form->field($model, 'updateBy')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'updateDate')->textInput() ?>
+
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

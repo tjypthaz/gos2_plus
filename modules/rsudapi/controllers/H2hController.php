@@ -44,10 +44,11 @@ class H2hController extends Controller
         $data = Yii::$app->db_pembayaran->createCommand("
         SELECT b.`NORM`,b.`NAMA`,b.`ALAMAT`,IF(b.`JENIS_KELAMIN`=1,'L','P') JENIS_KELAMIN,DATE(b.`TANGGAL_LAHIR`) TANGGAL_LAHIR
         ,(DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),b.TANGGAL_LAHIR)), '%Y')+0) AS umur,
-        a.`idTagihan`,a.`totalTagihan`,a.`bayar`,a.`status`
+        a.`idTagihan`,SUM(a.`totalTagihan`) totalTagihan,a.`bayar`,a.`status`
         FROM `pembayaran_cokro`.`h2h` a
         LEFT JOIN `master`.`pasien` b ON b.`NORM` = a.`noRm`
         WHERE a.`idTagihan` = '".$idTagihan."' and a.publish = '1' and a.status = '1'
+        GROUP BY a.`idTagihan`
         ")->queryOne();
         if($data){
             return self::kembalian(200,$data,'data ditemukan');
@@ -69,15 +70,26 @@ class H2hController extends Controller
         }
 
         $model = H2h::find()->select('id,idTagihan,noRm,totalTagihan,bayar,status')
-            ->where(['idTagihan' => $idTagihan, 'publish' => '1', 'status' => '1'])->one();
-        if($model){
-            if($model->totalTagihan == $bayar){
-                $model->status = '2';
-                $model->bayar = $bayar;
-                if($model->save()){
-                    return self::kembalian(200,$model,'pembayaran berhasil');
+            ->where(['idTagihan' => $idTagihan, 'publish' => '1', 'status' => '1'])->all();
+        $totaleTotal = 0;
+        if(count($model) > 0){
+            foreach ($model as $item){
+                $totaleTotal = $totaleTotal+$item->totalTagihan;
+            }
+
+            if($totaleTotal == $bayar){
+                $gagalUpdate = 0;
+                foreach ($model as $item){
+                    $item->status = '2';
+                    $item->bayar = $item->totalTagihan;
+                    if(!$item->save()){
+                        $gagalUpdate++;
+                    }
                 }
-                return self::kembalian(500,$model,'pembayaran gagal');
+                if($gagalUpdate){
+                    return self::kembalian(500,$model,'pembayaran gagal');
+                }
+                return self::kembalian(200,$model,'pembayaran berhasil');
             }
             else{
                 return self::kembalian(400,$model,'jumlah yang dibayar tidak valid');
@@ -96,6 +108,12 @@ class H2hController extends Controller
         $idTagihan = Yii::$app->request->post('idTagihan');
         if($idTagihan == ''){
             return self::kembalian(400,$data,'permintaan tidak valid');
+        }
+
+        $model = H2h::find()->select('id,idTagihan,noRm,totalTagihan,bayar,status')
+            ->where(['idTagihan' => $idTagihan, 'publish' => '1', 'status' => '2'])->all();
+        if(count($model) > 1){
+            return self::kembalian(500,$model,'reversal tidak dapat dilakukan');
         }
 
         $model = H2h::find()->select('id,idTagihan,noRm,totalTagihan,bayar,status')

@@ -47,6 +47,7 @@ class H2h extends H2hModel
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['id' => SORT_DESC]]
         ]);
 
         $this->load($params);

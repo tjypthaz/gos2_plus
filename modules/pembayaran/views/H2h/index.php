@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create H2h', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create H2h', ['list-tagihan'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,10 +31,27 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //'id',
             'idTagihan',
-            'noRm',
+            //'noRm',
+            [
+                    'attribute' => 'noRm',
+                'value' => function($model){
+                    $namapasien = Yii::$app->db_pembayaran->createCommand("
+                    SELECT a.`NAMA` FROM `master`.`pasien` a WHERE a.`NORM` = ".$model->noRm."
+                    ")->queryScalar();
+                    return $model->noRm."<br>".$namapasien;
+                },
+                'format' => 'raw'
+            ],
             'totalTagihan',
-            'bayar',
-            'status',
+            //'bayar',
+            [
+                'attribute' => 'status',
+                'value' => function($model){
+                    return H2h::getStatus($model->status);
+                },
+                'filter' => H2h::getStatus()
+            ],
+            //'status',
             //'publish',
             //'createBy',
             //'createDate',
