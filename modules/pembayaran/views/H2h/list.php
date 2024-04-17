@@ -11,6 +11,7 @@ use yii\grid\GridView;
 /** @var yii\web\View $this */
 
 $this->title = 'Data Tagihan RS';
+$this->params['breadcrumbs'][] = ['label' => 'H2H', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="jaspel-index">

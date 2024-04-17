@@ -43,7 +43,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'status',
                 'value' => function ($model){
                     return TagihanAmbulan::getStatus($model->status);
-                }
+                },
+                'filter' => TagihanAmbulan::getStatus()
             ],
             //'status',
             //'publish',

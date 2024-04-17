@@ -200,7 +200,7 @@ class TagihanAmbulanController extends Controller
             LEFT JOIN (SELECT * FROM `master`.`referensi` WHERE JENIS=10) h ON h.ID = f.`JENIS`
             LEFT JOIN (SELECT * FROM `pembayaran`.`tagihan_pendaftaran` WHERE `UTAMA` = 1 AND `STATUS` = 1) i ON i.PENDAFTARAN = a.`NOMOR`
             LEFT JOIN `pembayaran`.`tagihan` j ON  j.`ID` = i.TAGIHAN 
-            WHERE a.`STATUS` in (1,2) AND b.`STATUS` = 2 AND j.`ID` IS NOT NULL AND c.`JENIS_KUNJUNGAN` IN (2,3)
+            WHERE a.`STATUS` IN (1,2) AND b.`STATUS` IN (1,2) AND j.`ID` IS NOT NULL AND c.`JENIS_KUNJUNGAN` IN (2,3)
             ".$filter."
             ORDER BY a.`NOMOR` DESC";
 //        echo $sql;

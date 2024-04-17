@@ -75,7 +75,7 @@ class H2hController extends Controller
         select KUNCI from `pembayaran`.`tagihan` a where a.ID = '".$idTagihan."' 
         ")->queryScalar();
         if($isTerkunci != '1'){
-            Yii::$app->session->setFlash('error','tagihane urung di kunci simgos !!'.$isTerkunci);
+            Yii::$app->session->setFlash('error','tagihane urung di kunci simgos !!');
             return $this->redirect(['list-tagihan', 'noRm' => $noRM]);
         }
         $model = new H2h();
@@ -200,7 +200,7 @@ class H2hController extends Controller
             LEFT JOIN (SELECT * FROM `master`.`referensi` WHERE JENIS=10) h ON h.ID = f.`JENIS`
             LEFT JOIN (SELECT * FROM `pembayaran`.`tagihan_pendaftaran` WHERE `UTAMA` = 1 AND `STATUS` = 1) i ON i.PENDAFTARAN = a.`NOMOR`
             LEFT JOIN `pembayaran`.`tagihan` j ON  j.`ID` = i.TAGIHAN 
-            WHERE a.`STATUS` = 2 AND b.`STATUS` = 2 AND j.`ID` IS NOT NULL
+            WHERE a.`STATUS` IN (1,2) AND b.`STATUS` = 2 AND j.`ID` IS NOT NULL
             ".$filter."
             ORDER BY a.`NOMOR` DESC";
         //echo $sql;
