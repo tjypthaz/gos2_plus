@@ -87,7 +87,7 @@ class H2hController extends Controller
         $model->umum = $dataTagihan['umum'] ? $dataTagihan['umum'] : 0;
         $model->naikKelas = $dataTagihan['naikKelas'] ? $dataTagihan['naikKelas'] : 0;
         $model->ambulan = $dataTagihan['ambulan'] ? $dataTagihan['ambulan'] : 0;
-        $model->ipj = $dataTagihan['ipj'] ? $dataTagihan['ipj'] : 0;
+        $model->ipj = 0;
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
