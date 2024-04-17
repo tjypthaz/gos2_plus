@@ -111,7 +111,7 @@ class H2hController extends Controller
         }
 
         $model = H2h::find()->select('id,idTagihan,noRm,totalTagihan,bayar,status')
-            ->where(['idTagihan' => $idTagihan, 'publish' => '1', 'status' => '2'])->all();
+            ->where(['idTagihan' => $idTagihan, 'publish' => '1', 'status' => '2'])->asArray()->all();
         if(count($model) > 1){
             return self::kembalian(500,$model,'reversal tidak dapat dilakukan');
         }

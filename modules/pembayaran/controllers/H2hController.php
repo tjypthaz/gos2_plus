@@ -41,7 +41,7 @@ class H2hController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new H2hSearch();
+        $searchModel = new H2hSearch(['publish' => '1']);
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -97,7 +97,7 @@ class H2hController extends Controller
                     return $this->redirect(['create', 'idTagihan' => $model->idTagihan,'noRM' => $model->noRm]);
                 }
                 if($model->save()){
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    return $this->redirect(['index']);
                 }
             }
         } else {
@@ -138,8 +138,18 @@ class H2hController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        // sebelum hapus cek dulu apakah sudah lunas
+        // jika sudah lunas munculkan error tidak bisa di hapus
+        // data tidak di hapus, tapi di unpublish
+        $model = $this->findModel($id);
+        if($model->status == '2'){
+            Yii::$app->session->setFlash('error','tagihan sudah lunas !! tidak bisa di hapus');
+            return $this->redirect(['index']);
+        }
+        $model->publish = '2';
+        if(!$model->save()){
+            Yii::$app->session->setFlash('error',$model->getErrorSummary(true));
+        }
         return $this->redirect(['index']);
     }
 

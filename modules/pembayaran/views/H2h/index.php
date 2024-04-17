@@ -59,6 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updateDate',
             [
                 'class' => ActionColumn::className(),
+                'template' => '{delete}',
                 'urlCreator' => function ($action, H2h $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
