@@ -4,6 +4,7 @@ namespace app\modules\pembayaran\controllers;
 
 use app\modules\pembayaran\models\H2h;
 use app\modules\pembayaran\models\search\H2h as H2hSearch;
+use kartik\mpdf\Pdf;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Json;
@@ -231,5 +232,43 @@ class H2hController extends Controller
             'dataProvider' => $provider,
             'excelData' => $excelData
         ]);
+    }
+
+    public function actionPrint($id){
+        $data = Yii::$app->db_pembayaran->createCommand("
+        SELECT b.`NORM`,b.`NAMA`,b.`ALAMAT`,IF(b.`JENIS_KELAMIN`=1,'L','P') JENIS_KELAMIN,DATE(b.`TANGGAL_LAHIR`) TANGGAL_LAHIR
+        ,(DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),b.TANGGAL_LAHIR)), '%Y')+0) AS umur,
+        a.`idTagihan`,SUM(a.`totalTagihan`) totalTagihan,a.`bayar`,a.`status`, a.createBy
+        FROM `pembayaran_cokro`.`h2h` a
+        LEFT JOIN `master`.`pasien` b ON b.`NORM` = a.`noRm`
+        WHERE a.`id` = ".$id."
+        GROUP BY a.`idTagihan` 
+        ")->queryOne();
+        /*echo "<pre>";
+        print_r($data);
+        exit;*/
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE, // leaner size using standard fonts
+            'format' => [210, 140], // here define custom [width, height] in mm
+            'destination' => Pdf::DEST_BROWSER,
+            'content' => $this->renderPartial('kwitansi',[
+                'data' => $data
+            ]),
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            'options' => [
+                // any mpdf options you wish to set
+            ],
+            'methods' => [
+                'SetTitle' => 'RSUD RAA TJOKRONEGORO',
+                'SetSubject' => 'Generating PDF files via yii2-mpdf extension has never been easy',
+                'SetHeader' => ['RSUD RAA TJOKRONEGORO PURWOREJO||Nomor : '.$data['idTagihan'].' '],
+                'SetFooter' => ['||Dicetak pada tanggal : ' . date("Y-m-d H:i:s")],
+                'SetAuthor' => 'RSUD RAA TJOKRONEGORO',
+                'SetCreator' => 'RSUD RAA TJOKRONEGORO',
+                'SetKeywords' => 'RSUD RAA TJOKRONEGORO',
+            ]
+        ]);
+        return $pdf->render();
     }
 }

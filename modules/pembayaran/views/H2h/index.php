@@ -59,10 +59,22 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updateDate',
             [
                 'class' => ActionColumn::className(),
-                'template' => '{delete}',
+                'template' => '{delete}&nbsp;{print}',
+                'buttons' => [
+                    'print' => function ($url, $model) {
+                        return Html::a('Cetak', $url, [
+                            'title' => 'Cetak Tagihan Untuk H2H',
+                            'class' => 'btn btn-success btn-sm',
+                            'target' => '_blank'
+                        ]);
+                    },
+                ],
                 'urlCreator' => function ($action, H2h $model, $key, $index, $column) {
+                    if ($action === 'print') {
+                        return Url::toRoute(['print', 'id' => $model->id]);
+                    }
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                }
             ],
         ],
     ]); ?>
