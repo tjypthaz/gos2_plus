@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /** @var app\modules\pembayaran\models\PetugasAmbulan $model */
 
 $this->title = 'Tambah Petugas Ambulan';
-$this->params['breadcrumbs'][] = ['label' => 'Tagihan Ambulans', 'url' => ['tagihan-ambulan/view','id' => Yii::$app->request->get('idTagihanAmbulan')]];
-$this->params['breadcrumbs'][] = 'Petugas Ambulans';
+$this->params['breadcrumbs'][] = ['label' => 'Data Tagihan Ambulan', 'url' => ['tagihan-ambulan/index']];
+$this->params['breadcrumbs'][] = ['label' => 'View Tagihan Ambulan', 'url' => ['tagihan-ambulan/view','id' => Yii::$app->request->get('idTagihanAmbulan')]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="petugas-ambulan-create">

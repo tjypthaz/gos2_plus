@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\modules\pembayaran\models\TagihanAmbulan $model */
 
-$this->title = 'Create Tagihan Ambulan';
-$this->params['breadcrumbs'][] = ['label' => 'Tagihan Ambulans', 'url' => ['index']];
+$this->title = 'Buat Tagihan Ambulan Baru';
+$this->params['breadcrumbs'][] = ['label' => 'Data Tagihan Ambulan', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tagihan-ambulan-create">

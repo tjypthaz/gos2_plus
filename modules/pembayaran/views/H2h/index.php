@@ -1,6 +1,7 @@
 <?php
 
 use app\modules\pembayaran\models\H2h;
+use kartik\icons\Icon;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -10,15 +11,16 @@ use yii\grid\GridView;
 /** @var app\modules\pembayaran\models\search\H2h $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'H2hs';
+$this->title = 'Data H2H';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="h2h-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create H2h', ['list-tagihan'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Buat Tagihan H2H', ['list-tagihan'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -62,9 +64,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{delete}&nbsp;{print}',
                 'buttons' => [
                     'print' => function ($url, $model) {
-                        return Html::a('Cetak', $url, [
+                        return Html::a(Icon::show('print'), $url, [
                             'title' => 'Cetak Tagihan Untuk H2H',
-                            'class' => 'btn btn-success btn-sm',
+                            //'class' => 'btn btn-success btn-sm',
                             'target' => '_blank'
                         ]);
                     },

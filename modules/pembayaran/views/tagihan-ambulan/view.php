@@ -8,13 +8,11 @@ use yii\widgets\DetailView;
 /** @var app\modules\pembayaran\models\TagihanAmbulan $model */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Tagihan Ambulans', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Data Tagihan Ambulan', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="tagihan-ambulan-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Tambah Petugas', ['petugas-ambulan/create', 'idTagihanAmbulan' => $model->id], ['class' => 'btn btn-success']) ?>
@@ -38,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            //'id',
             'idJenisAmbulan0.deskripsi',
             'idTagihan',
             'tanggal',

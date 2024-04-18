@@ -1,6 +1,7 @@
 <?php
 
 use app\modules\pembayaran\models\TagihanAmbulan;
+use kartik\icons\Icon;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -10,7 +11,7 @@ use yii\grid\GridView;
 /** @var app\modules\pembayaran\models\search\TagihanAmbulan $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Tagihan Ambulans';
+$this->title = 'Data Tagihan Ambulan';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tagihan-ambulan-index">
@@ -18,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Tagihan Ambulan', ['list-tagihan'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Buat Tagihan Ambulan', ['list-tagihan'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -57,9 +58,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => "{view}&nbsp;{update}&nbsp;{delete}&nbsp;{print}",
                 'buttons' => [
                     'print' => function ($url, $model) {
-                        return Html::a('Cetak Kwitansi', $url, [
-                            'title' => Yii::t('app', 'lead-print'),
-                            'class' => 'btn btn-success btn-sm',
+                        return Html::a(Icon::show('print'), $url, [
+                            'title' => 'Print Tagihan Ambulan',
+                            //'class' => 'btn btn-success btn-sm',
                             'target' => '_blank'
                         ]);
                     },

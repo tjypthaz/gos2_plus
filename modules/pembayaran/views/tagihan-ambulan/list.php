@@ -10,7 +10,8 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 /** @var yii\web\View $this */
 
-$this->title = 'Data Tagihan RS';
+$this->title = 'Cari Tagihan SIMGOS';
+$this->params['breadcrumbs'][] = ['label' => 'Data Tagihan Ambulan', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="jaspel-index">

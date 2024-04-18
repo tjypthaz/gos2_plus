@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /** @var app\modules\pembayaran\models\TagihanAmbulan $model */
 
 $this->title = 'Update Tagihan Ambulan: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Tagihan Ambulans', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Data Tagihan Ambulan', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
