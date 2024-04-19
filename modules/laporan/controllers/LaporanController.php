@@ -90,7 +90,7 @@ class LaporanController extends Controller
             ".$filter."
             ")->queryAll();
         }
-
+        $excelData = htmlspecialchars(Json::encode($data));
         $provider = new ArrayDataProvider([
             'allModels' => $data,
             'pagination' => [
@@ -102,7 +102,8 @@ class LaporanController extends Controller
         ]);
 
         return $this->render('detail-pengunjung',[
-            'dataProvider' => $provider
+            'dataProvider' => $provider,
+            'excelData' => $excelData
         ]);
     }
 

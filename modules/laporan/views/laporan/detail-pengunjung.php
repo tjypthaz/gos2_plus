@@ -89,39 +89,34 @@ $this->title = 'Laporan Detail Pengunjung';
 </form>
 
 <?php
-$excelData="[]";
 if($excelData != '[]'){
     $header = [
         'Id Reg',
         'No RM',
         'Nama pasien',
         'Tgl Daftar',
-        'Id Ruangan',
-        'Id Dokter',
-        'Ruangan',
+        'Tujuan',
         'Dokter',
-        'Id Cara Bayar',
         'Cara Bayar',
         'No SEP',
-        'Id Tagihan',
-        'Tagihan RS',
-        'Klaim',
-        'Periode'
+        'Di Terima',
     ];
     $header = htmlspecialchars(Json::encode($header));
     ?>
-    <div class="col text-right">
-        <form action="<?= Url::toRoute(['toexcel'])?>" method="post">
-            <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
-            <input type="hidden" name="namaFile" value="Rekap Klaim">
-            <textarea name="excelData" style="display: none;">
-                <?=$excelData?>
-                </textarea>
-            <textarea name="header" style="display: none;">
-                <?=$header?>
-                </textarea>
-            <input type="submit" class="btn btn-outline-warning" value="Export EXCEL"  />
-        </form>
+    <div class="row">
+        <div class="col text-right">
+            <form action="<?= Url::toRoute(['toexcel'])?>" method="post">
+                <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+                <input type="hidden" name="namaFile" value="Detail Pengunjung">
+                <textarea name="excelData" style="display: none;">
+            <?=$excelData?>
+            </textarea>
+                <textarea name="header" style="display: none;">
+            <?=$header?>
+            </textarea>
+                <button type="submit" class="btn btn-warning"><?=Icon::show('download')?> To EXCEL</button>
+            </form>
+        </div>
     </div>
     <?php
 }
