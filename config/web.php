@@ -48,6 +48,9 @@ $config = [
         'pembayaran' => [
             'class' => 'app\modules\pembayaran\Module',
         ],
+        'laporan' => [
+            'class' => 'app\modules\laporan\Module',
+        ],
     ],
     'components' => [
         'authManager' => [

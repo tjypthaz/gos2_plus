@@ -78,6 +78,13 @@ AppAsset::register($this);
                 ['label' => 'Laporan H2H', 'url' => ['/pembayaran/h2h/laporan']],
             ]
         ];
+        $menuItems[] = ['label' => 'Laporan & Rekap',
+            'items' => [
+                ['label' => 'Detail Pengunjung', 'url' => ['/laporan/laporan/detail-pengunjung']],
+                ['label' => 'Rekap Pengunjung', 'url' => ['/laporan/laporan/rekap-pengunjung']],
+                ['label' => 'Pasien Pulang', 'url' => ['/laporan/laporan/pasien-pulang']],
+            ]
+        ];
         $menuItems[] = [
             'label' => 'Logout (' . \Yii::$app->user->identity->username . ')',
             'url' => ['/site/logout'],
