@@ -148,7 +148,7 @@ class LaporanController extends Controller
         if($filter){
             $data = Yii::$app->db_pembayaran->createCommand("
             SELECT b.`NOMOR` idReg,b.`NORM` noRm,e.`NAMA` namaPasien,d.`DESKRIPSI` ruangan,g.`DESKRIPSI` caraBayar
-                 ,f.`NOMOR` noSep,b.`TANGGAL` tglDaftar,a.`TANGGAL` tglPulang
+                 ,f.`NOMOR` noSep,b.`TANGGAL` tglDaftar,a.`TANGGAL` tglPulang,h.`TGL_TERIMA` tglKembali
             FROM `layanan`.`pasien_pulang` a
             LEFT JOIN `pendaftaran`.`pendaftaran` b ON b.`NOMOR` = a.`NOPEN`
             LEFT JOIN `pendaftaran`.`kunjungan` c ON c.`NOMOR` = a.`KUNJUNGAN` AND c.`NOPEN` = a.`NOPEN`
@@ -156,6 +156,7 @@ class LaporanController extends Controller
             LEFT JOIN `master`.`pasien` e ON e.`NORM` = b.`NORM`
             LEFT JOIN `pendaftaran`.`penjamin` f ON f.`NOPEN` = a.`NOPEN`
             LEFT JOIN (SELECT * FROM `master`.`referensi` WHERE JENIS = 10) g ON g.ID = f.`JENIS`
+            LEFT JOIN `berkas_rekammedis`.`terima_berkas` h ON h.`NOPEN` = a.`NOPEN` AND h.`STATUS` = 1
             WHERE a.`STATUS` = 1 AND d.`JENIS_KUNJUNGAN` = 3 
             ".$filter."
             ORDER BY c.`RUANGAN` ASC
@@ -168,7 +169,7 @@ class LaporanController extends Controller
                 'pageSize' => 20,
             ],
             'sort' => [
-                'attributes' => ['noRm','namaPasien','tglPulang','ruangan','caraBayar'],
+                'attributes' => ['noRm','namaPasien','tglPulang','ruangan','caraBayar','tglKembali'],
             ],
         ]);
 

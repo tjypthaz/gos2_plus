@@ -80,7 +80,8 @@ if($excelData != '[]'){
         'Cara Bayar',
         'No SEP',
         'Tgl Daftar',
-        'tgl Pulang',
+        'Tgl Pulang',
+        'Tgl Kembali',
     ];
     $header = htmlspecialchars(Json::encode($header));
     ?>
@@ -141,7 +142,8 @@ if($excelData != '[]'){
             },
             'format' => 'html'
         ],
-        'tglPulang'
+        'tglPulang',
+        'tglKembali'
     ],
     'pager' => [
         'class' => 'yii\bootstrap4\LinkPager'
