@@ -107,6 +107,77 @@ class LaporanController extends Controller
         ]);
     }
 
+    public function actionPasienPulang()
+    {
+        $filterTgl = "";
+        $tglAw = Yii::$app->request->get('tglAw');
+        if($tglAw != ""){
+            $filterTgl = " and DATE(a.`TANGGAL`) = '".$tglAw."'";
+        }
+
+        $tglAk = Yii::$app->request->get('tglAk');
+        if($tglAw != "" && $tglAk != ""){
+            $filterTgl = " and DATE(a.`TANGGAL`) between '".$tglAw."' and '".$tglAk."'";
+        }
+
+        $filterRm = "";
+        $noRm = Yii::$app->request->get('noRm');
+        if($noRm != ""){
+            $filterRm = " and b.`NORM` = '".$noRm."'";
+        }
+
+        $filterNama = "";
+        $namaPasien = Yii::$app->request->get('namaPasien');
+        if($namaPasien != ""){
+            $filterNama = " and e.`NAMA` like '%".$namaPasien."%'";
+        }
+
+        $filterCb = "";
+        $caraBayar = Yii::$app->request->get('caraBayar');
+        if($caraBayar != ""){
+            $filterCb = " and f.`JENIS` = '".$caraBayar."'";
+        }
+
+        $filterRuang = "";
+        $ruangan = Yii::$app->request->get('ruangan');
+        if($ruangan != ""){
+            $filterRuang = " and c.`RUANGAN` = '".$ruangan."'";
+        }
+        $filter = $filterTgl.$filterRm.$filterCb.$filterRuang.$filterNama;
+        $data=[];
+        if($filter){
+            $data = Yii::$app->db_pembayaran->createCommand("
+            SELECT b.`NOMOR` idReg,b.`NORM` noRm,e.`NAMA` namaPasien,d.`DESKRIPSI` ruangan,g.`DESKRIPSI` caraBayar
+                 ,f.`NOMOR` noSep,b.`TANGGAL` tglDaftar,a.`TANGGAL` tglPulang
+            FROM `layanan`.`pasien_pulang` a
+            LEFT JOIN `pendaftaran`.`pendaftaran` b ON b.`NOMOR` = a.`NOPEN`
+            LEFT JOIN `pendaftaran`.`kunjungan` c ON c.`NOMOR` = a.`KUNJUNGAN` AND c.`NOPEN` = a.`NOPEN`
+            LEFT JOIN `master`.`ruangan` d ON d.`ID` = c.`RUANGAN`
+            LEFT JOIN `master`.`pasien` e ON e.`NORM` = b.`NORM`
+            LEFT JOIN `pendaftaran`.`penjamin` f ON f.`NOPEN` = a.`NOPEN`
+            LEFT JOIN (SELECT * FROM `master`.`referensi` WHERE JENIS = 10) g ON g.ID = f.`JENIS`
+            WHERE a.`STATUS` = 1 AND d.`JENIS_KUNJUNGAN` = 3 
+            ".$filter."
+            ORDER BY c.`RUANGAN` ASC
+            ")->queryAll();
+        }
+        $excelData = htmlspecialchars(Json::encode($data));
+        $provider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['noRm','namaPasien','tglPulang','ruangan','caraBayar'],
+            ],
+        ]);
+
+        return $this->render('pasien-pulang',[
+            'dataProvider' => $provider,
+            'excelData' => $excelData
+        ]);
+    }
+
     public function actionToexcel()
     {
         $excelData = Json::decode(Yii::$app->request->post('excelData'));
