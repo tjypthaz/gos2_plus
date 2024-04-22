@@ -128,6 +128,16 @@ class TagihanAmbulan extends \yii\db\ActiveRecord
         return $list[$id];
     }
 
+    /**
+     * Gets query for [[PetugasAmbulans]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPetugasAmbulans()
+    {
+        return $this->hasMany(PetugasAmbulan::class, ['idTagihanAmbulan' => 'id']);
+    }
+
     public function beforeValidate()
     {
         // validasi data kembar berdasarkan nomer tagihan status publish = 1

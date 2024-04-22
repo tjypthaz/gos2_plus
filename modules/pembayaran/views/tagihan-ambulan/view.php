@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\pembayaran\models\PetugasAmbulan;
 use app\modules\pembayaran\models\TagihanAmbulan;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -51,6 +52,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($model){
                     return TagihanAmbulan::getStatus($model->status);
                 }
+            ],
+            [
+                'label' => 'Petugas',
+                'value' => function ($model){
+                    $namaPegawai = [];
+                    if(count($model->petugasAmbulans) > 0){
+                        foreach ($model->petugasAmbulans as $item){
+                            $namaPegawai[] = PetugasAmbulan::getNamaPegawai($item->idPegawai);
+                        }
+                    }
+                    if(count($namaPegawai) < 1){
+                        return Html::a('Tambah Petugas', ['petugas-ambulan/create', 'idTagihanAmbulan' => $model->id], ['class' => 'btn btn-success']);
+                    }
+                    return \yii\bootstrap4\Html::ul($namaPegawai);
+                },
+                'format' => 'html'
             ],
             [
                 'attribute' => 'publish',
