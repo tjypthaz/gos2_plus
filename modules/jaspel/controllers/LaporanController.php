@@ -141,7 +141,7 @@ class LaporanController extends \yii\web\Controller
     public function actionToexcel()
     {
         $excelData = Json::decode(Yii::$app->request->post('excelData'));
-        $namaFile = Yii::$app->request->post('namaFile');
+        $namaFile = Yii::$app->request->post('namaFile').".xls";
         $header = Json::decode(Yii::$app->request->post('header'));
 
         $file = Yii::createObject([
