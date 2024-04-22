@@ -71,7 +71,21 @@ class LaporanController extends Controller
             $filterNs = " and (g.`NOMOR` = '' or g.`NOMOR` is null)";
         }
 
-        $filter = $filterTgl.$filterRm.$filterCb.$filterRuang.$filterDokter.$filterNs.$filterNama;
+        $filterjenis = "";
+        $jenis = Yii::$app->request->get('jenis');
+        if($jenis != ""){
+            if($jenis == '1'){ //rajal
+                $filterjenis = " AND d.`JENIS_KUNJUNGAN` IN (1,4,5,7)";
+            }
+            elseif ($jenis == '2'){ // ranap
+                $filterjenis = " AND d.`JENIS_KUNJUNGAN` = 3";
+            }
+            elseif ($jenis == '3'){ // igd
+                $filterjenis = " AND d.`JENIS_KUNJUNGAN` = 2";
+            }
+        }
+
+        $filter = $filterTgl.$filterRm.$filterCb.$filterRuang.$filterDokter.$filterNs.$filterNama.$filterjenis;
         $data=[];
         if($filter){
             $data = Yii::$app->db_pembayaran->createCommand("
