@@ -6,6 +6,7 @@ $db_lis = require __DIR__ . '/db_lis.php';
 $db_jaspel = require __DIR__ . '/db_jaspel.php';
 $db_pembayaran = require __DIR__ . '/db_pembayaran.php';
 $db_lis_bridging = require __DIR__ . '/db_lis_bridging.php';
+$db_berkas = require __DIR__ . '/db_berkas.php';
 
 $config = [
     'id' => 'gos2_plus',
@@ -51,6 +52,9 @@ $config = [
         'laporan' => [
             'class' => 'app\modules\laporan\Module',
         ],
+        'berkas' => [
+            'class' => 'app\modules\berkas\Module',
+        ],
     ],
     'components' => [
         'authManager' => [
@@ -91,6 +95,7 @@ $config = [
         'db_jaspel' => $db_jaspel,
         'db_pembayaran' => $db_pembayaran,
         'db_lis_bridging' => $db_lis_bridging,
+        'db_berkas' => $db_berkas,
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,

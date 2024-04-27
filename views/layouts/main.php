@@ -78,6 +78,7 @@ AppAsset::register($this);
                 ['label' => 'Laporan H2H', 'url' => ['/pembayaran/h2h/laporan']],
             ]
         ];
+        $menuItems[] = ['label' => 'Terima Berkas','url' => ['/berkas/terima/index']];
         $menuItems[] = ['label' => 'Laporan & Rekap',
             'items' => [
                 ['label' => 'Detail Pengunjung', 'url' => ['/laporan/laporan/detail-pengunjung']],

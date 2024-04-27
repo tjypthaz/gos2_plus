@@ -143,7 +143,19 @@ if($excelData != '[]'){
             'format' => 'html'
         ],
         'tglPulang',
-        'tglKembali'
+        [
+            'attribute' => 'tglKembali',
+            'value' => function ($index){
+                if($index['tglKembali']){
+                    return $index['tglKembali'];
+                }
+                return Html::a('Berkas Kembali',
+                    ['/berkas/terima/create','idReg' => $index['idReg']],
+                    ['class' => 'btn btn-success btn-sm','target' => '_blank']);
+            },
+            'format' => 'raw'
+        ],
+        // 'tglKembali'
     ],
     'pager' => [
         'class' => 'yii\bootstrap4\LinkPager'
