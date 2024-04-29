@@ -73,7 +73,7 @@ class TagihanAmbulanController extends Controller
     {
         // disini cek dulu apakah tagihan sudah dikunci / belum
         // cek dari idtagihan
-        $kunci = Yii::$app->db_pembayaran->createCommand("
+        /*$kunci = Yii::$app->db_pembayaran->createCommand("
         SELECT a.`KUNCI`
         FROM `pembayaran`.`tagihan` a
         WHERE a.`ID` = '".$idTagihan."'
@@ -81,7 +81,7 @@ class TagihanAmbulanController extends Controller
         if($kunci){
             Yii::$app->session->setFlash('error','Tagihan di SIMGOS sudah dikunci, Hub Kasir untuk membuka');
             return $this->redirect(['list-tagihan','noRm' => $noRm]);
-        }
+        }*/
         $model = new TagihanAmbulan();
         $model->idTagihan = $idTagihan;
         $model->noRm = $noRm;
