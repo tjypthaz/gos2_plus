@@ -278,6 +278,77 @@ class LaporanController extends Controller
         ]);
     }
 
+    public function actionPasienRanap()
+    {
+        $filterTgl = "";
+        $tglAw = Yii::$app->request->get('tglAw');
+        if($tglAw != ""){
+            $filterTgl = " and DATE(k.`MASUK`) = '".$tglAw."'";
+        }
+
+        $tglAk = Yii::$app->request->get('tglAk');
+        if($tglAw != "" && $tglAk != ""){
+            $filterTgl = " and DATE(k.`MASUK`) between '".$tglAw."' and '".$tglAk."'";
+        }
+
+        $filterRm = "";
+        $noRm = Yii::$app->request->get('noRm');
+        if($noRm != ""){
+            $filterRm = " and ps.NORM = '".$noRm."'";
+        }
+
+        $filterNama = "";
+        $namaPasien = Yii::$app->request->get('namaPasien');
+        if($namaPasien != ""){
+            $filterNama = " and ps.NAMA like '%".$namaPasien."%'";
+        }
+
+        $filterCb = "";
+        $caraBayar = Yii::$app->request->get('caraBayar');
+        if($caraBayar != ""){
+            $filterCb = " and jmn.JENIS = '".$caraBayar."'";
+        }
+
+        $filterRuang = "";
+        $ruangan = Yii::$app->request->get('ruangan');
+        if($ruangan != ""){
+            $filterRuang = " and rk.RUANGAN = '".$ruangan."'";
+        }
+        $filter = $filterTgl.$filterRm.$filterCb.$filterRuang.$filterNama;
+        $data = Yii::$app->db_pembayaran->createCommand("
+            SELECT ps.NORM,ps.NAMA, ps.`ALAMAT`,k.`MASUK`,rgn.DESKRIPSI RUANGAN,rkt.TEMPAT_TIDUR,rf.`DESKRIPSI` caraBayar
+                 ,jmn.`NOMOR` noSep
+            FROM master.ruang_kamar_tidur rkt
+            LEFT JOIN pendaftaran.kunjungan k ON k.RUANG_KAMAR_TIDUR = rkt.ID AND k.STATUS = 1
+            LEFT JOIN pendaftaran.pendaftaran p ON p.NOMOR = k.NOPEN
+            LEFT JOIN master.pasien ps ON ps.NORM = p.NORM  
+            LEFT JOIN master.ruang_kamar rk ON rk.ID = rkt.RUANG_KAMAR
+            LEFT JOIN master.ruangan rgn ON rgn.ID = rk.RUANGAN
+            LEFT JOIN `pendaftaran`.`penjamin` jmn ON jmn.`NOPEN` = p.`NOMOR`
+            LEFT JOIN master.referensi rf ON rf.JENIS = 10 AND jmn.JENIS = rf.ID
+            WHERE rkt.`STATUS` = 3
+            AND pendaftaran.ikutRawatInapIbu(k.NOPEN, k.REF) = 0
+            AND k.KELUAR IS NULL
+            ".$filter."
+            ORDER BY rkt.`ID` ASC
+            ")->queryAll();
+        $excelData = htmlspecialchars(Json::encode($data));
+        $provider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['NORM','RUANGAN','noSep','caraBayar'],
+            ],
+        ]);
+
+        return $this->render('pasien-ranap',[
+            'dataProvider' => $provider,
+            'excelData' => $excelData
+        ]);
+    }
+
     public function actionToexcel()
     {
         $excelData = Json::decode(Yii::$app->request->post('excelData'));
