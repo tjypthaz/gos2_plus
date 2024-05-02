@@ -314,7 +314,13 @@ class LaporanController extends Controller
         if($ruangan != ""){
             $filterRuang = " and rk.RUANGAN = '".$ruangan."'";
         }
-        $filter = $filterTgl.$filterRm.$filterCb.$filterRuang.$filterNama;
+        $filterNs = "";
+        $isSep = Yii::$app->request->get('isSep');
+        if($isSep != ""){
+            $filterNs = " and (jmn.`NOMOR` = '' or jmn.`NOMOR` is null)";
+        }
+
+        $filter = $filterTgl.$filterRm.$filterCb.$filterRuang.$filterNama.$filterNs;
         $data = Yii::$app->db_pembayaran->createCommand("
             SELECT ps.NORM,ps.NAMA, ps.`ALAMAT`,k.`MASUK`,rgn.DESKRIPSI RUANGAN,rkt.TEMPAT_TIDUR,rf.`DESKRIPSI` caraBayar
                  ,jmn.`NOMOR` noSep

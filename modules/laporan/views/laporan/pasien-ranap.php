@@ -31,7 +31,10 @@ $this->title = 'Laporan Pasien Ranap';
             ])
             ?>
         </div>
-
+        <div class="form-group">
+            <label for="">Belum ada SEP</label>
+            <?=SwitchInput::widget(['name'=>'isSep', 'value' => Yii::$app->request->get('isSep') ? true : false]);?>
+        </div>
     </div>
     <div class="col">
         <div class="form-group">
