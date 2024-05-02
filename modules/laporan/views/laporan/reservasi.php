@@ -43,6 +43,7 @@ if($excelData != '[]'){
         'Nama Dokter',
         'NOMOR BOOKING',
         'NOMOR REFERENSI',
+        'ICD'
     ];
     $header = htmlspecialchars(Json::encode($header));
     ?>
@@ -82,47 +83,7 @@ if($excelData != '[]'){
         'namaDokter',
         'NOMOR_BOOKING',
         'NOMOR_REFERENSI',
-//        [
-//            'attribute' => 'idReg',
-//            'value' => function ($index){
-//                return $index['idReg']."<br>".$index['tglDaftar'];
-//            },
-//            'format' => 'html'
-//        ],
-//        [
-//            'attribute' => 'noRm',
-//            'value' => function ($index){
-//                return $index['noRm']."<br>".$index['namaPasien'];
-//            },
-//            'format' => 'html'
-//        ],
-//        [
-//            'attribute' => 'ruangan',
-//            'value' => function ($index){
-//                return $index['ruangan'];
-//            },
-//            'format' => 'html'
-//        ],
-//        [
-//            'attribute' => 'caraBayar',
-//            'value' => function ($index){
-//                return $index['caraBayar']."<br>".$index['noSep'];
-//            },
-//            'format' => 'html'
-//        ],
-//        'tglPulang',
-//        [
-//            'attribute' => 'tglKembali',
-//            'value' => function ($index){
-//                if($index['tglKembali']){
-//                    return $index['tglKembali'];
-//                }
-//                return Html::a('Berkas Kembali',
-//                    ['/berkas/terima/create','idReg' => $index['idReg']],
-//                    ['class' => 'btn btn-success btn-sm','target' => '_blank']);
-//            },
-//            'format' => 'raw'
-//        ],
+        'ICD'
     ],
     'pager' => [
         'class' => 'yii\bootstrap4\LinkPager'

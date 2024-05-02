@@ -234,8 +234,8 @@ class LaporanController extends Controller
         if($filter){
             $data = Yii::$app->db_pembayaran->createCommand("
             SELECT 'SurKon' jenisApp,c.`NORM`,d.`NAMA`,DATE(d.`TANGGAL_LAHIR`) tglLahir,e.`NOMOR` noHp
-              ,a.`DIBUAT_TANGGAL` createDate,a.`TANGGAL` tglKontrol,a.`TANGGAL` tglReservasi,g.`DESKRIPSI` asal
-              ,f.`DESKRIPSI` tujuan,i.`NAMA` namaDokter,a.`NOMOR_BOOKING`,a.`NOMOR_REFERENSI`
+            ,a.`DIBUAT_TANGGAL` createDate,a.`TANGGAL` tglKontrol,a.`TANGGAL` tglReservasi,g.`DESKRIPSI` asal
+            ,f.`DESKRIPSI` tujuan,i.`NAMA` namaDokter,a.`NOMOR_BOOKING`,a.`NOMOR_REFERENSI`,j.ICD
             FROM `medicalrecord`.`jadwal_kontrol` a
             LEFT JOIN pendaftaran.`kunjungan` b ON b.`NOMOR` = a.`KUNJUNGAN`
             LEFT JOIN `pendaftaran`.`pendaftaran` c ON c.`NOMOR` = b.`NOPEN`
@@ -245,16 +245,20 @@ class LaporanController extends Controller
             LEFT JOIN `master`.`ruangan` g ON g.`ID` = b.`RUANGAN`
             LEFT JOIN `master`.`dokter` h ON h.`ID`	 = a.`DOKTER`
             LEFT JOIN `master`.`pegawai` i ON i.`NIP` = h.`NIP`
+            LEFT JOIN master.diagnosa_masuk j ON c.DIAGNOSA_MASUK=j.ID
             WHERE a.`STATUS` = 1 AND b.`STATUS` IN (1,2) AND c.`STATUS` IN (1,2)
             AND a.`TANGGAL` = :tgl
             UNION ALL
             SELECT 'MJKN' jenisApp,a.`NORM`,a.`NAMA`,a.`TANGGAL_LAHIR` tglLahir,a.`CONTACT` noHp,a.`TGL_DAFTAR`
-                 ,d.`tglRencanaKontrol` tglKontrol,a.`TANGGALKUNJUNGAN` tglReservasi,d.`nomor` asal
-                 , b.`DESKRIPSI` tujuan,c.`nama`,a.`ID`,a.`NO_REF_BPJS`
+            ,d.`tglRencanaKontrol` tglKontrol,a.`TANGGALKUNJUNGAN` tglReservasi,d.`nomor` asal
+            , b.`DESKRIPSI` tujuan,c.`nama`,a.`ID`,a.`NO_REF_BPJS`,g.`ICD` icd
             FROM `regonline`.`reservasi` a
             LEFT JOIN `master`.`ruangan` b ON b.`ID` = a.`POLI`
             LEFT JOIN `bpjs`.`dpjp` c ON c.`kode` = a.`DOKTER`
             LEFT JOIN `bpjs`.`rencana_kontrol` d ON d.`noSurat` = a.`NO_REF_BPJS` AND d.`status` = 1
+            LEFT JOIN `pendaftaran`.`penjamin` e ON e.`NOMOR` = d.nomor
+            LEFT JOIN `pendaftaran`.`pendaftaran` f ON f.`NOMOR` = e.`NOPEN`
+            LEFT JOIN master.diagnosa_masuk g ON f.DIAGNOSA_MASUK=g.ID
             WHERE a.`JENIS_APLIKASI` = 2 AND a.`STATUS` != 0
             AND a.`TANGGALKUNJUNGAN` = :tgl
             ")->bindValue(':tgl', $tglAw)
@@ -268,7 +272,7 @@ class LaporanController extends Controller
             ],
             'sort' => [
                 'attributes' => ['jenisApp','NORM','NAMA','tglLahir','noHp','createDate','createDate','tglKontrol'
-                    ,'tglReservasi','asal','tujuan','namaDokter'],
+                    ,'tglReservasi','asal','tujuan','namaDokter','ICD'],
             ],
         ]);
 
