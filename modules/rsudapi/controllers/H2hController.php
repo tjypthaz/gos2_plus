@@ -17,7 +17,6 @@ class H2hController extends Controller
         return [
             'get-tagihan' => ['GET'],
             'bayar-tagihan' => ['POST'],
-            'reversal' => ['POST'],
         ];
     }
 
@@ -94,37 +93,6 @@ class H2hController extends Controller
             else{
                 return self::kembalian(400,$model,'jumlah yang dibayar tidak valid');
             }
-        }
-        else{
-            return self::kembalian(404,$data,'Id Tagihan tidak ditemukan');
-        }
-    }
-
-    public function actionReversal()
-    {
-        // jangan lupa create log request
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $data = false;
-        $idTagihan = Yii::$app->request->post('idTagihan');
-        if($idTagihan == ''){
-            return self::kembalian(400,$data,'permintaan tidak valid');
-        }
-
-        $model = H2h::find()->select('id,idTagihan,noRm,totalTagihan,bayar,status')
-            ->where(['idTagihan' => $idTagihan, 'publish' => '1', 'status' => '2'])->asArray()->all();
-        if(count($model) > 1){
-            return self::kembalian(500,$model,'reversal tidak dapat dilakukan');
-        }
-
-        $model = H2h::find()->select('id,idTagihan,noRm,totalTagihan,bayar,status')
-            ->where(['idTagihan' => $idTagihan, 'publish' => '1', 'status' => '2'])->one();
-        if($model){
-            $model->status = '1';
-            $model->bayar = 0;
-            if($model->save()){
-                return self::kembalian(200,$model,'reversal berhasil');
-            }
-            return self::kembalian(500,$model,'reversal gagal');
         }
         else{
             return self::kembalian(404,$data,'Id Tagihan tidak ditemukan');

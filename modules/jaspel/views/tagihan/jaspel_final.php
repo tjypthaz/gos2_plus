@@ -144,7 +144,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                     <td><?=$item['ruangan']?></td>
                     <td><?=$item['tindakan']?></td>
                     <td>
-                        <table>
+                        <table style="font-size:10px;" class="m-0 p-0">
                             <!--<tr>
                                 <td>Penerima</td>
                                 <td>Tarif Jaspel</td>
@@ -154,8 +154,8 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                             if(intval($item['jpDokterO']) > 0){
                                 ?>
                                 <tr>
-                                    <td><?=$item['idDokterO'] ? $listDokter[$item['idDokterO']] : ''?></td>
-                                    <td><?=number_format(intval($item['jpDokterO']),0,',','.')?></td>
+                                    <td class="p-0"><?=$item['idDokterO'] ? $listDokter[$item['idDokterO']] : ''?></td>
+                                    <td class="p-0">&nbsp: <?=number_format(intval($item['jpDokterO']),0,',','.')?></td>
                                 </tr>
                                 <?php
                             }
@@ -164,8 +164,8 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                             if(intval($item['jpDokterL']) > 0){
                                 ?>
                                 <tr>
-                                    <td><?=$item['idDokterL'] ? $listDokter[$item['idDokterL']] : ''?></td>
-                                    <td><?=number_format(intval($item['jpDokterL']),0,',','.')?></td>
+                                    <td class="p-0"><?=$item['idDokterL'] ? $listDokter[$item['idDokterL']] : ''?></td>
+                                    <td class="p-0">&nbsp: <?=number_format(intval($item['jpDokterL']),0,',','.')?></td>
                                 </tr>
                                 <?php
                             }
@@ -174,31 +174,31 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                             if(intval($item['jpPara']) > 0){
                                 ?>
                                 <tr>
-                                    <td><?=$item['idPara'] ? $listJenisPara[$item['idPara']] : ''?></td>
-                                    <td><?=number_format(intval($item['jpPara']),0,',','.')?></td>
+                                    <td class="p-0"><?=$item['idPara'] ? $listJenisPara[$item['idPara']] : ''?></td>
+                                    <td class="p-0">&nbsp: <?=number_format(intval($item['jpPara']),0,',','.')?></td>
                                 </tr>
                                 <?php
                             }
                             if(intval($item['jpAkomodasi']) > 0){
                                 ?>
                                 <tr>
-                                    <td>Akomodasi</td>
-                                    <td><?=number_format(intval($item['jpAkomodasi']),0,',','.')?></td>
+                                    <td class="p-0">Akomodasi</td>
+                                    <td class="p-0">&nbsp: <?=number_format(intval($item['jpAkomodasi']),0,',','.')?></td>
                                 </tr>
                                 <?php
                             }
                             ?>
                             <tr>
-                                <td>Struktural</td>
-                                <td><?=number_format(intval($item['jpStruktural']),0,',','.')?></td>
+                                <td class="p-0">Struktural</td>
+                                <td class="p-0">&nbsp: <?=number_format(intval($item['jpStruktural']),0,',','.')?></td>
                             </tr>
                             <tr>
-                                <td>Blud</td>
-                                <td><?=number_format(intval($item['jpBlud']),0,',','.')?></td>
+                                <td class="p-0">Blud</td>
+                                <td class="p-0">&nbsp: <?=number_format(intval($item['jpBlud']),0,',','.')?></td>
                             </tr>
                             <tr>
-                                <td>Pegawai</td>
-                                <td><?=number_format(intval($item['jpPegawai']),0,',','.')?></td>
+                                <td class="p-0">Pegawai</td>
+                                <td class="p-0">&nbsp: <?=number_format(intval($item['jpPegawai']),0,',','.')?></td>
                             </tr>
                         </table>
                     </td>

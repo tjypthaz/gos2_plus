@@ -68,6 +68,7 @@ if($excelData != '[]'){
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
+    'options' => ['style' => 'font-size:10px;'],
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         'jenisApp',
