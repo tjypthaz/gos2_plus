@@ -193,7 +193,7 @@ class LaporanController extends \yii\web\Controller
         $filter = $filterTgl;
         if($tglAw){
             $data = Yii::$app->db_jaspel->createCommand(
-                "SELECT b.`NAMA` namaPegawai,SUM(ROUND((a.jpl/a.pembagi),2)) jpl,SUM(ROUND((a.jptl/a.pembagi),2)) jptl
+                "SELECT b.`NAMA` namaPegawai,ROUND(SUM((a.jpl/a.pembagi)),2) jpl,ROUND(SUM((a.jptl/a.pembagi)),2) jptl
                 FROM (
                     SELECT a.`namaPasien`,(a.`jasaPelayanan`*0.6) jpl,(a.`jasaPelayanan`*0.4) jptl,b.`idPegawai`, `pembayaran_cokro`.getJumPetugas(a.`id`) pembagi
                     FROM `pembayaran_cokro`.`tagihan_ambulan` a
