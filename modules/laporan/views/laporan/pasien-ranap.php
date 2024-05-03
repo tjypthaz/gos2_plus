@@ -32,8 +32,8 @@ $this->title = 'Laporan Pasien Ranap';
             ?>
         </div>
         <div class="form-group">
-            <label for="">Belum ada SEP</label>
-            <?=SwitchInput::widget(['name'=>'isSep', 'value' => Yii::$app->request->get('isSep') ? true : false]);?>
+            <label for="">Alamat</label>
+            <input type="text" name="alamat" value="<?=Yii::$app->request->get('alamat')?>" class="form-control">
         </div>
     </div>
     <div class="col">
@@ -45,7 +45,10 @@ $this->title = 'Laporan Pasien Ranap';
             <label for="">Nomer RM</label>
             <input type="text" name="noRm" value="<?=Yii::$app->request->get('noRm')?>" class="form-control">
         </div>
-
+        <div class="form-group">
+            <label for="">Belum ada SEP</label>
+            <?=SwitchInput::widget(['name'=>'isSep', 'value' => Yii::$app->request->get('isSep') ? true : false]);?>
+        </div>
     </div>
     <div class="col">
         <?php
