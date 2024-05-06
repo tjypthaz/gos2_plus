@@ -79,14 +79,21 @@ AppAsset::register($this);
             ]
         ];
         $menuItems[] = ['label' => 'Terima Berkas','url' => ['/berkas/terima/index']];
+        $menuItems[] = ['label' => 'Antrian',
+            'items' => [
+                ['label' => 'Pengaturan', 'url' => ['/antrian/pengaturan/index']],
+                ['label' => 'Jadwal Dokter', 'url' => ['/antrian/jadwal-dokter']],
+                ['label' => 'Hari Libur', 'url' => ['/antrian/hari-libur']],
+            ]
+        ];
         $menuItems[] = ['label' => 'Laporan & Rekap',
             'items' => [
                 ['label' => 'Detail Pengunjung', 'url' => ['/laporan/laporan/detail-pengunjung']],
                 ['label' => 'Rekap Pengunjung', 'url' => ['/laporan/laporan/rekap-pengunjung']],
                 ['label' => 'Pasien Ranap', 'url' => ['/laporan/laporan/pasien-ranap']],
                 ['label' => 'Pasien Pulang Ranap', 'url' => ['/laporan/laporan/pasien-pulang']],
-                ['label' => 'Reservasi', 'url' => ['/laporan/laporan/reservasi']],
-
+                ['label' => 'Reservasi Surkon', 'url' => ['/laporan/laporan/reservasi-surkon']],
+                ['label' => 'Reservasi MJKN', 'url' => ['/laporan/laporan/reservasi-mjkn']],
             ]
         ];
         $menuItems[] = [

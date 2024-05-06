@@ -366,6 +366,153 @@ class LaporanController extends Controller
         ]);
     }
 
+    public function actionReservasiSurkon()
+    {
+        $filterTgl = "";
+        $tglAw = Yii::$app->request->get('tglAw');
+        if($tglAw != ""){
+            $filterTgl = " and DATE(a.`TANGGAL`) = '".$tglAw."'";
+        }
+
+        $tglAk = Yii::$app->request->get('tglAk');
+        if($tglAw != "" && $tglAk != ""){
+            $filterTgl = " and DATE(a.`TANGGAL`) between '".$tglAw."' and '".$tglAk."'";
+        }
+
+        $filterRm = "";
+        $noRm = Yii::$app->request->get('noRm');
+        if($noRm != ""){
+            $filterRm = " and c.`NORM` = '".$noRm."'";
+        }
+
+        $filterNama = "";
+        $namaPasien = Yii::$app->request->get('namaPasien');
+        if($namaPasien != ""){
+            $filterNama = " and d.`NAMA` like '%".$namaPasien."%'";
+        }
+
+        $filterRuang = "";
+        $ruangan = Yii::$app->request->get('ruangan');
+        if($ruangan != ""){
+            $filterRuang = " and a.`RUANGAN` = '".$ruangan."'";
+        }
+
+        $filterDokter = "";
+        $dokter = Yii::$app->request->get('dokter');
+        if($dokter != ""){
+            $filterDokter = " and h.NIP = '".$dokter."'";
+        }
+        $filter = $filterTgl.$filterRm.$filterRuang.$filterNama.$filterDokter;
+        $data=[];
+        if($filter){
+            $data = Yii::$app->db_pembayaran->createCommand("
+            SELECT c.`NORM` noRm,d.`NAMA` namaPasien,DATE(d.`TANGGAL_LAHIR`) tglLahir,e.`NOMOR` noHp
+            ,a.`DIBUAT_TANGGAL` createDate,a.`TANGGAL` tglKontrol,g.`DESKRIPSI` asal
+            ,f.`DESKRIPSI` tujuan,i.`NAMA` namaDokter,a.`NOMOR_BOOKING`,a.`NOMOR_REFERENSI`,j.ICD
+            FROM `medicalrecord`.`jadwal_kontrol` a
+            LEFT JOIN pendaftaran.`kunjungan` b ON b.`NOMOR` = a.`KUNJUNGAN`
+            LEFT JOIN `pendaftaran`.`pendaftaran` c ON c.`NOMOR` = b.`NOPEN`
+            LEFT JOIN `master`.`pasien` d ON d.`NORM` = c.`NORM`
+            LEFT JOIN `master`.`kontak_pasien` e ON e.`NORM` = c.`NORM` AND e.`JENIS` = 3
+            LEFT JOIN `master`.`ruangan` f ON f.`ID` = a.`RUANGAN`
+            LEFT JOIN `master`.`ruangan` g ON g.`ID` = b.`RUANGAN`
+            LEFT JOIN `master`.`dokter` h ON h.`ID`	 = a.`DOKTER`
+            LEFT JOIN `master`.`pegawai` i ON i.`NIP` = h.`NIP`
+            LEFT JOIN master.diagnosa_masuk j ON c.DIAGNOSA_MASUK=j.ID
+            WHERE a.`STATUS` = 1 AND b.`STATUS` IN (1,2) AND c.`STATUS` IN (1,2)
+            ".$filter."
+            ")->queryAll();
+        }
+        $excelData = htmlspecialchars(Json::encode($data));
+        $provider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['noRm','namaPasien','tglLahir','noHp','createDate','createDate','tglKontrol'
+                    ,'asal','tujuan','namaDokter','ICD'],
+            ],
+        ]);
+
+        return $this->render('reservasi-surkon',[
+            'dataProvider' => $provider,
+            'excelData' => $excelData
+        ]);
+    }
+
+    public function actionReservasiMjkn()
+    {
+        $filterTgl = "";
+        $tglAw = Yii::$app->request->get('tglAw');
+        if($tglAw != ""){
+            $filterTgl = " and DATE(a.`TANGGALKUNJUNGAN`) = '".$tglAw."'";
+        }
+
+        $tglAk = Yii::$app->request->get('tglAk');
+        if($tglAw != "" && $tglAk != ""){
+            $filterTgl = " and DATE(a.`TANGGALKUNJUNGAN`) between '".$tglAw."' and '".$tglAk."'";
+        }
+
+        $filterRm = "";
+        $noRm = Yii::$app->request->get('noRm');
+        if($noRm != ""){
+            $filterRm = " and a.`NORM` = '".$noRm."'";
+        }
+
+        $filterNama = "";
+        $namaPasien = Yii::$app->request->get('namaPasien');
+        if($namaPasien != ""){
+            $filterNama = " and a.`NAMA` like '%".$namaPasien."%'";
+        }
+
+        $filterRuang = "";
+        $ruangan = Yii::$app->request->get('ruangan');
+        if($ruangan != ""){
+            $filterRuang = " and a.POLI = '".$ruangan."'";
+        }
+
+        $filterDokter = "";
+        $dokter = Yii::$app->request->get('dokter');
+        if($dokter != ""){
+            $filterDokter = " and a.`DOKTER` = '".$dokter."'";
+        }
+        $filter = $filterTgl.$filterRm.$filterRuang.$filterNama.$filterDokter;
+        $data=[];
+        if($filter){
+            $data = Yii::$app->db_pembayaran->createCommand("
+            SELECT a.`NORM` noRm,a.`NAMA` namaPasien,a.`TANGGAL_LAHIR` tglLahir,a.`CONTACT` noHp,a.`TGL_DAFTAR`
+            ,d.`tglRencanaKontrol` tglKontrol,a.`TANGGALKUNJUNGAN` tglReservasi
+            , b.`DESKRIPSI` tujuan,c.`nama` namaDokter,a.`ID` noBooking,a.`NO_REF_BPJS` noRef,g.`ICD` icd
+            FROM `regonline`.`reservasi` a
+            LEFT JOIN `master`.`ruangan` b ON b.`ID` = a.`POLI`
+            LEFT JOIN `bpjs`.`dpjp` c ON c.`kode` = a.`DOKTER`
+            LEFT JOIN `bpjs`.`rencana_kontrol` d ON d.`noSurat` = a.`NO_REF_BPJS` AND d.`status` = 1
+            LEFT JOIN `pendaftaran`.`penjamin` e ON e.`NOMOR` = d.nomor
+            LEFT JOIN `pendaftaran`.`pendaftaran` f ON f.`NOMOR` = e.`NOPEN`
+            LEFT JOIN master.diagnosa_masuk g ON f.DIAGNOSA_MASUK=g.ID
+            WHERE a.`JENIS_APLIKASI` = 2 AND a.`STATUS` != 0
+            ".$filter."
+            ")->queryAll();
+        }
+        $excelData = htmlspecialchars(Json::encode($data));
+        $provider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['noRm','namaPasien','tglLahir','noHp','createDate','tglKontrol'
+                    ,'tglReservasi','tujuan','namaDokter','ICD'],
+            ],
+        ]);
+
+        return $this->render('reservasi-mjkn',[
+            'dataProvider' => $provider,
+            'excelData' => $excelData
+        ]);
+    }
+
     public function actionToexcel()
     {
         $excelData = Json::decode(Yii::$app->request->post('excelData'));
