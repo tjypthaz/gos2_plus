@@ -481,7 +481,7 @@ class LaporanController extends Controller
         $data=[];
         if($filter){
             $data = Yii::$app->db_pembayaran->createCommand("
-            SELECT a.`NORM` noRm,a.`NAMA` namaPasien,a.`TANGGAL_LAHIR` tglLahir,a.`CONTACT` noHp,a.`TGL_DAFTAR`
+            SELECT a.`NORM` noRm,a.`NAMA` namaPasien,a.`TANGGAL_LAHIR` tglLahir,a.`CONTACT` noHp,a.`TGL_DAFTAR` createDate
             ,d.`tglRencanaKontrol` tglKontrol,a.`TANGGALKUNJUNGAN` tglReservasi
             , b.`DESKRIPSI` tujuan,c.`nama` namaDokter,a.`ID` noBooking,a.`NO_REF_BPJS` noRef,g.`ICD` icd
             FROM `regonline`.`reservasi` a

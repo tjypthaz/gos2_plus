@@ -10,16 +10,12 @@ use yii\grid\GridView;
 /** @var app\modules\antrian\models\search\Pengaturan $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Pengaturans';
+$this->title = 'Pengaturan';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pengaturan-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create Pengaturan', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -29,19 +25,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'ID',
-            'LIMIT_DAFTAR',
-            'DURASI',
+            //'ID',
+            //'LIMIT_DAFTAR',
+            //'DURASI',
             'MULAI',
             'BATAS_JAM_AMBIL',
-            //'POS_ANTRIAN',
+            'POS_ANTRIAN',
             //'STATUS',
             //'BATAS_MAX_HARI',
-            //'BATAS_MAX_HARI_BPJS',
-            //'MATAS_MAX_HARI_KONTROL',
+            'BATAS_MAX_HARI_BPJS',
+            'MATAS_MAX_HARI_KONTROL',
             //'UPDATE_TIME',
             [
                 'class' => ActionColumn::className(),
+                'template' => '{update}',
                 'urlCreator' => function ($action, Pengaturan $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'ID' => $model->ID]);
                  }

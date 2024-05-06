@@ -17,10 +17,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Jadwal Dokter Hfis', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -29,31 +25,28 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'ID',
-            'KD_DOKTER',
             'NM_DOKTER',
-            'KD_SUB_SPESIALIS',
-            'KD_POLI',
-            //'HARI',
-            //'TANGGAL',
-            //'NM_HARI',
-            //'JAM',
+            'NM_HARI',
             //'JAM_MULAI',
             //'JAM_SELESAI',
-            //'KAPASITAS',
-            //'KOUTA_JKN',
-            //'KOUTA_NON_JKN',
+            'KAPASITAS',
+            'KOUTA_JKN',
+            'KOUTA_NON_JKN',
             //'LIBUR',
-            //'STATUS',
+            'STATUS',
             //'INPUT_TIME',
             //'UPDATE_TIME',
             [
                 'class' => ActionColumn::className(),
+                'template' => '{update}',
                 'urlCreator' => function ($action, JadwalDokterHfis $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'ID' => $model->ID]);
                  }
             ],
         ],
+        'pager' => [
+            'class' => 'yii\bootstrap4\LinkPager'
+        ]
     ]); ?>
 
 

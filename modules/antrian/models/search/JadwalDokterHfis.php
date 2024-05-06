@@ -46,6 +46,9 @@ class JadwalDokterHfis extends JadwalDokterHfisModel
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' =>
+                ['KD_DOKTER' => SORT_ASC, 'HARI' => SORT_ASC]
+            ]
         ]);
 
         $this->load($params);

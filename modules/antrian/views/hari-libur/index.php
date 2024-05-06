@@ -29,12 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'ID',
+            //'ID',
             'TANGGAL_LIBUR',
             'KETERANGAN',
             'TANGGAL',
-            'OLEH',
-            //'STATUS',
+            //'OLEH',
+            'STATUS',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, LiburNasional $model, $key, $index, $column) {
@@ -42,6 +42,9 @@ $this->params['breadcrumbs'][] = $this->title;
                  }
             ],
         ],
+        'pager' => [
+            'class' => 'yii\bootstrap4\LinkPager'
+        ]
     ]); ?>
 
 

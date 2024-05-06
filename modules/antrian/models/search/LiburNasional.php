@@ -46,6 +46,9 @@ class LiburNasional extends LiburNasionalModel
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' =>
+                ['TANGGAL_LIBUR' => SORT_DESC]
+            ]
         ]);
 
         $this->load($params);

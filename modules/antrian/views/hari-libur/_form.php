@@ -12,15 +12,9 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'TANGGAL_LIBUR')->textInput() ?>
+    <?= $form->field($model, 'TANGGAL_LIBUR')->textInput(['type' => 'date']) ?>
 
     <?= $form->field($model, 'KETERANGAN')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'TANGGAL')->textInput() ?>
-
-    <?= $form->field($model, 'OLEH')->textInput() ?>
-
-    <?= $form->field($model, 'STATUS')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
