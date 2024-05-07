@@ -387,7 +387,7 @@ class TagihanController extends Controller
     public function actionJaspelFinal($id)
     {
         $dataHeader = Jaspel::findOne($id);
-        $dataFinal = JaspelFinal::find()->where(['idJaspel' => $id])->all();
+        $dataFinal = JaspelFinal::find()->where(['idJaspel' => $id])->orderBy(['idRuangan' => SORT_ASC])->all();
         $listDokter = Yii::$app->db_jaspel
             ->createCommand("SELECT a.`ID`,b.`NAMA`
             FROM master.`dokter` a

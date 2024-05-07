@@ -222,4 +222,60 @@ class LaporanController extends \yii\web\Controller
         ]);
     }
 
+    public function actionKlaimJaspel()
+    {
+        $filterCb = "";
+        $caraBayar = Yii::$app->request->get('caraBayar');
+        if($caraBayar != ""){
+            $filterCb = " and a.`idCaraBayar` = '".$caraBayar."'";
+        }
+
+        $filterPer = "";
+        $bulan = Yii::$app->request->get('bulan');
+        $tahun = Yii::$app->request->get('tahun');
+        if($bulan != "" && $tahun != ""){
+            $filterPer = " and a.`bulan` = ".$bulan." and a.`tahun` = ".$tahun;
+        }
+
+        $filter = $filterCb.$filterPer;
+        $data = [];
+        $totalLabaRugi = 0;
+        if($filter){
+            $data = Yii::$app->db_jaspel->createCommand("
+            SELECT a.`idReg`,a.`tgl`,a.`noRm`,a.`namaPasien`,a.`caraBayar`,a.`tagihanRs`,a.`klaim`
+                 ,(a.`klaim`-a.`tagihanRs`) labaRugi
+            FROM `jaspel_cokro`.`jaspel` a
+            WHERE a.`publish` = 1
+            ".$filter."
+            order by noRm ASC
+            ")->queryAll();
+            $totalLabaRugi = Yii::$app->db_jaspel->createCommand("
+            SELECT SUM((a.`klaim`-a.`tagihanRs`)) totalLabaRugi
+            FROM `jaspel_cokro`.`jaspel` a
+            WHERE a.`publish` = 1
+            ".$filter."
+            order by noRm ASC
+            ")->queryScalar();
+        }
+
+        $excelData = htmlspecialchars(Json::encode($data));
+        //echo $excel;exit;
+
+        $provider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['idReg','tgl','noRm','namaPasien','caraBayar','tagihanRs','klaim','labaRugi'],
+            ],
+        ]);
+
+        return $this->render('klaim',[
+            'dataProvider' => $provider,
+            'excelData' => $excelData,
+            'totalLabaRugi' => $totalLabaRugi,
+        ]);
+    }
+
 }

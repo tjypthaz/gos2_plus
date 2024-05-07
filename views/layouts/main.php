@@ -66,6 +66,7 @@ AppAsset::register($this);
                 ['label' => 'Laporan Rekap Jaspel', 'url' => ['/jaspel/laporan']],
                 ['label' => 'Laporan Detail Jaspel', 'url' => ['/jaspel/laporan/detail']],
                 ['label' => 'Laporan Jaspel Ambulan', 'url' => ['/jaspel/laporan/ambulan']],
+                ['label' => 'Laporan Klaim Jaspel', 'url' => ['/jaspel/laporan/klaim-jaspel']],
             ]
         ];
 
