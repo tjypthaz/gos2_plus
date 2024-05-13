@@ -78,14 +78,12 @@ $this->title = 'Laporan Reservasi SurKon';
 <?php
 if($excelData != '[]'){
     $header = [
-        'Jenis App',
         'No RM',
         'Nama pasien',
         'Tgl Lahir',
         'No Hp',
         'Tgl Buat',
         'Tgl Kontrol',
-        'Tgl Reservasi',
         'Asal',
         'Tujuan',
         'Nama Dokter',

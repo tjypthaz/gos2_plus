@@ -78,7 +78,6 @@ $this->title = 'Laporan Reservasi MJKN';
 <?php
 if($excelData != '[]'){
     $header = [
-        'Jenis App',
         'No RM',
         'Nama pasien',
         'Tgl Lahir',
@@ -86,7 +85,6 @@ if($excelData != '[]'){
         'Tgl Buat',
         'Tgl Kontrol',
         'Tgl Reservasi',
-        'Asal',
         'Tujuan',
         'Nama Dokter',
         'NOMOR BOOKING',
