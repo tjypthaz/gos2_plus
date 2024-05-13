@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
-$this->title = 'Laporan Reservasi Surat Kontrol';
+$this->title = 'Laporan Reservasi SurKon';
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <form method="get" action="">
