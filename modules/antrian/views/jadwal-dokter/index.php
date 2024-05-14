@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'NM_DOKTER',
             'NM_HARI',
-            //'JAM_MULAI',
+            'JAM',
             //'JAM_SELESAI',
             'KAPASITAS',
             'KOUTA_JKN',

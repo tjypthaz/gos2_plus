@@ -4,6 +4,7 @@
 use app\modules\jaspel\models\Jaspel;
 use yii\bootstrap4\Html;
 use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
@@ -12,16 +13,33 @@ $this->title = 'Laporan Rekap Jaspel';
 <h1><?=$this->title?></h1>
 <form action="" method="get" class="row mb-2">
     <div class="col">
+        <?php
+        $listRuangan = Yii::$app->db_jaspel
+            ->createCommand("SELECT a.`ID`,a.`DESKRIPSI`
+            FROM master.`ruangan` a
+            WHERE a.`STATUS` = 1 AND a.`JENIS` = 5")
+            ->queryAll();
+        $listRuangan = ArrayHelper::map($listRuangan,'ID','DESKRIPSI');
+        ?>
+        <?= Html::dropDownList('idRuangan',Yii::$app->request->get('idRuangan'), $listRuangan,[
+            'class' => 'form-control',
+            'prompt' => 'Pilih Ruangan'
+        ])
+        ?>
+    </div>
+    <div class="col">
         <?= Html::dropDownList('bulan',Yii::$app->request->get('bulan'), Jaspel::getBulan(),[
             'class' => 'form-control',
-            'prompt' => 'Pilih Bulan'
+            'prompt' => 'Pilih Bulan',
+            'required' => 'required'
         ])
         ?>
     </div>
     <div class="col">
         <?= Html::dropDownList('tahun',Yii::$app->request->get('tahun'), Jaspel::getTahun(),[
             'class' => 'form-control',
-            'prompt' => 'Pilih Tahun'
+            'prompt' => 'Pilih Tahun',
+            'required' => 'required'
         ])
         ?>
     </div>

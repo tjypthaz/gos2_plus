@@ -12,25 +12,31 @@ class LaporanController extends \yii\web\Controller
     public function actionIndex($bulan=null,$tahun=null)
     {
         $data = [];
+        $filterRuang = "";
+        $ruangan = Yii::$app->request->get('idRuangan');
+        if($ruangan != ""){
+            $filterRuang = " AND b.`idRuangan` = '".$ruangan."'";
+        }
+        $filter = $filterRuang;
+
         if($bulan && $tahun){
-            $data = Yii::$app->db_jaspel->createCommand(
-                "
+            $data = Yii::$app->db_jaspel->createCommand("
             select * from (
-            SELECT CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,b.`ruangan`,a.`caraBayar`
-            ,b.`namaDokterO`,b.`namaDokterL`,b.`jenisPara`
-            ,SUM(b.`jpDokterO`) jpDokterO,SUM(b.`jpDokterL`) jpDokterL,SUM(b.`jpPara`) jpPara
-            ,SUM(b.`jpAkomodasi`) jpAkomodasi,SUM(b.`jpStruktural`) jpStruktural,SUM(b.`jpBlud`) jpBlud
-            ,SUM(b.`jpPegawai`) jpPegawai
-            ,b.`idDokterO`,b.`idDokterL`,b.`idPara`,b.`idRuangan`,a.`idCaraBayar`,a.`bulan`,a.`tahun`
-            FROM `jaspel_cokro`.`jaspel` a
-            LEFT JOIN `jaspel_cokro`.`jaspel_final` b ON b.`idJaspel` = a.`id`
-            WHERE a.`publish` = 1 AND b.`id` IS NOT NULL
-            AND a.`bulan` = ".$bulan."
-            AND a.`tahun` = ".$tahun."
-            GROUP BY a.`idCaraBayar`,b.`idRuangan`,b.`idDokterO`,b.`idDokterL`,b.`idPara`    
+                SELECT CONCAT(LPAD(a.`bulan`,2,'0'),'-',a.`tahun`) periode,b.`ruangan`,a.`caraBayar`
+                ,b.`namaDokterO`,b.`namaDokterL`,b.`jenisPara`
+                ,SUM(b.`jpDokterO`) jpDokterO,SUM(b.`jpDokterL`) jpDokterL,SUM(b.`jpPara`) jpPara
+                ,SUM(b.`jpAkomodasi`) jpAkomodasi,SUM(b.`jpStruktural`) jpStruktural,SUM(b.`jpBlud`) jpBlud
+                ,SUM(b.`jpPegawai`) jpPegawai
+                ,b.`idDokterO`,b.`idDokterL`,b.`idPara`,b.`idRuangan`,a.`idCaraBayar`,a.`bulan`,a.`tahun`
+                FROM `jaspel_cokro`.`jaspel` a
+                LEFT JOIN `jaspel_cokro`.`jaspel_final` b ON b.`idJaspel` = a.`id`
+                WHERE a.`publish` = 1 AND b.`id` IS NOT NULL
+                AND a.`bulan` = ".$bulan."
+                AND a.`tahun` = ".$tahun."
+                ".$filter."
+                GROUP BY a.`idCaraBayar`,b.`idRuangan`,b.`idDokterO`,b.`idDokterL`,b.`idPara`    
             ) a order by namaDokterO
-            "
-            )->queryAll();
+            ")->queryAll();
         }
         $excelData = htmlspecialchars(Json::encode($data));
         //echo $excel;exit;
