@@ -38,7 +38,7 @@ AppAsset::register($this);
     ]);
 
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'Gos2+', 'url' => ['/site/index']],
     ];
 
     if (\Yii::$app->user->isGuest){

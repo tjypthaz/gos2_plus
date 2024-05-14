@@ -53,7 +53,12 @@ class H2hController extends Controller
             return self::kembalian(200,$data,'data ditemukan');
         }
         else{
-            return self::kembalian(404,$data,'Id Tagihan tidak ditemukan');
+            Yii::$app->response->statusCode = 200;
+            return [
+                'data' => $data,
+                'statusCode' => 404,
+                'message' => 'Id Tagihan tidak ditemukan'
+            ];
         }
     }
 
@@ -95,7 +100,12 @@ class H2hController extends Controller
             }
         }
         else{
-            return self::kembalian(404,$data,'Id Tagihan tidak ditemukan');
+            Yii::$app->response->statusCode = 200;
+            return [
+                'data' => $data,
+                'statusCode' => 404,
+                'message' => 'Id Tagihan tidak ditemukan'
+            ];
         }
     }
 

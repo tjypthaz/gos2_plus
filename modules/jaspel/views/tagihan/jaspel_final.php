@@ -142,7 +142,13 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                 <tr>
                     <td><?=$i?></td>
                     <td><?=$item['ruangan']?></td>
-                    <td><?=$item['tindakan']?></td>
+                    <td>
+                        <?= \yii\bootstrap4\Html::a($item['tindakan'],['/jaspel/jaspel-final/update','id' => $item['id']],[
+                                'class' => 'btn btn-danger',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => 'Edit Dokter Klik Tombol INI !!',
+                        ]) ?></td>
                     <td>
                         <table style="font-size:10px;" class="m-0 p-0">
                             <!--<tr>
