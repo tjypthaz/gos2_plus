@@ -409,6 +409,7 @@ class LaporanController extends Controller
             SELECT c.`NORM` noRm,d.`NAMA` namaPasien,DATE(d.`TANGGAL_LAHIR`) tglLahir,e.`NOMOR` noHp
             ,a.`DIBUAT_TANGGAL` createDate,a.`TANGGAL` tglKontrol,g.`DESKRIPSI` asal
             ,f.`DESKRIPSI` tujuan,i.`NAMA` namaDokter,a.`NOMOR_BOOKING`,a.`NOMOR_REFERENSI`,j.ICD
+            ,l.`DESKRIPSI` jaminan
             FROM `medicalrecord`.`jadwal_kontrol` a
             LEFT JOIN pendaftaran.`kunjungan` b ON b.`NOMOR` = a.`KUNJUNGAN`
             LEFT JOIN `pendaftaran`.`pendaftaran` c ON c.`NOMOR` = b.`NOPEN`
@@ -419,6 +420,8 @@ class LaporanController extends Controller
             LEFT JOIN `master`.`dokter` h ON h.`ID`	 = a.`DOKTER`
             LEFT JOIN `master`.`pegawai` i ON i.`NIP` = h.`NIP`
             LEFT JOIN master.diagnosa_masuk j ON c.DIAGNOSA_MASUK=j.ID
+            LEFT JOIN `pendaftaran`.`penjamin` k ON k.`NOPEN` = b.`NOPEN`
+            LEFT JOIN `master`.`referensi` l ON l.`ID` = k.`JENIS` AND l.`JENIS` = 10            
             WHERE a.`STATUS` = 1 AND b.`STATUS` IN (1,2) AND c.`STATUS` IN (1,2)
             ".$filter."
             ")->queryAll();

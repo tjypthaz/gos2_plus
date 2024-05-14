@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
-$this->title = 'Laporan Reservasi SurKon';
+$this->title = 'Laporan SurKon';
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <form method="get" action="">
@@ -89,7 +89,8 @@ if($excelData != '[]'){
         'Nama Dokter',
         'NOMOR BOOKING',
         'NOMOR REFERENSI',
-        'ICD'
+        'ICD',
+        'Jaminan'
     ];
     $header = htmlspecialchars(Json::encode($header));
     ?>
@@ -127,7 +128,13 @@ if($excelData != '[]'){
         'tujuan',
         'namaDokter',
         'NOMOR_BOOKING',
-        'NOMOR_REFERENSI',
+        [
+                'attribute' => 'NOMOR_REFERENSI',
+            'value' => function($index){
+                return $index['NOMOR_REFERENSI']."<br>".$index['jaminan'];
+            },
+            'format' => 'raw'
+        ],
         'ICD'
     ],
     'pager' => [
