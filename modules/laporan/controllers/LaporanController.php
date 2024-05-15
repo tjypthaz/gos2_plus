@@ -486,14 +486,12 @@ class LaporanController extends Controller
             $data = Yii::$app->db_pembayaran->createCommand("
             SELECT a.`NORM` noRm,a.`NAMA` namaPasien,a.`TANGGAL_LAHIR` tglLahir,a.`CONTACT` noHp,a.`TGL_DAFTAR` createDate
             ,d.`tglRencanaKontrol` tglKontrol,a.`TANGGALKUNJUNGAN` tglReservasi
-            , b.`DESKRIPSI` tujuan,c.`nama` namaDokter,a.`ID` noBooking,a.`NO_REF_BPJS` noRef,g.`ICD` icd
+            , b.`DESKRIPSI` tujuan,c.`nama` namaDokter,a.`ID` noBooking,a.`NO_REF_BPJS` noRef,e.`diagAwal` icd
             FROM `regonline`.`reservasi` a
             LEFT JOIN `master`.`ruangan` b ON b.`ID` = a.`POLI`
             LEFT JOIN `bpjs`.`dpjp` c ON c.`kode` = a.`DOKTER`
             LEFT JOIN `bpjs`.`rencana_kontrol` d ON d.`noSurat` = a.`NO_REF_BPJS` AND d.`status` = 1
-            LEFT JOIN `pendaftaran`.`penjamin` e ON e.`NOMOR` = d.nomor
-            LEFT JOIN `pendaftaran`.`pendaftaran` f ON f.`NOMOR` = e.`NOPEN`
-            LEFT JOIN master.diagnosa_masuk g ON f.DIAGNOSA_MASUK=g.ID
+            LEFT JOIN `bpjs`.`kunjungan` e ON e.`noSEP` = d.`nomor`
             WHERE a.`JENIS_APLIKASI` = 2 AND a.`STATUS` != 0
             ".$filter."
             ")->queryAll();
