@@ -516,6 +516,82 @@ class LaporanController extends Controller
         ]);
     }
 
+    public function actionPasien()
+    {
+        $filterNorm = "";
+        $noRm= Yii::$app->request->get('noRm');
+        if($noRm != ""){
+            $filterNorm = " a.NORM = ".$noRm;
+        }
+        $filter = $filterNorm;
+
+        $filterNama = "";
+        $namaPasien = Yii::$app->request->get('namaPasien');
+        if($namaPasien != ""){
+            $filterNama = "a.`NAMA` like '%".$namaPasien."%'";
+            $filterNama = $filter ? " and ".$filterNama : $filterNama;
+        }
+        $filter = $filter.$filterNama;
+
+        $filterAlamat = "";
+        $alamat = Yii::$app->request->get('alamat');
+        if($alamat != ""){
+            $filterAlamat = "a.`ALAMAT` like '%".$alamat."%'";
+            $filterAlamat = $filter ? " and ".$filterAlamat : $filterAlamat;
+        }
+        $filter = $filter.$filterAlamat;
+
+        $filterKtp = "";
+        $noKtp = Yii::$app->request->get('noKtp');
+        if($noKtp != ""){
+            $filterKtp = "b.`NOMOR` = '".$noKtp."'";
+            $filterKtp = $filter ? " and ".$filterKtp : $filterKtp;
+        }
+        $filter = $filter.$filterKtp;
+
+        $filterHp = "";
+        $noHp = Yii::$app->request->get('noHp');
+        if($noHp != ""){
+            $filterHp = "c.`NOMOR` = '".$noHp."'";
+            $filterHp = $filter ? " and ".$filterHp : $filterHp;
+        }
+        $filter = $filter.$filterHp;
+
+        $filterBpjs = "";
+        $noBpjs = Yii::$app->request->get('noBpjs');
+        if($noBpjs != ""){
+            $filterBpjs = "d.`NOMOR` = '".$noBpjs."'";
+            $filterBpjs = $filter ? " and ".$filterBpjs : $filterBpjs;
+        }
+        $filter = $filter.$filterBpjs;
+
+        $data=[];
+        if($filter){
+            $data = Yii::$app->db_pembayaran->createCommand("
+            SELECT a.`NORM`,a.`TANGGAL` tglBuat,a.`NAMA`,DATE(a.`TANGGAL_LAHIR`) tglLahir
+            ,IF(a.`JENIS_KELAMIN` = 1,'L','P') jnsKelamin,a.`ALAMAT`,b.`NOMOR` noKtp,c.`NOMOR` noHp,d.`NOMOR` noBpjs
+            FROM `master`.`pasien` a
+            LEFT JOIN `master`.`kartu_identitas_pasien` b ON b.`NORM` = a.`NORM`
+            LEFT JOIN `master`.`kontak_pasien` c ON c.`NORM` = a.`NORM` AND c.`JENIS` = 3
+            LEFT JOIN `master`.`kartu_asuransi_pasien` d ON d.`NORM` = a.`NORM` AND d.`JENIS` = 2
+            WHERE ".$filter."
+            ")->queryAll();
+        }
+        $provider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['NORM','tglBuat','NAMA','tglLahir','ALAMAT','jnsKelamin','noKtp','noHp','noBpjs'],
+            ],
+        ]);
+
+        return $this->render('pasien',[
+            'dataProvider' => $provider,
+        ]);
+    }
+
     public function actionToexcel()
     {
         $excelData = Json::decode(Yii::$app->request->post('excelData'));

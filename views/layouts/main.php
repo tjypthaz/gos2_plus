@@ -93,8 +93,9 @@ AppAsset::register($this);
                 ['label' => 'Rekap Pengunjung', 'url' => ['/laporan/laporan/rekap-pengunjung']],
                 ['label' => 'Pasien Ranap', 'url' => ['/laporan/laporan/pasien-ranap']],
                 ['label' => 'Pasien Pulang Ranap', 'url' => ['/laporan/laporan/pasien-pulang']],
-                ['label' => 'Reservasi Surkon', 'url' => ['/laporan/laporan/reservasi-surkon']],
+                ['label' => 'Surat Kontrol', 'url' => ['/laporan/laporan/reservasi-surkon']],
                 ['label' => 'Reservasi MJKN', 'url' => ['/laporan/laporan/reservasi-mjkn']],
+                ['label' => 'Master Pasien', 'url' => ['/laporan/laporan/pasien']],
             ]
         ];
         $menuItems[] = [
