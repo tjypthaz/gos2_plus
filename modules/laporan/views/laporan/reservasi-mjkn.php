@@ -117,7 +117,20 @@ if($excelData != '[]'){
     'options' => ['style' => 'font-size:10px;'],
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
-        'noRm',
+        [
+                'attribute' => 'noRm',
+            'value' => function($index){
+                return Html::a(
+                        $index['noRm'],
+                        ['pasien','noRm' => $index['noRm']],
+                        [
+                                'class' => 'btn btn-success btn-sm',
+                            'title' => 'untuk melihat detail data pasien'
+                        ]
+                );
+            },
+            'format' => 'raw'
+        ],
         'namaPasien',
         'tglLahir',
         'noHp',
