@@ -147,7 +147,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                                 'class' => 'btn btn-danger',
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
-                            'title' => 'Edit Dokter Klik Tombol INI !!',
+                            'title' => 'Edit Tenaga Medis Klik Tombol INI !!',
                         ]) ?></td>
                     <td>
                         <table style="font-size:10px;" class="m-0 p-0">
