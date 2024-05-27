@@ -4,6 +4,8 @@ namespace app\modules\jaspel\controllers;
 
 use app\modules\jaspel\models\JaspelFinal;
 use app\modules\jaspel\models\search\JaspelFinal as JaspelFinalSearch;
+use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -94,7 +96,9 @@ class JaspelFinalController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success','Berhasil');
+            return $this->goBack();
+            //return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->renderAjax('update', [

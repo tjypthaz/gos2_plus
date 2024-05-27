@@ -96,6 +96,7 @@ if($excelData != '[]'){
 
     <?php
 }
+Yii::$app->user->setReturnUrl(Url::current());
 $gridColumns = [
     ['class' => 'yii\grid\SerialColumn'],
     [
@@ -114,7 +115,18 @@ $gridColumns = [
     //'id',
     'periode',
     'tglDaftar',
-    'noRm',
+    [
+        'attribute' => 'noRm',
+        'value' => function ($index){
+            return Html::a($index['noRm'],Url::to(['/jaspel/tagihan/jaspel-final',
+                'id' => $index['idJaspel'],
+            ]),[
+                'target' => '_blank',
+                'class' => 'btn btn-outline-success btn-sm'
+            ]);
+        },
+        'format' => 'raw'
+    ],
     'namaPasien',
     [
         'attribute' => 'ruangan',
