@@ -136,11 +136,11 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                     </div>
                 </div>
             </div>
-            <div class="row mb-3">
+            <div class="row mb-1">
                 <div class="col">
                     <div class="row">
-                        <label class="col-sm-5 col-form-label">Total Tarif RS</label>
-                        <div class="col-sm-7">
+                        <label class="col-sm-6 col-form-label">Total Tarif RS</label>
+                        <div class="col-sm-6">
                             <input type="text" name="tarifrs" class="form-control" value="<?=$data['tagihanRs']?>" readonly>
                         </div>
                     </div>
@@ -165,8 +165,19 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                     <div class="row">
                         <label class="col-6 col-form-label">Klaim Kronis</label>
                         <div class="col-6">
-                            <input type="text" name="klaimKronis" id="klaimKronis" class="form-control" autocomplete="off" value="<?=$data['klaimKronis'] ? $data['klaimKronis'] : 0?>">
-                            <input type="hidden" name="tarifKronis" id="tarifKronis" class="form-control" autocomplete="off" value="<?=$data['tarifKronis'] ? $data['tarifKronis'] : 0?>">
+                            <input type="text" name="klaimKronis" id="klaimKronis" class="form-control" autocomplete="off" value="<?=$data['klaimKronis'] ? $data['klaimKronis'] : 0?>" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-9">
+                </div>
+                <div class="col-3">
+                    <div class="row">
+                        <label class="col-sm-6 col-form-label">Tarif Kronis</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="tarifKronis" id="tarifKronis" class="form-control" autocomplete="off" value="<?=$data['tarifKronis'] ? $data['tarifKronis'] : 0?>" readonly>
                         </div>
                     </div>
                 </div>
