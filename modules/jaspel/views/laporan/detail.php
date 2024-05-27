@@ -3,6 +3,7 @@
 
 use app\modules\jaspel\models\Jaspel;
 use yii\bootstrap4\Html;
+use yii\bootstrap4\Modal;
 use yii\grid\GridView;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -100,11 +101,12 @@ $gridColumns = [
     [
         'attribute' => 'id',
         'value' => function ($index){
-            return Html::a($index['id'],Url::to(['/jaspel/jaspel-final/update',
-                'id' => $index['id'],
-            ]),[
-                'target' => '_blank',
-                'class' => 'btn btn-outline-success btn-sm',
+            return Html::a($index['id'],'#',[
+                //'target' => '_blank',
+                'class' => 'btn btn-outline-success btn-sm modalButton',
+                'value' => Url::to(['/jaspel/jaspel-final/update',
+                    'id' => $index['id'],
+                ])
             ]);
         },
         'format' => 'raw'
@@ -159,3 +161,24 @@ $gridColumns = [
         'class' => 'yii\bootstrap4\LinkPager'
     ]
 ]); ?>
+
+<?php
+Modal::begin([
+    //'header' => 'Modal',
+    'id' => 'modal',
+    'size' => 'modal-md',
+]);
+echo "<div id='modalContent'></div>";
+Modal::end();
+?>
+
+<?php
+$js=<<<js
+    $('.modalButton').on('click', function () {
+        $('#modal').modal('show')
+                .find('#modalContent')
+                .load($(this).attr('value'));
+    });
+js;
+$this->registerJs($js);
+?>

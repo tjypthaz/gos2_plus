@@ -141,6 +141,7 @@ class TagihanController extends Controller
             ,f.`JENIS` idBayar,h.DESKRIPSI caraBayar,f.`NOMOR` noSep
             ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs,ROUND((k.`TARIFCBG`+m.TOTAL), 0) klaim
             ,CONCAT(l.`bulan`,'-',l.`tahun`) periode, jaspel_cokro.`getJpTarif`(j.`ID`) totalJaspel,l.`id`
+            ,n.tarifKronis, n.klaimKronis
             FROM `pendaftaran`.`pendaftaran` a
             LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
             LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
@@ -154,6 +155,7 @@ class TagihanController extends Controller
             LEFT JOIN `inacbg`.`hasil_grouping` k ON k.`TAGIHAN_ID` = i.TAGIHAN
             LEFT JOIN `jaspel_cokro`.`jaspel` l ON l.`idReg` = a.`NOMOR` and l.publish = 1
             LEFT JOIN `pembayaran`.`pembayaran_tagihan` m ON  m.`TAGIHAN` = i.TAGIHAN AND m.`STATUS` = 2
+            LEFT JOIN `jaspel_cokro`.`kronis` n ON n.`idReg` = a.`NOMOR` and n.publish = 1
             WHERE a.`STATUS` = 2 AND b.`STATUS` = 2 AND j.`ID` IS NOT NULL
             ".$filter."
             ORDER BY a.`NOMOR` ASC";
@@ -219,10 +221,12 @@ class TagihanController extends Controller
             $model->idCaraBayar = Yii::$app->request->post('idBayar');
             $model->caraBayar = Yii::$app->request->post('caraBayar');
             $model->tagihanRs = Yii::$app->request->post('tarifrs');
+            $model->klaimKronis = preg_replace('/[^0-9]/', '', Yii::$app->request->post('klaimKronis'));
+            $model->tarifKronis = preg_replace('/[^0-9]/', '', Yii::$app->request->post('tarifKronis'));
             $model->jpRs = Yii::$app->request->post('jaspel');
             if(Yii::$app->request->post('is_prop') == '1'){
                 $model->klaim = preg_replace('/[^0-9]/', '', Yii::$app->request->post('klaim'));
-                $model->jpFix = (Yii::$app->request->post('jp_prop') / 100) * $model->klaim;
+                $model->jpFix = ((Yii::$app->request->post('jp_prop') / 100) * $model->klaim) + (0.08*$model->klaimKronis);
             }
             else{
                 $model->klaim = Yii::$app->request->post('tarifrs');
@@ -258,10 +262,16 @@ class TagihanController extends Controller
                 WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`STATUS` = 1
                 UNION ALL
                 SELECT ".$model->id.",'1030102' RUANGAN,a.`REF_ID`,'Obat' TINDAKAN,'0' idDokterO ,'0' jpDokterO,'0' idDokterL,'0' jpDokterL
-                ,'4' idPara,IFNULL(ROUND((SUM((a.`JUMLAH`*a.`TARIF`)) * 0.08) * 0.6,0),0) jpPara
-                ,'0' jpAkomodasi,IFNULL(ROUND((SUM((a.`JUMLAH`*a.`TARIF`)) * 0.08) * 0.4,0),0) jpPegawai
+                ,'4' idPara,IFNULL(ROUND(((SUM((a.`JUMLAH`*a.`TARIF`))-".$model->tarifKronis.") * 0.08) * 0.6,0),0) jpPara
+                ,'0' jpAkomodasi,IFNULL(ROUND(((SUM((a.`JUMLAH`*a.`TARIF`))-".$model->tarifKronis.") * 0.08) * 0.4,0),0) jpPegawai
                 FROM `pembayaran`.`rincian_tagihan` a
                 WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`JENIS` = 4 AND a.`STATUS` = 1
+                UNION ALL
+                SELECT ".$model->id.",'1030102' RUANGAN,a.`REF_ID`,'Kronis' TINDAKAN,'0' idDokterO ,'0' jpDokterO,'0' idDokterL,'0' jpDokterL
+                ,'4' idPara,IFNULL(ROUND((".$model->klaimKronis." * 0.08) * 0.6,0),0) jpPara
+                ,'0' jpAkomodasi,IFNULL(ROUND((".$model->klaimKronis." * 0.08) * 0.4,0),0) jpPegawai
+                FROM `pembayaran`.`rincian_tagihan` a
+                WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`JENIS` = 4 AND a.`STATUS` = 1 GROUP BY a.`TAGIHAN`
                 UNION ALL
                 SELECT ".$model->id.",c.`RUANGAN`,a.`REF_ID`,'Akomodasi' TINDAKAN,'0' idDokterO ,'0' jpDokterO,'0' idDokterL,'0' jpDokterL ,'0' idPara,'0' jpPara
                 ,ROUND((SUM(a.`JUMLAH`*b.`JASA_PELAYANAN`)*0.6),0) jpAkomodasi,ROUND((SUM(a.`JUMLAH`*b.`JASA_PELAYANAN`)*0.4)) jpPegawai

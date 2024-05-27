@@ -16,7 +16,14 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
 ?>
 <div class="jaspel-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?php
+    if($data['tarifKronis'] != ""){
+        ?><h1 class="bg-danger"><?= Html::encode($this->title)." Kronis" ?> </h1><?php
+    }else{
+        ?><h1><?= Html::encode($this->title) ?> </h1><?php
+    }
+    ?>
+
     <div class="container">
         <hr>
         <div class="row">
@@ -89,7 +96,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
             <input type="hidden" name="tgl" value="<?=$data['tgl']?>">
             <hr>
             <div class="row mb-1">
-                <div class="col-3">
+                <div class="col">
                     <div class="row">
                         <label class="col-sm-5 col-form-label">Bulan</label>
                         <div class="col-sm-7">
@@ -97,7 +104,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col">
                     <div class="row">
                         <label class="col-sm-5 col-form-label">Tahun</label>
                         <div class="col-sm-7">
@@ -105,10 +112,27 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col">
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" value="1" <?=$data['idBayar'] == '2' ? 'checked':''?> name="is_prop" role="switch" id="isProp">
                         <label class="form-check-label">Perhitungan Proporsional ?</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <label class="col-sm-8 col-form-label">Jp Proporsional (%)</label>
+                        <div class="col-sm-4">
+                            <input type="text" name="jp_prop" id="jp_prop" class="form-control" value="<?php
+                            if($data['idBayar'] == '2' && $data['idRuangan'] == '102010201')
+                            { echo '15';}
+                            else if($data['idBayar'] == '2')
+                            { echo '40';}
+                            else if($data['idBayar'] == '9')
+                            { echo '45';}
+                            else
+                            { echo '0';}
+                            ?>" <?=$data['idBayar'] == '2' || $data['idBayar'] == '9' ? '':'readonly'?>>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,7 +155,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                 </div>
                 <div class="col">
                     <div class="row">
-                        <label class="col-sm-5 col-form-label">Total Klaim</label>
+                        <label class="col-sm-5 col-form-label">Klaim INA</label>
                         <div class="col-sm-7">
                             <input type="text" name="klaim" id="klaim" class="form-control" autocomplete="off" value="<?=$data['idBayar'] == '2' ? $data['klaim']: $data['tagihanRs']?>" <?=$data['idBayar'] == '2' ? '':'readonly'?>>
                         </div>
@@ -139,18 +163,10 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                 </div>
                 <div class="col">
                     <div class="row">
-                        <label class="col-sm-7 col-form-label">Jaspel Proporsional (%)</label>
-                        <div class="col-sm-5">
-                            <input type="text" name="jp_prop" id="jp_prop" class="form-control" value="<?php
-                            if($data['idBayar'] == '2' && $data['idRuangan'] == '102010201')
-                            { echo '15';}
-                            else if($data['idBayar'] == '2')
-                            { echo '40';}
-                            else if($data['idBayar'] == '9')
-                            { echo '45';}
-                            else
-                            { echo '0';}
-                            ?>" <?=$data['idBayar'] == '2' || $data['idBayar'] == '9' ? '':'readonly'?>>
+                        <label class="col-6 col-form-label">Klaim Kronis</label>
+                        <div class="col-6">
+                            <input type="text" name="klaimKronis" id="klaimKronis" class="form-control" autocomplete="off" value="<?=$data['klaimKronis'] ? $data['klaimKronis'] : 0?>">
+                            <input type="hidden" name="tarifKronis" id="tarifKronis" class="form-control" autocomplete="off" value="<?=$data['tarifKronis'] ? $data['tarifKronis'] : 0?>">
                         </div>
                     </div>
                 </div>

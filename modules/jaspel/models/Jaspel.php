@@ -19,6 +19,8 @@ use Yii;
  * @property string $caraBayar
  * @property float $tagihanRs
  * @property float $klaim
+ * @property float|null $klaimKronis
+ * @property float|null $tarifKronis
  * @property float $jpRs
  * @property float $jpFix
  * @property int|null $publish 1:publish;2:unpublish
@@ -56,7 +58,7 @@ class Jaspel extends \yii\db\ActiveRecord
             [['bulan', 'tahun', 'idReg', 'tgl', 'noRm', 'namaPasien', 'idTagihan', 'idCaraBayar', 'caraBayar', 'tagihanRs', 'klaim', 'jpRs', 'jpFix'], 'required'],
             [['bulan', 'tahun', 'noRm', 'idCaraBayar', 'publish'], 'integer'],
             [['tgl', 'createDate', 'updateDate'], 'safe'],
-            [['tagihanRs', 'klaim', 'jpRs', 'jpFix'], 'number'],
+            [['tagihanRs', 'klaim', 'tarifKronis', 'klaimKronis', 'jpRs', 'jpFix'], 'number'],
             [['idReg', 'idTagihan'], 'string', 'max' => 10],
             [['namaPasien'], 'string', 'max' => 100],
             [['caraBayar'], 'string', 'max' => 21],
@@ -82,6 +84,8 @@ class Jaspel extends \yii\db\ActiveRecord
             'caraBayar' => 'Cara Bayar',
             'tagihanRs' => 'Tagihan Rs',
             'klaim' => 'Klaim',
+            'tarifKronis' => 'Tarif Kronis',
+            'klaimKronis' => 'Klaim Kronis',
             'jpRs' => 'Jp Rs',
             'jpFix' => 'Jp Fix',
             'publish' => 'Publish',

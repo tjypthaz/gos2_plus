@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                 </div>
                 <div class="row">
                     <div class="col-4">
-                        Total Klaim
+                        Klaim INA
                     </div>
                     <div class="col-8">
                         Rp. <?=number_format($dataHeader['klaim'],0,',','.')?>
@@ -111,6 +111,14 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                     </div>
                     <div class="col-8">
                         <?= Jaspel::getBulan($dataHeader['bulan'])." ".$dataHeader['tahun']?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        Klaim Kronis
+                    </div>
+                    <div class="col-8">
+                        Rp. <?=number_format($dataHeader['klaimKronis'],0,',','.')?>
                     </div>
                 </div>
             </div>
