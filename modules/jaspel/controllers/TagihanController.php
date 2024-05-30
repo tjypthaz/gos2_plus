@@ -223,10 +223,22 @@ class TagihanController extends Controller
             $model->tagihanRs = Yii::$app->request->post('tarifrs');
             $model->klaimKronis = preg_replace('/[^0-9]/', '', Yii::$app->request->post('klaimKronis'));
             $model->tarifKronis = preg_replace('/[^0-9]/', '', Yii::$app->request->post('tarifKronis'));
-            $model->jpRs = Yii::$app->request->post('jaspel');
+            $prosentaseJpObat = 0.08;
+            $getTarifObat = Yii::$app->db_jaspel->createCommand("
+                SELECT IFNULL(ROUND(SUM((a.`JUMLAH`*a.`TARIF`)),0),0) jp
+                FROM `pembayaran`.`rincian_tagihan` a
+                WHERE a.`TAGIHAN` = ".$model->idTagihan." AND a.`JENIS` = 4 AND a.`STATUS` = 1
+            ")->queryScalar();
+            $jpObatPengurang = $prosentaseJpObat * $model->tarifKronis;
+            $jpObat = ($getTarifObat - $model->tarifKronis) * $prosentaseJpObat;
+            if($model->klaimKronis >= $getTarifObat){
+                $jpObatPengurang = 0.08 * $getTarifObat;
+                $jpObat = 0;
+            }
+            $model->jpRs = Yii::$app->request->post('jaspel') - $jpObatPengurang;
             if(Yii::$app->request->post('is_prop') == '1'){
                 $model->klaim = preg_replace('/[^0-9]/', '', Yii::$app->request->post('klaim'));
-                $model->jpFix = ((Yii::$app->request->post('jp_prop') / 100) * $model->klaim) + (0.08*$model->klaimKronis);
+                $model->jpFix = ((Yii::$app->request->post('jp_prop') / 100) * $model->klaim) + ($prosentaseJpObat * $model->klaimKronis);
             }
             else{
                 $model->klaim = Yii::$app->request->post('tarifrs');
@@ -234,7 +246,6 @@ class TagihanController extends Controller
             }
 
             if($model->save()){
-                $model->id;
                 $sql = "INSERT INTO`jaspel_cokro`.`jaspel_temp` 
                 (`idJaspel`,`idRuangan`,`idTindakanMedis`,`idTindakan`,`idDokterO`,`jpDokterO`,`idDokterL`,`jpDokterL`
                 ,`idPara`,`jpPara`,`jpAkomodasi`,`jpPegawai`)
@@ -262,10 +273,10 @@ class TagihanController extends Controller
                 WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`STATUS` = 1
                 UNION ALL
                 SELECT ".$model->id.",'1030102' RUANGAN,a.`REF_ID`,'Obat' TINDAKAN,'0' idDokterO ,'0' jpDokterO,'0' idDokterL,'0' jpDokterL
-                ,'4' idPara,IFNULL(ROUND(((SUM((a.`JUMLAH`*a.`TARIF`))-".$model->tarifKronis.") * 0.08) * 0.6,0),0) jpPara
-                ,'0' jpAkomodasi,IFNULL(ROUND(((SUM((a.`JUMLAH`*a.`TARIF`))-".$model->tarifKronis.") * 0.08) * 0.4,0),0) jpPegawai
+                ,'4' idPara,IFNULL(ROUND(($jpObat * 0.6),0),0) jpPara
+                ,'0' jpAkomodasi,IFNULL(ROUND(($jpObat * 0.4),0),0) jpPegawai
                 FROM `pembayaran`.`rincian_tagihan` a
-                WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`JENIS` = 4 AND a.`STATUS` = 1
+                WHERE a.`TAGIHAN` = '".$model->idTagihan."' AND a.`JENIS` = 4 AND a.`STATUS` = 1 GROUP BY a.`TAGIHAN`
                 UNION ALL
                 SELECT ".$model->id.",'1030102' RUANGAN,a.`REF_ID`,'Kronis' TINDAKAN,'0' idDokterO ,'0' jpDokterO,'0' idDokterL,'0' jpDokterL
                 ,'4' idPara,IFNULL(ROUND((".$model->klaimKronis." * 0.08) * 0.6,0),0) jpPara
@@ -299,6 +310,12 @@ class TagihanController extends Controller
 
     public function actionJaspelTemp($id)
     {
+        /*$getTarifObat = Yii::$app->db_jaspel->createCommand("
+                SELECT IFNULL(ROUND(SUM((a.`JUMLAH`*a.`TARIF`)),0),0) jp
+                FROM `pembayaran`.`rincian_tagihan` a
+                WHERE a.`TAGIHAN` = 2403010174 AND a.`JENIS` = 4 AND a.`STATUS` = 1
+            ")->queryScalar();
+        echo $getTarifObat;exit;*/
         $dataFinal = JaspelFinal::find()->where(['idJaspel' => $id])->one();
         if($dataFinal){
             return $this->redirect(['jaspel-final','id' => $id]);
