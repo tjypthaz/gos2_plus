@@ -1,19 +1,18 @@
 <?php
 
-namespace app\modules\jaspel\controllers;
+namespace app\modules\antrian\controllers;
 
-use app\modules\jaspel\models\JaspelFinal;
-use app\modules\jaspel\models\search\JaspelFinal as JaspelFinalSearch;
+use app\modules\antrian\models\Reservasi;
+use app\modules\antrian\models\search\Reservasi as ReservasiSearch;
 use Yii;
-use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * JaspelFinalController implements the CRUD actions for JaspelFinal model.
+ * ReservasiController implements the CRUD actions for Reservasi model.
  */
-class JaspelFinalController extends Controller
+class ReservasiController extends Controller
 {
     /**
      * @inheritDoc
@@ -34,13 +33,13 @@ class JaspelFinalController extends Controller
     }
 
     /**
-     * Lists all JaspelFinal models.
+     * Lists all Reservasi models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new JaspelFinalSearch();
+        $searchModel = new ReservasiSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -50,30 +49,30 @@ class JaspelFinalController extends Controller
     }
 
     /**
-     * Displays a single JaspelFinal model.
-     * @param int $id ID
+     * Displays a single Reservasi model.
+     * @param string $ID ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($ID)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel($ID),
         ]);
     }
 
     /**
-     * Creates a new JaspelFinal model.
+     * Creates a new Reservasi model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new JaspelFinal();
+        $model = new Reservasi();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['view', 'ID' => $model->ID]);
             }
         } else {
             $model->loadDefaultValues();
@@ -85,26 +84,18 @@ class JaspelFinalController extends Controller
     }
 
     /**
-     * Updates an existing JaspelFinal model.
+     * Updates an existing Reservasi model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
+     * @param string $ID ID
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($ID)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($ID);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success','Berhasil');
-            return $this->goBack();
-            //return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        if($this->request->isAjax){
-            return $this->renderAjax('update', [
-                'model' => $model,
-            ]);
+            return $this->redirect(['view', 'ID' => $model->ID]);
         }
 
         return $this->render('update', [
@@ -113,29 +104,35 @@ class JaspelFinalController extends Controller
     }
 
     /**
-     * Deletes an existing JaspelFinal model.
+     * Deletes an existing Reservasi model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
+     * @param string $ID ID
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete($ID)
     {
-        $this->findModel($id)->delete();
-
+        //$this->findModel($ID)->delete();
+        $model = $this->findModel($ID);
+        $model->STATUS = '0';
+        if($model->save()){
+            Yii::$app->session->setFlash('success', 'Berhasil Ubah Status ke 0');
+        }else{
+            Yii::$app->session->setFlash('error','Gagal !');
+        }
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the JaspelFinal model based on its primary key value.
+     * Finds the Reservasi model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return JaspelFinal the loaded model
+     * @param string $ID ID
+     * @return Reservasi the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($ID)
     {
-        if (($model = JaspelFinal::findOne(['id' => $id])) !== null) {
+        if (($model = Reservasi::findOne(['ID' => $ID])) !== null) {
             return $model;
         }
 

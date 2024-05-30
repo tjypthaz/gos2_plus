@@ -86,6 +86,7 @@ AppAsset::register($this);
                 ['label' => 'Pengaturan', 'url' => ['/antrian/pengaturan/index']],
                 ['label' => 'Jadwal Dokter', 'url' => ['/antrian/jadwal-dokter']],
                 ['label' => 'Hari Libur', 'url' => ['/antrian/hari-libur']],
+                ['label' => 'Ubah Status Reservasi', 'url' => ['/antrian/reservasi']],
             ]
         ];
         $menuItems[] = ['label' => 'Laporan & Rekap',
