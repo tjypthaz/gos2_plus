@@ -249,14 +249,14 @@ class LaporanController extends \yii\web\Controller
         if($filter){
             $data = Yii::$app->db_jaspel->createCommand("
             SELECT a.`idReg`,a.`tgl`,a.`noRm`,a.`namaPasien`,a.`caraBayar`,a.`tagihanRs`,a.`klaim`
-                 ,(a.`klaim`-a.`tagihanRs`) labaRugi
+                 ,(a.`klaim`+a.`klaimKronis`-a.`tagihanRs`) labaRugi
             FROM `jaspel_cokro`.`jaspel` a
             WHERE a.`publish` = 1
             ".$filter."
             order by noRm ASC
             ")->queryAll();
             $totalLabaRugi = Yii::$app->db_jaspel->createCommand("
-            SELECT SUM((a.`klaim`-a.`tagihanRs`)) totalLabaRugi
+            SELECT SUM((a.`klaim`+a.`klaimKronis`-a.`tagihanRs`)) totalLabaRugi
             FROM `jaspel_cokro`.`jaspel` a
             WHERE a.`publish` = 1
             ".$filter."
