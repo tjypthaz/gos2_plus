@@ -149,8 +149,10 @@ class LaporanController extends Controller
                 LEFT JOIN `master`.`ppk` c ON c.`ID` = b.`PPK`
                 LEFT JOIN `pendaftaran`.`tujuan_pasien` d ON d.`NOPEN` = a.`NOMOR`
                 LEFT JOIN `master`.`ruangan`e ON e.`ID` = d.`RUANGAN`
+                LEFT JOIN `pendaftaran`.`kunjungan` f ON f.`NOPEN` = a.`NOMOR` AND d.`RUANGAN` = f.`RUANGAN` AND f.`STATUS` = 2
                 WHERE ".$filter."
-                AND a.`STATUS` = 2 AND b.`PPK` = 26491 AND e.`JENIS_KUNJUNGAN` IN (1,2,4,5,7) 
+                AND a.`STATUS` IN (1,2) AND b.`PPK` = 26491 AND e.`JENIS_KUNJUNGAN` IN (1,2,4,5,7) 
+                AND f.`NOMOR` IS NOT NULL
                 UNION ALL 
                 SELECT IFNULL(c.`JENIS`,99),COUNT(a.`NOMOR`) jumlah
                 FROM `pendaftaran`.`pendaftaran` a
@@ -158,8 +160,10 @@ class LaporanController extends Controller
                 LEFT JOIN `master`.`ppk` c ON c.`ID` = b.`PPK`
                 LEFT JOIN `pendaftaran`.`tujuan_pasien` d ON d.`NOPEN` = a.`NOMOR`
                 LEFT JOIN `master`.`ruangan`e ON e.`ID` = d.`RUANGAN`
+                LEFT JOIN `pendaftaran`.`kunjungan` f ON f.`NOPEN` = a.`NOMOR` AND d.`RUANGAN` = f.`RUANGAN` AND f.`STATUS` = 2
                 WHERE ".$filter."
-                AND a.`STATUS` = 2 AND b.`PPK` <> 26491 AND e.`JENIS_KUNJUNGAN` IN (1,2,4,5,7) 
+                AND a.`STATUS` IN (1,2) AND b.`PPK` <> 26491 AND e.`JENIS_KUNJUNGAN` IN (1,2,4,5,7)
+                AND f.`NOMOR` IS NOT NULL
                 GROUP BY c.`JENIS`
             ) a
             LEFT JOIN `master`.`referensi` b ON a.JENIS = b.`ID` AND b.`STATUS` = 1 AND b.`JENIS` = 11
@@ -173,8 +177,10 @@ class LaporanController extends Controller
                 FROM `pendaftaran`.`pendaftaran` a
                 LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
                 LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+                LEFT JOIN `pendaftaran`.`kunjungan` d ON d.`NOPEN` = a.`NOMOR` AND b.`RUANGAN` = d.`RUANGAN` AND d.`STATUS` = 2
                 WHERE ".$filter."
-                AND a.`STATUS` = 2 AND c.`JENIS_KUNJUNGAN` IN (1,2,4,5,7) 
+                AND a.`STATUS` IN (1,2) AND c.`JENIS_KUNJUNGAN` IN (1,2,4,5,7)
+                AND d.`NOMOR` IS NOT NULL 
                 GROUP BY c.`JENIS_KUNJUNGAN`
             ) a
             LEFT JOIN `master`.`referensi` b ON b.`ID` = a.JENIS_KUNJUNGAN AND b.`JENIS` = 15
@@ -186,8 +192,10 @@ class LaporanController extends Controller
             FROM `pendaftaran`.`pendaftaran` a
             LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
             LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+            LEFT JOIN `pendaftaran`.`kunjungan` d ON d.`NOPEN` = a.`NOMOR` AND b.`RUANGAN` = d.`RUANGAN` AND d.`STATUS` = 2
             WHERE ".$filter."
-            AND a.`STATUS` = 2 AND c.`JENIS_KUNJUNGAN` IN (1,2,4,5,7)
+            AND a.`STATUS` IN (1,2) AND c.`JENIS_KUNJUNGAN` IN (1,2,4,5,7)
+            AND d.`NOMOR` IS NOT NULL
             ")->queryScalar();
         }
         $providerAsalRujukan = new ArrayDataProvider([
