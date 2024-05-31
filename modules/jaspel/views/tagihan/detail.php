@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
 <div class="jaspel-index">
 
     <?php
-    if($data['tarifKronis'] != ""){
+    if($data['idKronis'] != ""){
         ?><h1 class="bg-danger"><?= Html::encode($this->title)." Kronis" ?> </h1><?php
     }else{
         ?><h1><?= Html::encode($this->title) ?> </h1><?php

@@ -141,7 +141,7 @@ class TagihanController extends Controller
             ,f.`JENIS` idBayar,h.DESKRIPSI caraBayar,f.`NOMOR` noSep
             ,j.`ID` idTagihan,ROUND(j.TOTAL,0) tagihanRs,ROUND((k.`TARIFCBG`+m.TOTAL), 0) klaim
             ,CONCAT(l.`bulan`,'-',l.`tahun`) periode, jaspel_cokro.`getJpTarif`(j.`ID`) totalJaspel,l.`id`
-            ,n.tarifKronis, n.klaimKronis
+            ,n.tarifKronis, n.klaimKronis, n.id idKronis
             FROM `pendaftaran`.`pendaftaran` a
             LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
             LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
