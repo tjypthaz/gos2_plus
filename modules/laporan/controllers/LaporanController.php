@@ -121,6 +121,102 @@ class LaporanController extends Controller
         ]);
     }
 
+    public function actionRekapKunjungan()
+    {
+        $filterTgl = "";
+        $tglAw = Yii::$app->request->get('tglAw');
+        if($tglAw != ""){
+            $filterTgl = " DATE(a.`TANGGAL`) = '".$tglAw."'";
+        }
+
+        $tglAk = Yii::$app->request->get('tglAk');
+        if($tglAw != "" && $tglAk != ""){
+            $filterTgl = " DATE(a.`TANGGAL`) between '".$tglAw."' and '".$tglAk."'";
+        }
+
+        $filter = $filterTgl;
+        $dataAsalRujukan=[];
+        $dataJenisKunjungan=[];
+        $totalPasien = 0;
+        if($filter){
+            $dataAsalRujukan = Yii::$app->db_pembayaran->createCommand("
+            SELECT IF(a.JENIS = 0,'Datang Sendiri',IFNULL(b.`DESKRIPSI`,'Tidak Diketahui')) asalRujukan,a.jumlah
+            FROM 
+            (
+                SELECT 0 `JENIS`,COUNT(a.`NOMOR`) jumlah
+                FROM `pendaftaran`.`pendaftaran` a
+                LEFT JOIN `pendaftaran`.`surat_rujukan_pasien` b ON b.`ID` = a.`RUJUKAN` AND b.`STATUS` = 1
+                LEFT JOIN `master`.`ppk` c ON c.`ID` = b.`PPK`
+                LEFT JOIN `pendaftaran`.`tujuan_pasien` d ON d.`NOPEN` = a.`NOMOR`
+                LEFT JOIN `master`.`ruangan`e ON e.`ID` = d.`RUANGAN`
+                WHERE ".$filter."
+                AND a.`STATUS` = 2 AND b.`PPK` = 26491 AND e.`JENIS_KUNJUNGAN` IN (1,2,4,5,7) 
+                UNION ALL 
+                SELECT IFNULL(c.`JENIS`,99),COUNT(a.`NOMOR`) jumlah
+                FROM `pendaftaran`.`pendaftaran` a
+                LEFT JOIN `pendaftaran`.`surat_rujukan_pasien` b ON b.`ID` = a.`RUJUKAN` AND b.`STATUS` = 1
+                LEFT JOIN `master`.`ppk` c ON c.`ID` = b.`PPK`
+                LEFT JOIN `pendaftaran`.`tujuan_pasien` d ON d.`NOPEN` = a.`NOMOR`
+                LEFT JOIN `master`.`ruangan`e ON e.`ID` = d.`RUANGAN`
+                WHERE ".$filter."
+                AND a.`STATUS` = 2 AND b.`PPK` <> 26491 AND e.`JENIS_KUNJUNGAN` IN (1,2,4,5,7) 
+                GROUP BY c.`JENIS`
+            ) a
+            LEFT JOIN `master`.`referensi` b ON a.JENIS = b.`ID` AND b.`STATUS` = 1 AND b.`JENIS` = 11
+            ORDER BY a.JENIS ASC
+            ")->queryAll();
+
+            $dataJenisKunjungan = Yii::$app->db_pembayaran->createCommand("
+            SELECT b.`DESKRIPSI` jenisKunjungan, a.jumlah
+            FROM (
+                SELECT c.`JENIS_KUNJUNGAN`, COUNT(a.`NOMOR`) jumlah
+                FROM `pendaftaran`.`pendaftaran` a
+                LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
+                LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+                WHERE ".$filter."
+                AND a.`STATUS` = 2 AND c.`JENIS_KUNJUNGAN` IN (1,2,4,5,7) 
+                GROUP BY c.`JENIS_KUNJUNGAN`
+            ) a
+            LEFT JOIN `master`.`referensi` b ON b.`ID` = a.JENIS_KUNJUNGAN AND b.`JENIS` = 15
+            ORDER BY b.`ID` ASC
+            ")->queryAll();
+
+            $totalPasien = Yii::$app->db_pembayaran->createCommand("
+            SELECT COUNT(a.`NOMOR`) jumlah
+            FROM `pendaftaran`.`pendaftaran` a
+            LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
+            LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+            WHERE ".$filter."
+            AND a.`STATUS` = 2 AND c.`JENIS_KUNJUNGAN` IN (1,2,4,5,7)
+            ")->queryScalar();
+        }
+        $providerAsalRujukan = new ArrayDataProvider([
+            'allModels' => $dataAsalRujukan,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => [],
+            ],
+        ]);
+
+        $providerJenisKunjungan = new ArrayDataProvider([
+            'allModels' => $dataJenisKunjungan,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => [],
+            ],
+        ]);
+
+        return $this->render('rekap-kunjungan',[
+            'totalPasien' => $totalPasien,
+            'dataProviderAsalRujukan' => $providerAsalRujukan,
+            'dataProviderJenisKunjungan' => $providerJenisKunjungan,
+        ]);
+    }
+
     public function actionPasienPulang()
     {
         $filterTgl = "";
