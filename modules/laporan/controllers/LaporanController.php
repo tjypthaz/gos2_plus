@@ -65,6 +65,12 @@ class LaporanController extends Controller
             $filterDokter = " and e.`NIP` = '".$dokter."'";
         }
 
+        $filterNoSep = "";
+        $noSep= Yii::$app->request->get('noSep');
+        if($noSep != ""){
+            $filterNoSep = " and g.`NOMOR` = '".$noSep."'";
+        }
+
         $filterNs = "";
         $isSep = Yii::$app->request->get('isSep');
         if($isSep != ""){
@@ -85,13 +91,13 @@ class LaporanController extends Controller
             }
         }
 
-        $filter = $filterTgl.$filterRm.$filterCb.$filterRuang.$filterDokter.$filterNs.$filterNama.$filterjenis;
+        $filter = $filterTgl.$filterRm.$filterCb.$filterRuang.$filterDokter.$filterNs.$filterNama.$filterjenis.$filterNoSep;
         $data=[];
         if($filter){
             $data = Yii::$app->db_pembayaran->createCommand("
             SELECT a.`NOMOR` idReg,a.`NORM` noRm,b.`NAMA` namaPasien,DATE(a.`TANGGAL`) tglDaftar,d.`DESKRIPSI` tujuan
             ,f.`NAMA` dokter,h.`DESKRIPSI` caraBayar,g.`NOMOR` noSep
-            ,if(c.`STATUS` = '1', 'Belum','Sudah') diTerima
+            ,if(c.`STATUS` = '1', 'Belum','Sudah') diTerima,if(a.`STATUS` = '1', 'Aktif','Selesai') `status`
             FROM `pendaftaran`.`pendaftaran` a
             LEFT JOIN `master`.`pasien` b ON b.`NORM` = a.`NORM`
             LEFT JOIN `pendaftaran`.`tujuan_pasien` c ON c.`NOPEN` = a.`NOMOR`
@@ -111,7 +117,7 @@ class LaporanController extends Controller
                 'pageSize' => 20,
             ],
             'sort' => [
-                'attributes' => ['noRm','namaPasien','tglDaftar','tujuan','dokter','caraBayar','diTerima'],
+                'attributes' => ['noRm','namaPasien','tglDaftar','tujuan','dokter','caraBayar','diTerima','status'],
             ],
         ]);
 

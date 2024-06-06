@@ -78,10 +78,7 @@ $this->title = 'Laporan Detail Pengunjung';
                 ])
                 ?>
             </div>
-            <div class="form-group">
-                <label for="">Belum ada SEP</label>
-                <?=SwitchInput::widget(['name'=>'isSep', 'value' => Yii::$app->request->get('isSep') ? true : false]);?>
-            </div>
+
             <div class="form-group">
                 <?php
                 $listJenisKunjungan = [
@@ -98,6 +95,16 @@ $this->title = 'Laporan Detail Pengunjung';
                     ])
                     ?>
                 </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label for="">No SEP</label>
+                <input type="text" name="noSep" value="<?=Yii::$app->request->get('noSep')?>" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">Belum ada SEP</label>
+                <?=SwitchInput::widget(['name'=>'isSep', 'value' => Yii::$app->request->get('isSep') ? true : false]);?>
             </div>
         </div>
     </div>
@@ -120,6 +127,7 @@ if($excelData != '[]'){
         'Cara Bayar',
         'No SEP',
         'Di Terima',
+        'Status'
     ];
     $header = htmlspecialchars(Json::encode($header));
     ?>
@@ -180,7 +188,8 @@ if($excelData != '[]'){
             },
             'format' => 'html'
         ],
-        'diTerima'
+        'diTerima',
+        'status'
     ],
     'pager' => [
         'class' => 'yii\bootstrap4\LinkPager'
