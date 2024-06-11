@@ -3,6 +3,7 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $db_lis = require __DIR__ . '/db_lis.php';
+$db_ihs = require __DIR__ . '/db_ihs.php';
 $db_jaspel = require __DIR__ . '/db_jaspel.php';
 $db_pembayaran = require __DIR__ . '/db_pembayaran.php';
 $db_lis_bridging = require __DIR__ . '/db_lis_bridging.php';
@@ -59,6 +60,9 @@ $config = [
         'antrian' => [
             'class' => 'app\modules\antrian\Module',
         ],
+        'ihs' => [
+            'class' => 'app\modules\ihs\Module',
+        ],
     ],
     'components' => [
         'authManager' => [
@@ -101,6 +105,7 @@ $config = [
         'db_lis_bridging' => $db_lis_bridging,
         'db_berkas' => $db_berkas,
         'db_regonline' => $db_regonline,
+        'db_ihs' => $db_ihs,
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,

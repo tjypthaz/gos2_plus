@@ -59,6 +59,11 @@ AppAsset::register($this);
                 ['label' => 'Mapping', 'url' => ['/lis/mapping']],
             ]
         ];
+        $menuItems[] = ['label' => 'IHS',
+            'items' => [
+                ['label' => 'Laboratorium Mapping Loinc', 'url' => ['/ihs/mapping-lab']],
+            ]
+        ];
         $menuItems[] = ['label' => 'Jaspel',
             'items' => [
                 ['label' => 'List Tagihan', 'url' => ['/jaspel/tagihan']],
