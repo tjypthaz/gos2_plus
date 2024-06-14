@@ -519,7 +519,7 @@ class LaporanController extends Controller
             SELECT c.`NORM` noRm,d.`NAMA` namaPasien,DATE(d.`TANGGAL_LAHIR`) tglLahir,e.`NOMOR` noHp
             ,a.`DIBUAT_TANGGAL` createDate,a.`TANGGAL` tglKontrol,g.`DESKRIPSI` asal
             ,f.`DESKRIPSI` tujuan,i.`NAMA` namaDokter,a.`NOMOR_BOOKING`,a.`NOMOR_REFERENSI`,j.ICD
-            ,l.`DESKRIPSI` jaminan
+            ,l.`DESKRIPSI` jaminan,CONCAT(DATE_FORMAT(a.`TANGGAL`,'%Y'), a.`NOMOR`) noSurkon
             FROM `medicalrecord`.`jadwal_kontrol` a
             LEFT JOIN pendaftaran.`kunjungan` b ON b.`NOMOR` = a.`KUNJUNGAN`
             LEFT JOIN `pendaftaran`.`pendaftaran` c ON c.`NOMOR` = b.`NOPEN`
@@ -544,7 +544,7 @@ class LaporanController extends Controller
             ],
             'sort' => [
                 'attributes' => ['noRm','namaPasien','tglLahir','noHp','createDate','createDate','tglKontrol'
-                    ,'asal','tujuan','namaDokter','ICD'],
+                    ,'asal','tujuan','namaDokter','ICD','noSurkon','NOMOR_BOOKING','NOMOR_REFERENSI'],
             ],
         ]);
 

@@ -127,7 +127,13 @@ if($excelData != '[]'){
         'asal',
         'tujuan',
         'namaDokter',
-        'NOMOR_BOOKING',
+        [
+            'attribute' => 'noSurkon',
+            'value' => function($index){
+                return $index['noSurkon']."<br>".$index['NOMOR_BOOKING'];
+            },
+            'format' => 'raw'
+        ],
         [
                 'attribute' => 'NOMOR_REFERENSI',
             'value' => function($index){
