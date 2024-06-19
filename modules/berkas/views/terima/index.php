@@ -46,7 +46,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => TerimaBerkas::getStatusTerima()
             ],
-            //'KETERANGAN',
             [
                 'attribute' => 'KASUS_KHUSUS',
                 'value' => function($model){
@@ -57,7 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'INFORMED_CONSENT',
                 'value' => function($model){
-                    return TerimaBerkas::getStatusInformedConsent($model->INFORMED_CONSENT);
+                    //return TerimaBerkas::getStatusInformedConsent($model->INFORMED_CONSENT);
+                    return $model->INFORMED_CONSENT;
                 },
                 'filter' => TerimaBerkas::getStatusInformedConsent()
             ],

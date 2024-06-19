@@ -2,9 +2,11 @@
 
 namespace app\modules\laporan\controllers;
 
+use LZCompressor\LZString;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Json;
+use yii\httpclient\Client;
 use yii\web\Controller;
 
 /**
@@ -700,6 +702,50 @@ class LaporanController extends Controller
         ]);
     }
 
+    public function actionRujukanBpjs($noBpjs,$type="Pcare"){
+        $dataRujukan = $type == "Pcare" ? $this->sendReqBpjs($noBpjs,"Rujukan/List/Peserta/","GET") :
+            $this->sendReqBpjs($noBpjs,"Rujukan/RS/List/Peserta/","GET");
+        /*echo "<pre>";
+        print_r($dataRujukan);
+        exit;*/
+        $dataTable = [];
+        $message = $dataRujukan['metaData']['message'];
+        if($dataRujukan['metaData']['code'] == '200' && $dataRujukan['response']['rujukan'] != ""){
+            if(count($dataRujukan['response']['rujukan']) > 0){
+                foreach ($dataRujukan['response']['rujukan'] as $item){
+                    $date = date_create($item['tglKunjungan']);
+                    date_add($date,date_interval_create_from_date_string("90 days"));
+                    $date = date_format($date,"Y-m-d");
+                    $dataTable[] = [
+                        'noKunjungan' =>  $item['noKunjungan'],
+                        'tglKunjungan' =>  $item['tglKunjungan'],
+                        'tglHabisKunjungan' => $date,
+                        'diagnosa' =>  $item['diagnosa']['kode']." - ".$item['diagnosa']['nama'],
+                        'poliRujukan' =>  $item['poliRujukan']['nama'],
+                        'provPerujuk' =>  $item['provPerujuk']['nama'],
+                    ];
+                }
+            }
+        }
+
+        $provider = new ArrayDataProvider([
+            'allModels' => $dataTable,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['noKunjungan','tglHabisKunjungan','tglKunjungan','diagnosa','poliRujukan','provPerujuk'],
+            ],
+        ]);
+
+        return $this->renderAjax('rujukan-bpjs',[
+            'dataProvider' => $provider,
+            'message' => $message
+        ]);
+    }
+
+
+
     public function actionToexcel()
     {
         $excelData = Json::decode(Yii::$app->request->post('excelData'));
@@ -736,5 +782,76 @@ class LaporanController extends Controller
         header('Cache-Control: max-age=0');
         $file->saveAs('php://output');
         exit;
+    }
+
+    // function decrypt
+    function stringDecrypt($key, $string)
+    {
+        $encrypt_method = 'AES-256-CBC';
+
+        // hash
+        $key_hash = hex2bin(hash('sha256', $key));
+
+        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+        $iv = substr(hex2bin(hash('sha256', $key)), 0, 16);
+
+        $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key_hash, OPENSSL_RAW_DATA, $iv);
+
+        return $output;
+    }
+
+    // function lzstring decompress https://github.com/nullpunkt/lz-string-php
+    function decompress($string)
+    {
+        return LZString::decompressFromEncodedURIComponent($string);
+    }
+
+    function sendReqBpjs($noBpjs,$url,$method){
+        $consId = "9921";
+        $secretKey = "0hFA4C2062";
+        $baseUrl = "https://apijkn.bpjs-kesehatan.go.id/vclaim-rest/";
+        $userKey = "30ad818f72d295a3d1242a004376aac8";
+
+        date_default_timezone_set('UTC');
+        $tStamp = strval(time() - strtotime('1970-01-01 00:00:00'));
+        $signature = hash_hmac('sha256', $consId . "&" . $tStamp, $secretKey, true);
+        $encodedSignature = base64_encode($signature);
+
+        $url = $baseUrl . $url . $noBpjs;
+        $client = new Client();
+        $response = $client->createRequest()
+            ->setMethod($method)
+            ->setUrl($url)
+            ->addHeaders([
+                'X-cons-id' => $consId,
+                'X-timestamp' => $tStamp,
+                'X-signature' => $encodedSignature,
+                'Content-Type' => 'application/json',
+                'user_key' => $userKey
+            ])
+            ->send();
+        if ($response->isOk) {
+            $data = $response->data;
+            if ($data['metaData']['code'] == "200") {
+                $keyEncrypt = $consId . $secretKey . $tStamp;
+                $decr = $this->stringDecrypt($keyEncrypt, $data['response']);
+                $deco = $this->decompress($decr);
+                return [
+                    'metaData' => [
+                        'code' => "200",
+                        'message' => "OK"
+                    ],
+                    'response' => Json::decode($deco)
+                ];
+            }
+            return $data;
+        }
+
+        return [
+            'metaData' => [
+                'code' => "500",
+                'message' => "Respon Error"
+            ]
+        ];
     }
 }

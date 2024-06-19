@@ -3,6 +3,7 @@
 use kartik\icons\Icon;
 use kartik\switchinput\SwitchInput;
 use yii\bootstrap4\Html;
+use yii\bootstrap4\Modal;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -65,8 +66,54 @@ $this->title = 'Master Pasien';
         'noKtp',
         'noHp',
         'noBpjs',
+        [
+                'label' => 'Cek',
+                'value' => function($index){
+                    return Html::a('FKTP','#',[
+                            'class' => 'btn btn-warning btn-sm modalButton',
+                        'value' => Url::to(['rujukan-bpjs',
+                            'noBpjs' => $index['noBpjs']
+                        ])
+                    ]);
+                },
+                'format' => 'raw'
+        ],
+        [
+            'label' => 'Rujukan',
+            'value' => function($index){
+                return Html::a('RS','#',[
+                        'class' => 'btn btn-info btn-sm modalButton',
+                        'value' => Url::to(['rujukan-bpjs',
+                            'noBpjs' => $index['noBpjs'],
+                            'type' => 'RS'
+                        ])
+                    ]);
+            },
+            'format' => 'raw'
+        ]
     ],
     'pager' => [
         'class' => 'yii\bootstrap4\LinkPager'
     ]
 ]); ?>
+
+<?php
+Modal::begin([
+    //'header' => 'Modal',
+    'id' => 'modal',
+    'size' => 'modal-lg',
+]);
+echo "<div id='modalContent'></div>";
+Modal::end();
+?>
+
+<?php
+$js=<<<js
+    $('.modalButton').on('click', function () {
+        $('#modal').modal('show')
+                .find('#modalContent')
+                .load($(this).attr('value'));
+    });
+js;
+$this->registerJs($js);
+?>
