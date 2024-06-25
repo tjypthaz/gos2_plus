@@ -29,9 +29,7 @@ class PrintLabelController extends Controller
         if($nOpen){
             try {
                 $client = new Client();
-                echo Yii::$app->request->userIP;
-                exit;
-                $url = "http://localhost:8989/label/".$nOpen."/1";
+                $url = "http://".Yii::$app->request->userIP.":8989/label/".$nOpen."/1";
                 $response = $client->createRequest()
                     ->setMethod('GET')
                     ->setUrl($url)
