@@ -33,6 +33,9 @@ class PrintLabelController extends Controller
                 $response = $client->createRequest()
                     ->setMethod('GET')
                     ->setUrl($url)
+                    ->setOptions([
+                        'timeout' => 3, // set timeout to 5 seconds for the case server is not responding
+                    ])
                     ->send();
                 if ($response->isOk) {
                     $resData = $response->data;
