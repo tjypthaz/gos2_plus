@@ -25,10 +25,7 @@ $config = [
         'allowActions' => [
             // add wildcard allowed action here!
             'site/*',
-            'debug/*',
-            'mimin/*', // only in dev mode
-            'apm/*',
-            'rsudapi/*',
+            'rsudapi/print-direct/*',
         ],
     ],
     'modules' => [
