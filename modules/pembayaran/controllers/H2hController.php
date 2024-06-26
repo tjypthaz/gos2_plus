@@ -271,4 +271,44 @@ class H2hController extends Controller
         ]);
         return $pdf->render();
     }
+
+    public function actionLaporan(){
+        $filterTgl = "";
+        $tglAw = Yii::$app->request->get('tglAw');
+        if($tglAw != ""){
+            $filterTgl = " and DATE(a.`updateDate`) = '".$tglAw."'";
+        }
+
+        $tglAk = Yii::$app->request->get('tglAk');
+        if($tglAw != "" && $tglAk != ""){
+            $filterTgl = " and DATE(a.`updateDate`) between '".$tglAw."' and '".$tglAk."'";
+        }
+
+        $filter = $filterTgl;
+        $data=[];
+        if($filter){
+            $data = Yii::$app->db_pembayaran->createCommand("
+            SELECT a.`idTagihan`,a.`noRm`,b.`NAMA` namaPasien,a.`bayar`,a.`updateDate` tglLunas
+            FROM `pembayaran_cokro`.`h2h` a
+            LEFT JOIN `master`.`pasien` b ON b.`NORM` = a.`noRm`
+            WHERE a.`publish` = 1 AND a.`status` = 2
+            ".$filter."
+            ")->queryAll();
+        }
+        $excelData = htmlspecialchars(Json::encode($data));
+        $provider = new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['idTagihan','namaPasien','noRm','bayar','tglLunas'],
+            ],
+        ]);
+
+        return $this->render('laporan',[
+            'dataProvider' => $provider,
+            'excelData' => $excelData
+        ]);
+    }
 }
