@@ -29,7 +29,7 @@ class PrintLabelController extends Controller
         if($nOpen){
             try {
                 $client = new Client();
-                $url = "http://".Yii::$app->request->userIP.":8989/label/".$nOpen."/1";
+                $url = "http://".Yii::$app->request->userIP.":8989/label/".$nOpen."/5";
                 $response = $client->createRequest()
                     ->setMethod('GET')
                     ->setUrl($url)
