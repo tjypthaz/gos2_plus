@@ -208,6 +208,15 @@ class TagihanController extends Controller
     public function actionSimpanTemp()
     {
         if (Yii::$app->request->isPost) {
+            // cek apakah sudah ada di DB ? jika ada langsung lempar ke jaspel temp
+            // pake idReg & publish = 1
+            $cekDouble = Jaspel::find()->select(['id'])->where([
+                'idReg' => Yii::$app->request->post('idReg'),
+                'publish' => '1'
+            ])->scalar();
+            if($cekDouble){
+                return $this->redirect(['jaspel-temp','id' => $cekDouble]);
+            }
             /*echo "<pre>";
             print_r(Yii::$app->request->post());exit;*/
             $model = new Jaspel();
