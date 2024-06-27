@@ -703,8 +703,8 @@ class LaporanController extends Controller
     }
 
     public function actionRujukanBpjs($noBpjs,$type="Pcare"){
-        $dataRujukan = $type == "Pcare" ? $this->sendReqBpjs($noBpjs,"Rujukan/List/Peserta/","GET") :
-            $this->sendReqBpjs($noBpjs,"Rujukan/RS/List/Peserta/","GET");
+        $dataRujukan = $type == "Pcare" ? $this->sendReqBpjs("Rujukan/List/Peserta/".$noBpjs."","GET") :
+            $this->sendReqBpjs("Rujukan/RS/List/Peserta/".$noBpjs."","GET");
         /*echo "<pre>";
         print_r($dataRujukan);
         exit;*/
@@ -744,7 +744,88 @@ class LaporanController extends Controller
         ]);
     }
 
+    public function actionSurkonBpjs($noBpjs,$type){
+        $url = "RencanaKontrol/ListRencanaKontrol/Bulan/".date('m')."/Tahun/".date('Y')."/Nokartu/".$noBpjs."/filter/".$type;
+        $dataSurkon = $this->sendReqBpjs($url,"GET");
+        /*echo "<pre>";
+        print_r($dataSurkon);
+        exit;*/
+        $dataTable = [];
+        $message = $dataSurkon['metaData']['message'];
+        if($dataSurkon['metaData']['code'] == '200' && $dataSurkon['response']['list'] != ""){
+            if(count($dataSurkon['response']['list']) > 0){
+                foreach ($dataSurkon['response']['list'] as $item){
+                    $dataTable[] = [
+                        'noSuratKontrol' =>  $item['noSuratKontrol'],
+                        'jnsPelayanan' =>  $item['jnsPelayanan'],
+                        'tglRencanaKontrol' => $item['tglRencanaKontrol'],
+                        'tglTerbitKontrol' =>  $item['tglTerbitKontrol'],
+                        'noSepAsalKontrol' =>  $item['noSepAsalKontrol'],
+                        'namaPoliTujuan' =>  $item['namaPoliTujuan'],
+                        'namaDokter' => $item['namaDokter'],
+                        'terbitSEP' => $item['terbitSEP'],
+                    ];
+                }
+            }
+        }
 
+        $provider = new ArrayDataProvider([
+            'allModels' => $dataTable,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['noSuratKontrol','jnsPelayanan','tglRencanaKontrol','tglTerbitKontrol'
+                    ,'noSepAsalKontrol','namaPoliTujuan','namaDokter','terbitSEP'],
+            ],
+        ]);
+
+        return $this->renderAjax('kontrol-bpjs',[
+            'dataProvider' => $provider,
+            'message' => $message,
+            'type' => $type
+        ]);
+    }
+
+    public function actionHistoriSep($noBpjs){
+        $url = "monitoring/HistoriPelayanan/NoKartu/".$noBpjs."/tglMulai/".date('Y-m-d',strtotime("-2 month"))."/tglAkhir/".date('Y-m-d');
+        $dataSep = $this->sendReqBpjs($url,"GET");
+        /*echo "<pre>";
+        print_r($dataSep);
+        exit;*/
+        $dataTable = [];
+        $message = $dataSep['metaData']['message'];
+        if($dataSep['metaData']['code'] == '200' && $dataSep['response']['histori'] != ""){
+            if(count($dataSep['response']['histori']) > 0){
+                foreach ($dataSep['response']['histori'] as $item){
+                    $jnsPelayanan = $item['jnsPelayanan'] == '2' ? $item['poli'] : 'Ranap';
+                    $dataTable[] = [
+                        'noSep' =>  $item['noSep'],
+                        'tglSep' =>  $item['tglSep'],
+                        'jnsPelayanan' => $jnsPelayanan,
+                        'diagnosa' =>  $item['diagnosa'],
+                        'ppkPelayanan' =>  $item['ppkPelayanan'],
+                        'noRujukan' => $item['noRujukan'],
+                    ];
+                }
+            }
+        }
+
+        $provider = new ArrayDataProvider([
+            'allModels' => $dataTable,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => ['noSep','tglSep','jnsPelayanan','diagnosa','ppkPelayanan','noRujukan'],
+            ],
+        ]);
+
+        return $this->renderAjax('histori-sep',[
+            'dataProvider' => $provider,
+            'message' => $message
+        ]);
+    }
 
     public function actionToexcel()
     {
@@ -806,7 +887,7 @@ class LaporanController extends Controller
         return LZString::decompressFromEncodedURIComponent($string);
     }
 
-    function sendReqBpjs($noBpjs,$url,$method){
+    function sendReqBpjs($url,$method){
         $consId = "9921";
         $secretKey = "0hFA4C2062";
         $baseUrl = "https://apijkn.bpjs-kesehatan.go.id/vclaim-rest/";
@@ -817,7 +898,7 @@ class LaporanController extends Controller
         $signature = hash_hmac('sha256', $consId . "&" . $tStamp, $secretKey, true);
         $encodedSignature = base64_encode($signature);
 
-        $url = $baseUrl . $url . $noBpjs;
+        $url = $baseUrl.$url;
         $client = new Client();
         $response = $client->createRequest()
             ->setMethod($method)

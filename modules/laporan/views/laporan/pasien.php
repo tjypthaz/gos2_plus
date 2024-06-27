@@ -59,26 +59,57 @@ $this->title = 'Master Pasien';
         ['class' => 'yii\grid\SerialColumn'],
         'NORM',
         'tglBuat',
-        'NAMA',
+        [
+                'attribute' => 'NAMA',
+            'value' => function($index){
+                return $index['NAMA']." (".$index['jnsKelamin'].")";
+            }
+        ],
         'tglLahir',
-        'jnsKelamin',
         'ALAMAT',
         'noKtp',
         'noHp',
         'noBpjs',
         [
-                'label' => 'Cek',
+                'label' => 'Bridging BPJS',
                 'value' => function($index){
-                    return Html::a('FKTP','#',[
-                            'class' => 'btn btn-warning btn-sm modalButton',
+                    return Html::a('Rujukan FKTP','#',[
+                            'class' => 'btn btn-warning btn-sm modalButton mb-1',
                         'value' => Url::to(['rujukan-bpjs',
                             'noBpjs' => $index['noBpjs']
                         ])
-                    ]);
+                    ])." ".
+                        Html::a('Rujukan RS','#',[
+                            'class' => 'btn btn-info btn-sm modalButton mb-1',
+                            'value' => Url::to(['rujukan-bpjs',
+                                'noBpjs' => $index['noBpjs'],
+                                'type' => 'RS'
+                            ])
+                        ])." ".
+                        Html::a('SurKon By Rencana','#',[
+                            'class' => 'btn btn-success btn-sm modalButton mb-1',
+                            'value' => Url::to(['surkon-bpjs',
+                                'noBpjs' => $index['noBpjs'],
+                                'type' => '2'
+                            ])
+                        ])." ".
+                        Html::a('SurKon By Entri','#',[
+                            'class' => 'btn btn-primary btn-sm modalButton mb-1',
+                            'value' => Url::to(['surkon-bpjs',
+                                'noBpjs' => $index['noBpjs'],
+                                'type' => '1'
+                            ])
+                        ])." ".
+                        Html::a('Histori SEP','#',[
+                            'class' => 'btn btn-danger btn-sm modalButton',
+                            'value' => Url::to(['histori-sep',
+                                'noBpjs' => $index['noBpjs']
+                            ])
+                        ]);
                 },
                 'format' => 'raw'
         ],
-        [
+        /*[
             'label' => 'Rujukan',
             'value' => function($index){
                 return Html::a('RS','#',[
@@ -90,7 +121,7 @@ $this->title = 'Master Pasien';
                     ]);
             },
             'format' => 'raw'
-        ]
+        ]*/
     ],
     'pager' => [
         'class' => 'yii\bootstrap4\LinkPager'
