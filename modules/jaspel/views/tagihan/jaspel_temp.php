@@ -164,9 +164,10 @@ $this->params['breadcrumbs'][] = "Periode Jaspel : ".Jaspel::getBulan(Yii::$app-
                         $listDokterO = Yii::$app->db_jaspel
                             ->createCommand("SELECT a.`MEDIS`,c.`NAMA`
                             FROM layanan.`petugas_tindakan_medis` a
-                            LEFT JOIN master.`dokter` b ON b.`ID` = a.`MEDIS` AND b.`STATUS` = 1
+                            LEFT JOIN master.`dokter` b ON b.`ID` = a.`MEDIS` 
                             LEFT JOIN master.`pegawai` c ON c.`NIP` = b.`NIP`
-                            WHERE a.`TINDAKAN_MEDIS` = '".$item['idTindakanMedis']."' AND a.`STATUS` = 1 AND a.`JENIS` = 1 and a.`MEDIS` != 0
+                            WHERE a.`TINDAKAN_MEDIS` = '".$item['idTindakanMedis']."' AND a.`STATUS` = 1 AND a.`JENIS` = 1 
+                            and a.`MEDIS` != 0 AND b.`STATUS` = 1
                             GROUP BY a.`MEDIS`")
                             ->queryAll();
                         if(count($listDokterO) > 0){
