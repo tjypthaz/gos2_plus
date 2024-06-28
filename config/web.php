@@ -25,7 +25,7 @@ $config = [
         'allowActions' => [
             // add wildcard allowed action here!
             'site/*',
-            'rsudapi/print-direct/*',
+            'rsudapi/*',
         ],
     ],
     'modules' => [
