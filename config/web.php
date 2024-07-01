@@ -25,7 +25,7 @@ $config = [
         'allowActions' => [
             // add wildcard allowed action here!
             'site/*',
-            'rsudapi/*',
+            'rsudapi/*', // untuk API tetep harus buka, walaupun buka saat akan akses tetap akan di mintai bearer token
         ],
     ],
     'modules' => [

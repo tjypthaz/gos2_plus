@@ -887,7 +887,7 @@ class LaporanController extends Controller
         return LZString::decompressFromEncodedURIComponent($string);
     }
 
-    function sendReqBpjs($url,$method){
+    public function sendReqBpjs($url,$method){
         $consId = "9921";
         $secretKey = "0hFA4C2062";
         $baseUrl = "https://apijkn.bpjs-kesehatan.go.id/vclaim-rest/";

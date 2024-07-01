@@ -57,7 +57,8 @@ class PrintLabelController extends Controller
         FROM `pendaftaran`.`apm_auto_print` a
         LEFT JOIN `pendaftaran`.`pendaftaran` b ON b.`NOMOR` = a.`nOpen`
         LEFT JOIN `master`.`pasien` c ON c.`NORM` = b.`NORM`
-        order by a.id desc
+        WHERE a.`status` = 1 and date(a.`create_date`) = curdate()
+        order by a.id asc
         ")->queryAll();
         $provider = new ArrayDataProvider([
             'allModels' => $data,

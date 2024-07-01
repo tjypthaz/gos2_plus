@@ -46,7 +46,7 @@ if($excelData != '[]'){
     ?>
     <div class="row">
         <div class="col text-right">
-            <form action="<?= Url::toRoute(['/laporan/laporan/toexcel'])?>" method="post">
+            <form action="<?= Url::to(['toexcel'])?>" method="post">
                 <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
                 <input type="hidden" name="namaFile" value="<?=$this->title?>">
                 <textarea name="excelData" style="display: none;">

@@ -311,4 +311,42 @@ class H2hController extends Controller
             'excelData' => $excelData
         ]);
     }
+
+    public function actionToexcel()
+    {
+        $excelData = Json::decode(Yii::$app->request->post('excelData'));
+        $namaFile = Yii::$app->request->post('namaFile').".xls";
+        $header = Json::decode(Yii::$app->request->post('header'));
+
+        $file = Yii::createObject([
+            'class' => 'codemix\excelexport\ExcelFile',
+            'sheets' => [
+                $namaFile => [   // Name of the excel sheet
+                    'data' => $excelData,
+
+                    // Set to `false` to suppress the title row
+                    'titles' => $header,
+
+                    'formats' => [
+                        // Either column name or 0-based column index can be used
+                        //'C' => '#,##0.00',
+                        //3 => 'dd/mm/yyyy hh:mm:ss',
+                    ],
+
+                    'formatters' => [
+                        // Dates and datetimes must be converted to Excel format
+                        //3 => function ($value, $row, $data) {
+                        //    return \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(strtotime($value));
+                        //},
+                    ],
+                ],
+            ]
+        ]);
+        // Save on disk
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$namaFile.'"');
+        header('Cache-Control: max-age=0');
+        $file->saveAs('php://output');
+        exit;
+    }
 }
