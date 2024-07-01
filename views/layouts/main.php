@@ -93,6 +93,7 @@ AppAsset::register($this);
                 ['label' => 'Hari Libur', 'url' => ['/antrian/hari-libur']],
                 ['label' => 'Ubah Status Reservasi', 'url' => ['/antrian/reservasi']],
                 ['label' => 'Auto Print Label', 'url' => ['/antrian/print-label']],
+                ['label' => 'Finger Print', 'url' => ['/antrian/fingerprint']],
             ]
         ];
         $menuItems[] = ['label' => 'Laporan & Rekap',

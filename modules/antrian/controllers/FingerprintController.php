@@ -21,33 +21,7 @@ class FingerprintController extends Controller
      */
     public function actionIndex()
     {
-        /*$arrPData = [
-            'request' => [
-                't_sep' => [
-                    'noKartu' => '0000075026946',
-                    'tglSep' => date('Y-m-d'),
-                    'jnsPelayanan' => '2',
-                    'jnsPengajuan' => '2',
-                    'keterangan' => 'Coba coba',
-                    'user' => Yii::$app->user->identity->username,
-                ]
-            ]
-        ];
-
-        $data = BridBpjs::vclaim(
-            "Sep/pengajuanSEP",
-            "POST",
-             "application/x-www-form-urlencoded", //"application/json",
-            Json::encode($arrPData)
-        );
-        echo "<pre>";
-        print_r($data);
-        exit;*/
-
-
-        return $this->render('index',[
-            //'dataProvider' => $provider,
-        ]);
+        return $this->render('index');
     }
 
     public function actionCekPeserta($nomor){
@@ -73,5 +47,55 @@ class FingerprintController extends Controller
         );
 
         return $data;
+    }
+
+    public function actionPengajuan($nomor)
+    {
+        if(Yii::$app->request->isPost){
+            $arrPData = [
+                'request' => [
+                    't_sep' => [
+                        'noKartu' => Yii::$app->request->post('nomor'),
+                        'tglSep' => date('Y-m-d'),
+                        'jnsPelayanan' => '2',
+                        'jnsPengajuan' => '2',
+                        'keterangan' => Yii::$app->request->post('alasan'),
+                        'user' => Yii::$app->user->identity->username,
+                    ]
+                ]
+            ];
+
+            $pengajuan = BridBpjs::vclaim(
+                "Sep/pengajuanSEP",
+                "POST",
+                "application/x-www-form-urlencoded",
+                Json::encode($arrPData)
+            );
+            /*echo "<pre>";
+            print_r($pengajuan);
+            exit;*/
+            if ($pengajuan['metaData']['code'] == "200") {
+                $approval = BridBpjs::vclaim(
+                    "Sep/aprovalSEP",
+                    "POST",
+                    "application/x-www-form-urlencoded",
+                    Json::encode($arrPData)
+                );
+                if ($approval['metaData']['code'] == "200") {
+                    Yii::$app->session->setFlash('success','Berhasil Pengajuan');
+                }
+                else{
+                    Yii::$app->session->setFlash('error',$pengajuan['metaData']['message']);
+                }
+            }
+            else{
+                Yii::$app->session->setFlash('error',$pengajuan['metaData']['message']);
+            }
+
+            return $this->redirect(['index','nomor' => $nomor]);
+        }
+        return $this->renderAjax('pengajuan',[
+            'nomor' => $nomor
+        ]);
     }
 }
