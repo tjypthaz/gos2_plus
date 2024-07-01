@@ -105,7 +105,9 @@ $this->title = 'Master Pasien';
                             'value' => Url::to(['histori-sep',
                                 'noBpjs' => $index['noBpjs']
                             ])
-                        ]);
+                        ])." ".
+                        Html::a('Cek Finger',Url::to(['/antrian/fingerprint/index','nomor' => $index['noBpjs']]),
+                            ['class' => 'btn btn-secondary btn-sm']);
                 },
                 'format' => 'raw'
         ],
