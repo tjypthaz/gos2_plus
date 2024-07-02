@@ -21,12 +21,12 @@ class PrintLabelController extends Controller
     {
         // find data and send to print
         $nOpen = Yii::$app->db_pembayaran->createCommand("
-        SELECT nOpen FROM `pendaftaran`.`apm_auto_print` 
+        SELECT id,nOpen,norm FROM `pendaftaran`.`apm_auto_print` 
         WHERE STATUS = 1 and date(create_date) = curdate()
         ORDER BY id ASC
         LIMIT 1
-        ")->queryScalar();
-        if($nOpen){
+        ")->queryOne();
+        if($nOpen['nOpen']){
             try {
                 $client = new Client();
                 $url = "http://".Yii::$app->request->userIP.":8989/label/".$nOpen."/5";
@@ -51,6 +51,20 @@ class PrintLabelController extends Controller
             catch (\Throwable $e){
                 Yii::$app->session->setFlash('error',"Aplikasi Print Direct Tidak Aktif");
             }
+        }else if($nOpen['norm']){
+            $idReg = Yii::$app->db_pembayaran->createCommand("
+            SELECT c.NOMOR 
+            FROM `pendaftaran`.`pendaftaran` c 
+            WHERE c.`NORM` = :norm AND DATE(c.`TANGGAL`) = curdate();
+            ")->bindValue(':norm',$nOpen['norm'])->queryScalar();
+            Yii::$app->db_pembayaran->createCommand("
+            update `pendaftaran`.`apm_auto_print`
+            set nOpen = :idReg
+            where id = :id
+            ")->bindValues([
+                ':idReg' => $idReg,
+                ':id' => $nOpen['id']
+            ])->execute();
         }
         $data = Yii::$app->db_pembayaran->createCommand("
         SELECT a.`nOpen`,b.`NORM`,c.`NAMA`,a.`create_date`,a.`status` statusPrint
