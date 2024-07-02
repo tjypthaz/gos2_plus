@@ -29,7 +29,7 @@ class PrintLabelController extends Controller
         if($nOpen['nOpen']){
             try {
                 $client = new Client();
-                $url = "http://".Yii::$app->request->userIP.":8989/label/".$nOpen."/5";
+                $url = "http://".Yii::$app->request->userIP.":8989/label/".$nOpen['nOpen']."/5";
                 $response = $client->createRequest()
                     ->setMethod('GET')
                     ->setUrl($url)
@@ -42,8 +42,8 @@ class PrintLabelController extends Controller
                     if($resData['status'] == 'success'){
                            Yii::$app->db_pembayaran->createCommand("
                            update `pendaftaran`.`apm_auto_print` set status = 2, update_date = now() where nOpen = :nOpen 
-                           ")->bindValue(':nOpen',$nOpen)->execute();
-                           $message = "Kirim Print NOPEN : ".$nOpen;
+                           ")->bindValue(':nOpen',$nOpen['nOpen'])->execute();
+                           $message = "Kirim Print NOPEN : ".$nOpen['nOpen'];
                            Yii::$app->session->setFlash('success',$message);
                     }
                 }
