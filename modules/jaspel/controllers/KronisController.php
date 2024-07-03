@@ -157,6 +157,8 @@ class KronisController extends Controller
                IF(a.`klaimKronis` > 0,a.`klaimKronis`,0),'".$user."',NOW()
         FROM `jaspel_cokro`.`temp_kronis` a
         LEFT JOIN `pendaftaran`.`penjamin` b ON b.`NOMOR` = a.`noSep`
+        LEFT JOIN `pendaftaran`.`pendaftaran` c ON c.`NOMOR` = b.`NOPEN`
+        WHERE c.`STATUS` != 0
         ")->execute();
         return $this->redirect(['index']);
     }
