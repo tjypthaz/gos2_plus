@@ -33,7 +33,7 @@ $js=<<<js
     $(document).ready(function() {
         window.setTimeout( function() {
           window.location.reload();
-        }, 30000);
+        }, 1000);
     });    
 js;
 $this->registerJs($js);
