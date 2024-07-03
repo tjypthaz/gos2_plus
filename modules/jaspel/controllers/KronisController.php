@@ -127,6 +127,8 @@ class KronisController extends Controller
         $sql = "SELECT a.`noSep`,a.`totalKronis`,a.`klaimKronis`,b.`NOPEN` idReg
         FROM `jaspel_cokro`.`temp_kronis` a
         LEFT JOIN `pendaftaran`.`penjamin` b ON b.`NOMOR` = a.`noSep`
+        LEFT JOIN `pendaftaran`.`pendaftaran` c ON c.`NOMOR` = b.`NOPEN`
+        WHERE c.`STATUS` != 0
         order by a.noSep asc";
         $data = Yii::$app->db_jaspel
             ->createCommand($sql)
