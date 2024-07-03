@@ -25,6 +25,7 @@ $config = [
         'allowActions' => [
             // add wildcard allowed action here!
             'site/*',
+            'antrian/print-label/*',
             'rsudapi/*', // untuk API tetep harus buka, walaupun buka saat akan akses tetap akan di mintai bearer token
         ],
     ],
