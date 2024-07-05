@@ -55,6 +55,7 @@ if($excelData != '[]'){
         'caraBayar',
         'tagihanRs',
         'klaim',
+        'klaimKronis',
         'labaRugi',
     ];
     $header = htmlspecialchars(Json::encode($header));
@@ -92,6 +93,12 @@ $gridColumns = [
         'attribute' => 'klaim',
         'value' => function($index){
             return number_format($index['klaim'],'0',',','.') ;
+        }
+    ],
+    [
+        'attribute' => 'klaimKronis',
+        'value' => function($index){
+            return number_format($index['klaimKronis'],'0',',','.') ;
         }
     ],
     [

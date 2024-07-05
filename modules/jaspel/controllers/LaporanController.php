@@ -248,7 +248,7 @@ class LaporanController extends \yii\web\Controller
         $totalLabaRugi = 0;
         if($filter){
             $data = Yii::$app->db_jaspel->createCommand("
-            SELECT a.`idReg`,a.`tgl`,a.`noRm`,a.`namaPasien`,a.`caraBayar`,a.`tagihanRs`,a.`klaim`
+            SELECT a.`idReg`,a.`tgl`,a.`noRm`,a.`namaPasien`,a.`caraBayar`,a.`tagihanRs`,a.`klaim`,a.`klaimKronis`
                  ,(a.`klaim`+a.`klaimKronis`-a.`tagihanRs`) labaRugi
             FROM `jaspel_cokro`.`jaspel` a
             WHERE a.`publish` = 1
@@ -273,7 +273,7 @@ class LaporanController extends \yii\web\Controller
                 'pageSize' => 20,
             ],
             'sort' => [
-                'attributes' => ['idReg','tgl','noRm','namaPasien','caraBayar','tagihanRs','klaim','labaRugi'],
+                'attributes' => ['idReg','tgl','noRm','namaPasien','caraBayar','tagihanRs','klaim','klaimKronis','labaRugi'],
             ],
         ]);
 
