@@ -16,11 +16,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <input type="text" id="nomor" class="form-control" value="<?=Yii::$app->request->get('nomor')?>" autocomplete="off" placeholder="No BPJS / NIK" />
         </div>
         <div class="col-3">
-            <button class="btn btn-success" id="cekPeserta">Cek Peserta</button>
+            <button class="btn btn-info" id="cekPeserta">Cek Peserta</button>
+            <button class="btn btn-outline-danger" style="display: none" id="cekRujukan">Rujukan FKTP</button>
         </div>
         <div class="col-3">
             <div style="display: none" id="isShowPengajuan">
-                <button class="btn btn-primary" value="" id="pengajuanFinger">
+                <button class="btn btn-warning" value="" id="pengajuanFinger">
                     Pengajuan Finger
                 </button>
             </div>
@@ -52,8 +53,10 @@ Modal::end();
 $urlCekPeserta = Url::to(['cek-peserta']);
 $urlCekFinger = Url::to(['cek-finger']);
 $urlPengajuan = Url::to(['pengajuan']);
+$urlRujukan = Url::to(['/laporan/laporan/rujukan-bpjs?noBpjs=']);
 $js= <<<js
     $('#cekPeserta').on('click', function () {
+        $('#cekRujukan').hide();
         const nomor = $('#nomor');
         const digitNomor = String(nomor).length;
         if(digitNomor === 12 || digitNomor === 15){
@@ -62,6 +65,9 @@ $js= <<<js
                 url: url,
                 type: 'GET',
                 success: function(data){
+                    if (data.metaData.code == "200"){
+                        $('#cekRujukan').show();
+                    }
                     $('#isShowPengajuan').hide();
                     const jsonS = JSON.stringify(data,null,4);
                     $('#resultPeserta').html(jsonS);
@@ -93,6 +99,13 @@ $js= <<<js
         $('#modal').modal('show')
                 .find('#modalContent')
                 .load($(this).attr('value'));
+    });
+    
+    $('#cekRujukan').on('click', function () {
+        var urlRujukan = '$urlRujukan' + $('#nomor').val();
+        $('#modal').modal('show')
+                .find('#modalContent')
+                .load(urlRujukan);
     });
 js;
 $this->registerJs($js);
