@@ -714,7 +714,7 @@ class LaporanController extends Controller
             if(count($dataRujukan['response']['rujukan']) > 0){
                 foreach ($dataRujukan['response']['rujukan'] as $item){
                     $date = date_create($item['tglKunjungan']);
-                    date_add($date,date_interval_create_from_date_string("90 days"));
+                    date_add($date,date_interval_create_from_date_string("89 days"));
                     $date = date_format($date,"Y-m-d");
                     $dataTable[] = [
                         'noKunjungan' =>  $item['noKunjungan'],
