@@ -145,6 +145,7 @@ class LaporanController extends Controller
         $filter = $filterTgl;
         $dataAsalRujukan=[];
         $dataJenisKunjungan=[];
+        $dataTriase=[];
         $totalPasien = 0;
         if($filter){
             $dataAsalRujukan = Yii::$app->db_pembayaran->createCommand("
@@ -195,6 +196,40 @@ class LaporanController extends Controller
             ORDER BY b.`ID` ASC
             ")->queryAll();
 
+            $dataTriase = Yii::$app->db_pembayaran->createCommand("
+            SELECT SUM(RESUSITASI) RESUSITASI,SUM(EMERGENCY) EMERGENCY,SUM(URGENT) URGENT,SUM(LESS_URGENT) LESS_URGENT,SUM(NON_URGENT) NON_URGENT
+            ,SUM(DOA) DOA,SUM(tidakDiketahui) tidakDiketahui
+            FROM (
+                SELECT IFNULL(e.`RESUSITASI` -> '$.CHECKED',0) RESUSITASI,IFNULL(e.`EMERGENCY` -> '$.CHECKED',0) EMERGENCY
+                ,IFNULL(e.`URGENT` -> '$.CHECKED',0) URGENT,IFNULL(e.`LESS_URGENT` -> '$.CHECKED',0) LESS_URGENT
+                ,IFNULL(e.`NON_URGENT` -> '$.CHECKED',0) NON_URGENT,IFNULL(e.`DOA` -> '$.CHECKED',0) DOA, 0 tidakDiketahui
+                FROM `pendaftaran`.`pendaftaran` a
+                LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
+                LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+                LEFT JOIN `pendaftaran`.`kunjungan` d ON d.`NOPEN` = a.`NOMOR` AND b.`RUANGAN` = d.`RUANGAN` AND d.`STATUS` = 2
+                LEFT JOIN `medicalrecord`.`triage` e ON e.`NOPEN` = a.`NOMOR`
+                WHERE ".$filter."
+                AND a.`STATUS` IN (1,2) AND c.`JENIS_KUNJUNGAN` = 2
+                AND d.`NOMOR` IS NOT NULL
+                UNION ALL
+                SELECT 0 RESUSITASI,0 EMERGENCY,0 URGENT,0 LESS_URGENT,0 NON_URGENT,0 DOA,COUNT(a.`NOMOR`) tidakDiketahui
+                FROM `pendaftaran`.`pendaftaran` a
+                LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
+                LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+                LEFT JOIN `pendaftaran`.`kunjungan` d ON d.`NOPEN` = a.`NOMOR` AND b.`RUANGAN` = d.`RUANGAN` AND d.`STATUS` = 2
+                LEFT JOIN `medicalrecord`.`triage` e ON e.`NOPEN` = a.`NOMOR`
+                WHERE ".$filter."
+                AND a.`STATUS` IN (1,2) AND c.`JENIS_KUNJUNGAN` = 2
+                AND d.`NOMOR` IS NOT NULL 
+                AND ((e.`RESUSITASI` -> '$.CHECKED' = 0 
+                AND e.`EMERGENCY` -> '$.CHECKED' = 0 
+                AND e.`URGENT` -> '$.CHECKED' = 0 
+                AND e.`LESS_URGENT` -> '$.CHECKED' = 0 
+                AND e.`NON_URGENT` -> '$.CHECKED' = 0 
+                AND e.`DOA` -> '$.CHECKED' = 0) OR e.`ID` IS NULL)
+            )a
+            ")->queryAll();
+
             $totalPasien = Yii::$app->db_pembayaran->createCommand("
             SELECT COUNT(a.`NOMOR`) jumlah
             FROM `pendaftaran`.`pendaftaran` a
@@ -226,10 +261,86 @@ class LaporanController extends Controller
             ],
         ]);
 
+        $providerTriase = new ArrayDataProvider([
+            'allModels' => $dataTriase,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => [],
+            ],
+        ]);
+
         return $this->render('rekap-kunjungan',[
             'totalPasien' => $totalPasien,
             'dataProviderAsalRujukan' => $providerAsalRujukan,
             'dataProviderJenisKunjungan' => $providerJenisKunjungan,
+            'providerTriase' => $providerTriase,
+        ]);
+    }
+
+    public function actionRekapTriage(){
+        $filterTgl = "";
+        $tglAw = Yii::$app->request->get('tglAw');
+        if($tglAw != ""){
+            $filterTgl = " DATE(a.`TANGGAL`) = '".$tglAw."'";
+        }
+
+        $tglAk = Yii::$app->request->get('tglAk');
+        if($tglAw != "" && $tglAk != ""){
+            $filterTgl = " DATE(a.`TANGGAL`) between '".$tglAw."' and '".$tglAk."'";
+        }
+
+        $filter = $filterTgl;
+        $dataTriase=[];
+        if($filter){
+            $dataTriase = Yii::$app->db_pembayaran->createCommand("
+            SELECT SUM(RESUSITASI) RESUSITASI,SUM(EMERGENCY) EMERGENCY,SUM(URGENT) URGENT,SUM(LESS_URGENT) LESS_URGENT,SUM(NON_URGENT) NON_URGENT
+            ,SUM(DOA) DOA,SUM(tidakDiketahui) tidakDiketahui
+            FROM (
+                SELECT IFNULL(e.`RESUSITASI` -> '$.CHECKED',0) RESUSITASI,IFNULL(e.`EMERGENCY` -> '$.CHECKED',0) EMERGENCY
+                ,IFNULL(e.`URGENT` -> '$.CHECKED',0) URGENT,IFNULL(e.`LESS_URGENT` -> '$.CHECKED',0) LESS_URGENT
+                ,IFNULL(e.`NON_URGENT` -> '$.CHECKED',0) NON_URGENT,IFNULL(e.`DOA` -> '$.CHECKED',0) DOA, 0 tidakDiketahui
+                FROM `pendaftaran`.`pendaftaran` a
+                LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
+                LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+                LEFT JOIN `pendaftaran`.`kunjungan` d ON d.`NOPEN` = a.`NOMOR` AND b.`RUANGAN` = d.`RUANGAN` AND d.`STATUS` = 2
+                LEFT JOIN `medicalrecord`.`triage` e ON e.`NOPEN` = a.`NOMOR`
+                WHERE ".$filter."
+                AND a.`STATUS` IN (1,2) AND c.`JENIS_KUNJUNGAN` = 2
+                AND d.`NOMOR` IS NOT NULL
+                UNION ALL
+                SELECT 0 RESUSITASI,0 EMERGENCY,0 URGENT,0 LESS_URGENT,0 NON_URGENT,0 DOA,COUNT(a.`NOMOR`) tidakDiketahui
+                FROM `pendaftaran`.`pendaftaran` a
+                LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
+                LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+                LEFT JOIN `pendaftaran`.`kunjungan` d ON d.`NOPEN` = a.`NOMOR` AND b.`RUANGAN` = d.`RUANGAN` AND d.`STATUS` = 2
+                LEFT JOIN `medicalrecord`.`triage` e ON e.`NOPEN` = a.`NOMOR`
+                WHERE ".$filter."
+                AND a.`STATUS` IN (1,2) AND c.`JENIS_KUNJUNGAN` = 2
+                AND d.`NOMOR` IS NOT NULL 
+                AND ((e.`RESUSITASI` -> '$.CHECKED' = 0 
+                AND e.`EMERGENCY` -> '$.CHECKED' = 0 
+                AND e.`URGENT` -> '$.CHECKED' = 0 
+                AND e.`LESS_URGENT` -> '$.CHECKED' = 0 
+                AND e.`NON_URGENT` -> '$.CHECKED' = 0 
+                AND e.`DOA` -> '$.CHECKED' = 0) OR e.`ID` IS NULL)
+            )a
+            ")->queryAll();
+        }
+
+        $providerTriase = new ArrayDataProvider([
+            'allModels' => $dataTriase,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'attributes' => [],
+            ],
+        ]);
+
+        return $this->render('rekap-triage',[
+            'providerTriase' => $providerTriase,
         ]);
     }
 

@@ -105,6 +105,7 @@ AppAsset::register($this);
                 ['label' => 'Surat Kontrol', 'url' => ['/laporan/laporan/reservasi-surkon']],
                 ['label' => 'Reservasi MJKN', 'url' => ['/laporan/laporan/reservasi-mjkn']],
                 ['label' => 'Master Pasien', 'url' => ['/laporan/laporan/pasien']],
+                ['label' => 'Rekap Triage', 'url' => ['/laporan/laporan/rekap-triage']],
             ]
         ];
         $menuItems[] = [
