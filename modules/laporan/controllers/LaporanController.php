@@ -293,6 +293,7 @@ class LaporanController extends Controller
 
         $filter = $filterTgl;
         $dataTriase=[];
+        $dataAsalRujukan=[];
         if($filter){
             $dataTriase = Yii::$app->db_pembayaran->createCommand("
             SELECT SUM(RESUSITASI) RESUSITASI,SUM(EMERGENCY) EMERGENCY,SUM(URGENT) URGENT,SUM(LESS_URGENT) LESS_URGENT,SUM(NON_URGENT) NON_URGENT
@@ -327,6 +328,23 @@ class LaporanController extends Controller
                 AND e.`DOA` -> '$.CHECKED' = 0) OR e.`ID` IS NULL)
             )a
             ")->queryAll();
+
+            $dataAsalRujukan = Yii::$app->db_pembayaran->createCommand("
+            SELECT if(a.JENIS = 1,'Datang Sendiri',if(a.JENIS = 2,'Rujukan Dari',if(a.JENIS = 3,'Polisi Dari','Tidak Diketahui'))) jenis,b.NAMA faskes,COUNT(idReg) jml
+            FROM (
+                SELECT e.`KEDATANGAN` ->> '$.JENIS' JENIS,e.`KEDATANGAN` ->> '$.ASAL_RUJUKAN' ASAL_RUJUKAN,a.NOMOR idReg
+                FROM `pendaftaran`.`pendaftaran` a 
+                LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
+                LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+                LEFT JOIN `pendaftaran`.`kunjungan` d ON d.`NOPEN` = a.`NOMOR` AND b.`RUANGAN` = d.`RUANGAN` AND d.`STATUS` = 2
+                LEFT JOIN `medicalrecord`.`triage` e ON e.`NOPEN` = a.`NOMOR`
+                WHERE ".$filter." 
+                AND a.`STATUS` IN (1,2) AND c.`JENIS_KUNJUNGAN` = 2
+                AND d.`NOMOR` IS NOT NULL
+            )a
+            LEFT JOIN master.`ppk` b ON b.ID = a.ASAL_RUJUKAN
+            GROUP BY a.JENIS,b.NAMA
+            ")->queryAll();
         }
 
         $providerTriase = new ArrayDataProvider([
@@ -338,9 +356,19 @@ class LaporanController extends Controller
                 'attributes' => [],
             ],
         ]);
+        $providerAsalRujukan = new ArrayDataProvider([
+            'allModels' => $dataAsalRujukan,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+            'sort' => [
+                'attributes' => ['jenis','jml'],
+            ],
+        ]);
 
         return $this->render('rekap-triage',[
             'providerTriase' => $providerTriase,
+            'providerAsalRujukan' => $providerAsalRujukan
         ]);
     }
 

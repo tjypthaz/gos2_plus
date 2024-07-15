@@ -51,3 +51,16 @@ $this->title = 'Rekap Triage';
         'class' => 'yii\bootstrap4\LinkPager'
     ]
 ]); ?>
+
+<h3>Asal Rujukan</h3>
+<?= GridView::widget([
+    'dataProvider' => $providerAsalRujukan,
+    'columns' => [
+        'jenis',
+        'faskes',
+        'jml',
+    ],
+    'pager' => [
+        'class' => 'yii\bootstrap4\LinkPager'
+    ]
+]); ?>
