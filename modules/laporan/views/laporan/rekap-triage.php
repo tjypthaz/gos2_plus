@@ -64,3 +64,15 @@ $this->title = 'Rekap Triage';
         'class' => 'yii\bootstrap4\LinkPager'
     ]
 ]); ?>
+
+<h3>SMF dari SPRI IGD</h3>
+<?= GridView::widget([
+    'dataProvider' => $providerSmf,
+    'columns' => [
+        'SMF',
+        'jml',
+    ],
+    'pager' => [
+        'class' => 'yii\bootstrap4\LinkPager'
+    ]
+]); ?>

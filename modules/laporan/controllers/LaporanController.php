@@ -294,6 +294,7 @@ class LaporanController extends Controller
         $filter = $filterTgl;
         $dataTriase=[];
         $dataAsalRujukan=[];
+        $dataSmf=[];
         if($filter){
             $dataTriase = Yii::$app->db_pembayaran->createCommand("
             SELECT SUM(RESUSITASI) RESUSITASI,SUM(EMERGENCY) EMERGENCY,SUM(URGENT) URGENT,SUM(LESS_URGENT) LESS_URGENT,SUM(NON_URGENT) NON_URGENT
@@ -345,6 +346,21 @@ class LaporanController extends Controller
             LEFT JOIN master.`ppk` b ON b.ID = a.ASAL_RUJUKAN
             GROUP BY a.JENIS,b.NAMA
             ")->queryAll();
+
+            $dataSmf = Yii::$app->db_pembayaran->createCommand("
+            SELECT IFNULL(g.`DESKRIPSI`,'Umum') SMF,COUNT(a.`NOMOR`) jml
+            FROM `pendaftaran`.`pendaftaran` a 
+            LEFT JOIN `pendaftaran`.`tujuan_pasien` b ON b.`NOPEN` = a.`NOMOR`
+            LEFT JOIN `master`.`ruangan` c ON c.`ID` = b.`RUANGAN`
+            LEFT JOIN `pendaftaran`.`kunjungan` d ON d.`NOPEN` = a.`NOMOR` AND b.`RUANGAN` = d.`RUANGAN` AND d.`STATUS` = 2
+            LEFT JOIN `medicalrecord`.`perencanaan_rawat_inap` e ON e.`KUNJUNGAN` = d.`NOMOR` AND e.`STATUS` = 1
+            LEFT JOIN `master`.`dokter_smf` f ON f.`DOKTER` = e.`DOKTER` AND f.`STATUS` = 1
+            LEFT JOIN `master`.`referensi` g ON g.`ID` = f.`SMF` AND g.`JENIS` = 26
+            WHERE ".$filter." 
+            AND a.`STATUS` IN (1,2) AND c.`JENIS_KUNJUNGAN` = 2
+            AND d.`NOMOR` IS NOT NULL
+            GROUP BY f.`SMF`
+            ")->queryAll();
         }
 
         $providerTriase = new ArrayDataProvider([
@@ -365,10 +381,20 @@ class LaporanController extends Controller
                 'attributes' => ['jenis','jml'],
             ],
         ]);
+        $providerSmf = new ArrayDataProvider([
+            'allModels' => $dataSmf,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+            'sort' => [
+                'attributes' => ['jenis','jml'],
+            ],
+        ]);
 
         return $this->render('rekap-triage',[
             'providerTriase' => $providerTriase,
-            'providerAsalRujukan' => $providerAsalRujukan
+            'providerAsalRujukan' => $providerAsalRujukan,
+            'providerSmf' => $providerSmf,
         ]);
     }
 
