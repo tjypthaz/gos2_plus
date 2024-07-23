@@ -51,6 +51,37 @@ $this->title = 'Rekap Triage';
         'class' => 'yii\bootstrap4\LinkPager'
     ]
 ]); ?>
+<?php
+if($excelDataTriase != '[]'){
+    $header = [
+        'Resusitasi',
+        'Emergency',
+        'Urgent',
+        'Less Urgent',
+        'Non Urgent',
+        'Doa',
+        'Tidak Diketahui'
+    ];
+    $header = htmlspecialchars(Json::encode($header));
+    ?>
+    <div class="row">
+        <div class="col text-right">
+            <form action="<?= Url::toRoute(['toexcel'])?>" method="post">
+                <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+                <input type="hidden" name="namaFile" value="Tingkat Kegawatan">
+                <textarea name="excelData" style="display: none;">
+            <?=$excelDataTriase?>
+            </textarea>
+                <textarea name="header" style="display: none;">
+            <?=$header?>
+            </textarea>
+                <button type="submit" class="btn btn-warning"><?=Icon::show('download')?> To EXCEL</button>
+            </form>
+        </div>
+    </div>
+    <?php
+}
+?>
 
 <h3>Asal Rujukan</h3>
 <?= GridView::widget([
@@ -64,6 +95,33 @@ $this->title = 'Rekap Triage';
         'class' => 'yii\bootstrap4\LinkPager'
     ]
 ]); ?>
+<?php
+if($excelDataAsalRujukan != '[]'){
+    $header = [
+        'Jenis',
+        'Faskes',
+        'Jml',
+    ];
+    $header = htmlspecialchars(Json::encode($header));
+    ?>
+    <div class="row">
+        <div class="col text-right">
+            <form action="<?= Url::toRoute(['toexcel'])?>" method="post">
+                <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+                <input type="hidden" name="namaFile" value="Asal Rujukan">
+                <textarea name="excelData" style="display: none;">
+            <?=$excelDataAsalRujukan?>
+            </textarea>
+                <textarea name="header" style="display: none;">
+            <?=$header?>
+            </textarea>
+                <button type="submit" class="btn btn-warning"><?=Icon::show('download')?> To EXCEL</button>
+            </form>
+        </div>
+    </div>
+    <?php
+}
+?>
 
 <h3>SMF dari SPRI IGD</h3>
 <?= GridView::widget([
@@ -76,3 +134,29 @@ $this->title = 'Rekap Triage';
         'class' => 'yii\bootstrap4\LinkPager'
     ]
 ]); ?>
+<?php
+if($excelDataSmf != '[]'){
+    $header = [
+        'SMF',
+        'Jml',
+    ];
+    $header = htmlspecialchars(Json::encode($header));
+    ?>
+    <div class="row">
+        <div class="col text-right">
+            <form action="<?= Url::toRoute(['toexcel'])?>" method="post">
+                <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+                <input type="hidden" name="namaFile" value="SMF SPRI">
+                <textarea name="excelData" style="display: none;">
+            <?=$excelDataSmf?>
+            </textarea>
+                <textarea name="header" style="display: none;">
+            <?=$header?>
+            </textarea>
+                <button type="submit" class="btn btn-warning"><?=Icon::show('download')?> To EXCEL</button>
+            </form>
+        </div>
+    </div>
+    <?php
+}
+?>
