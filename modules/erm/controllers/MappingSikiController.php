@@ -2,16 +2,16 @@
 
 namespace app\modules\erm\controllers;
 
-use app\modules\erm\models\MappingDiagnosaIndikator;
-use app\modules\erm\models\search\MappingDiagnosaIndikator as MappingDiagnosaIndikatorSearch;
+use app\modules\erm\models\MappingIntervensiIndikator;
+use app\modules\erm\models\search\MappingIntervensiIndikator as MappingIntervensiIndikatorSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * MappingSdkiController implements the CRUD actions for MappingDiagnosaIndikator model.
+ * MappingSikiController implements the CRUD actions for MappingIntervensiIndikator model.
  */
-class MappingSdkiController extends Controller
+class MappingSikiController extends Controller
 {
     /**
      * @inheritDoc
@@ -32,13 +32,13 @@ class MappingSdkiController extends Controller
     }
 
     /**
-     * Lists all MappingDiagnosaIndikator models.
+     * Lists all MappingIntervensiIndikator models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new MappingDiagnosaIndikatorSearch(['STATUS' => '1']);
+        $searchModel = new MappingIntervensiIndikatorSearch(['STATUS' => '1']);
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -48,7 +48,7 @@ class MappingSdkiController extends Controller
     }
 
     /**
-     * Displays a single MappingDiagnosaIndikator model.
+     * Displays a single MappingIntervensiIndikator model.
      * @param int $ID ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -61,20 +61,17 @@ class MappingSdkiController extends Controller
     }
 
     /**
-     * Creates a new MappingDiagnosaIndikator model.
+     * Creates a new MappingIntervensiIndikator model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new MappingDiagnosaIndikator();
+        $model = new MappingIntervensiIndikator();
 
         if ($this->request->isPost) {
-            /*echo "<pre>";
-            print_r($pecahIndikator);
-            exit;*/
             if ($model->load($this->request->post())) {
-                $pecahIndikator = explode('-',$this->request->post()['MappingDiagnosaIndikator']['INDIKATOR']);
+                $pecahIndikator = explode('-',$this->request->post()['MappingIntervensiIndikator']['INDIKATOR']);
                 $model->JENIS = $pecahIndikator[0];
                 $model->INDIKATOR = $pecahIndikator[1];
                 if($model->save()){
@@ -82,6 +79,9 @@ class MappingSdkiController extends Controller
                 }
 
             }
+            /*if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'ID' => $model->ID]);
+            }*/
         } else {
             $model->loadDefaultValues();
         }
@@ -92,7 +92,7 @@ class MappingSdkiController extends Controller
     }
 
     /**
-     * Updates an existing MappingDiagnosaIndikator model.
+     * Updates an existing MappingIntervensiIndikator model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $ID ID
      * @return string|\yii\web\Response
@@ -104,9 +104,10 @@ class MappingSdkiController extends Controller
         $model->INDIKATOR = $model->JENIS.'-'.$model->INDIKATOR;
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-            $pecahIndikator = explode('-',$this->request->post()['MappingDiagnosaIndikator']['INDIKATOR']);
+            $pecahIndikator = explode('-',$this->request->post()['MappingIntervensiIndikator']['INDIKATOR']);
             $model->JENIS = $pecahIndikator[0];
             $model->INDIKATOR = $pecahIndikator[1];
+
             if($model->save()){
                 return $this->redirect(['view', 'ID' => $model->ID]);
             }
@@ -118,7 +119,7 @@ class MappingSdkiController extends Controller
     }
 
     /**
-     * Deletes an existing MappingDiagnosaIndikator model.
+     * Deletes an existing MappingIntervensiIndikator model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $ID ID
      * @return \yii\web\Response
@@ -135,15 +136,15 @@ class MappingSdkiController extends Controller
     }
 
     /**
-     * Finds the MappingDiagnosaIndikator model based on its primary key value.
+     * Finds the MappingIntervensiIndikator model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $ID ID
-     * @return MappingDiagnosaIndikator the loaded model
+     * @return MappingIntervensiIndikator the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($ID)
     {
-        if (($model = MappingDiagnosaIndikator::findOne(['ID' => $ID])) !== null) {
+        if (($model = MappingIntervensiIndikator::findOne(['ID' => $ID])) !== null) {
             return $model;
         }
 

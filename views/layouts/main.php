@@ -101,6 +101,7 @@ AppAsset::register($this);
                 ['label' => 'Indikator Keperawatan', 'url' => ['/erm/indikator-keperawatan']],
                 ['label' => 'Diagnosa Keperawatan', 'url' => ['/erm/diagnosa-keperawatan']],
                 ['label' => 'Mapping SDKI', 'url' => ['/erm/mapping-sdki']],
+                ['label' => 'Mapping SIKI', 'url' => ['/erm/mapping-siki']],
             ]
         ];
         $menuItems[] = ['label' => 'Laporan & Rekap',

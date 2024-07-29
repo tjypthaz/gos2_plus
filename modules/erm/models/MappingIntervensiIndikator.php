@@ -3,24 +3,24 @@
 namespace app\modules\erm\models;
 
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "indikator_keperawatan".
+ * This is the model class for table "mapping_intervensi_indikator".
  *
- * @property int $JENIS
  * @property int $ID
- * @property string $DESKRIPSI
+ * @property int $JENIS
+ * @property int $INDIKATOR
+ * @property int $INTERVENSI
  * @property int $STATUS
  */
-class IndikatorKeperawatan extends \yii\db\ActiveRecord
+class MappingIntervensiIndikator extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'indikator_keperawatan';
+        return 'mapping_intervensi_indikator';
     }
 
     /**
@@ -37,9 +37,8 @@ class IndikatorKeperawatan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['JENIS', 'DESKRIPSI'], 'required'],
-            [['JENIS', 'STATUS'], 'integer'],
-            [['DESKRIPSI'], 'string', 'max' => 350],
+            [['JENIS', 'INTERVENSI', 'STATUS'], 'integer'],
+            [['INDIKATOR'], 'safe'],
         ];
     }
 
@@ -49,14 +48,11 @@ class IndikatorKeperawatan extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'JENIS' => 'Jenis',
             'ID' => 'ID',
-            'DESKRIPSI' => 'Deskripsi',
+            'JENIS' => 'Jenis',
+            'INDIKATOR' => 'Indikator',
+            'INTERVENSI' => 'Intervensi',
             'STATUS' => 'Status',
         ];
-    }
-
-    public static function getListIntervensi(){
-        return ArrayHelper::map(self::find()->where(['JENIS' => 5, 'STATUS' => 1])->orderBy("DESKRIPSI ASC")->asArray()->all(),'ID','DESKRIPSI');
     }
 }
