@@ -96,6 +96,13 @@ AppAsset::register($this);
                 ['label' => 'Finger Print', 'url' => ['/antrian/fingerprint']],
             ]
         ];
+        $menuItems[] = ['label' => 'Medical Record',
+            'items' => [
+                ['label' => 'Indikator Keperawatan', 'url' => ['/erm/indikator-keperawatan']],
+                ['label' => 'Diagnosa Keperawatan', 'url' => ['/erm/diagnosa-keperawatan']],
+                ['label' => 'Mapping SDKI', 'url' => ['/erm/mapping-sdki']],
+            ]
+        ];
         $menuItems[] = ['label' => 'Laporan & Rekap',
             'items' => [
                 ['label' => 'Detail Pengunjung', 'url' => ['/laporan/laporan/detail-pengunjung']],

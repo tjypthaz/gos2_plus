@@ -9,6 +9,7 @@ $db_pembayaran = require __DIR__ . '/db_pembayaran.php';
 $db_lis_bridging = require __DIR__ . '/db_lis_bridging.php';
 $db_berkas = require __DIR__ . '/db_berkas.php';
 $db_regonline = require __DIR__ . '/db_regonline.php';
+$db_erm = require __DIR__ . '/db_erm.php';
 
 $config = [
     'id' => 'gos2_plus',
@@ -61,6 +62,9 @@ $config = [
         'ihs' => [
             'class' => 'app\modules\ihs\Module',
         ],
+        'erm' => [
+            'class' => 'app\modules\erm\Module',
+        ],
     ],
     'components' => [
         'authManager' => [
@@ -104,6 +108,7 @@ $config = [
         'db_berkas' => $db_berkas,
         'db_regonline' => $db_regonline,
         'db_ihs' => $db_ihs,
+        'db_erm' => $db_erm,
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
